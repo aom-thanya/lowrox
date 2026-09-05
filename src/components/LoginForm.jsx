@@ -5,6 +5,7 @@ import logoImg from '../assets/logo.png';
 export default function LoginForm({ onSuccess }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -77,14 +78,35 @@ export default function LoginForm({ onSuccess }) {
 
         <div className="form-group">
           <label htmlFor="password">รหัสผ่าน</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className={errors.password && password ? 'input-error' : ''}
-            disabled={isSubmitting}
-          />
+          <div style={{ position: 'relative' }}>
+            <input
+              type={showPassword ? "text" : "password"}
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className={errors.password && password ? 'input-error' : ''}
+              disabled={isSubmitting}
+              style={{ paddingRight: '3.5rem', width: '100%', boxSizing: 'border-box' }}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              style={{
+                position: 'absolute',
+                right: '10px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                background: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '0.85rem',
+                color: '#666',
+                padding: '0'
+              }}
+            >
+              {showPassword ? 'ซ่อน' : 'แสดง'}
+            </button>
+          </div>
           {errors.password && password && (
             <span className="validation-message" role="alert">{errors.password}</span>
           )}
