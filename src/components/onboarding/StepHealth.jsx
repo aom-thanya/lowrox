@@ -188,8 +188,9 @@ export default function StepHealth({ onNext, onPrev }) {
     setSubmitError('');
 
     try {
-      await submitForm(); // Context function that sets completed and mocks API call
-      // The onComplete callback from Onboarding component will handle navigation to Result
+      // Simulate saving or transitioning to the next step
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      onNext();
     } catch (err) {
       setSubmitError('บันทึกข้อมูลยังไม่สำเร็จ กรุณาลองอีกครั้ง');
     } finally {
@@ -199,10 +200,10 @@ export default function StepHealth({ onNext, onPrev }) {
 
   const getCtaLabel = () => {
     if (isSubmitting) return 'กำลังประมวลผล...';
-    if (mainSelection.includes('none')) return 'ดู Level ของฉัน →';
-    if (mainSelection.includes('unsure')) return 'ข้ามไปดู Level →';
-    if (concerns.length > 0) return 'บันทึกและดู Level →';
-    return 'ดู Level ของฉัน →';
+    if (mainSelection.includes('none')) return 'ตรวจสอบข้อมูล →';
+    if (mainSelection.includes('unsure')) return 'ข้ามไปตรวจสอบข้อมูล →';
+    if (concerns.length > 0) return 'บันทึกและตรวจสอบข้อมูล →';
+    return 'ตรวจสอบข้อมูล →';
   };
 
   const isCtaDisabled = () => {
