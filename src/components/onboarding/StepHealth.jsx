@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useOnboarding } from '../../context/OnboardingContext';
+import step5Img from '../../assets/onboarding/step5.png';
 
 const ONBOARDING_STEP_ILLUSTRATIONS = {
-  safetyCheck: "https://cdni.iconscout.com/illustration/premium/thumb/empty-state-placeholder-illustration-svg-download-png-13996746.png"
+  safetyCheck: step5Img
 };
 
 const MAIN_OPTIONS = [
@@ -38,7 +39,7 @@ export default function StepHealth({ onNext, onPrev }) {
   const { mainSelection, concerns } = safetyCheck;
 
   // UI state for inline form
-  const [activeFormType, setActiveFormType] = useState(null); 
+  const [activeFormType, setActiveFormType] = useState(null);
   const [tempConcern, setTempConcern] = useState(null);
   const [editingIndex, setEditingIndex] = useState(null);
   const [showDateFields, setShowDateFields] = useState(false);
@@ -49,7 +50,7 @@ export default function StepHealth({ onNext, onPrev }) {
 
   const handleMainSelection = (val) => {
     let newSelection = [...mainSelection];
-    
+
     if (val === 'none' || val === 'unsure') {
       newSelection = [val];
       // clear active form
@@ -69,7 +70,7 @@ export default function StepHealth({ onNext, onPrev }) {
         openForm(val);
       }
     }
-    
+
     updateSafetyCheck('mainSelection', newSelection);
   };
 
@@ -109,7 +110,7 @@ export default function StepHealth({ onNext, onPrev }) {
   const handleTempChange = (field, value) => {
     setTempConcern(prev => ({ ...prev, [field]: value }));
     if (errors[field]) {
-      setErrors(prev => { const ne = {...prev}; delete ne[field]; return ne; });
+      setErrors(prev => { const ne = { ...prev }; delete ne[field]; return ne; });
     }
   };
 
@@ -144,7 +145,7 @@ export default function StepHealth({ onNext, onPrev }) {
 
     const newConcerns = [...concerns];
     const finalConcern = { ...tempConcern };
-    
+
     // map status to is_active
     finalConcern.is_active = STATUS_MAPPING[finalConcern.status].is_active;
 
@@ -218,7 +219,7 @@ export default function StepHealth({ onNext, onPrev }) {
       {isSelected && (
         <div style={{ width: '18px', height: '18px', borderRadius: '50%', backgroundColor: 'var(--color-brand-500)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
           <svg width="10" height="8" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1 5L5 9L13 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M1 5L5 9L13 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
       )}
@@ -378,11 +379,11 @@ export default function StepHealth({ onNext, onPrev }) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {concerns.map((c, i) => {
             const typeLabel = MAIN_OPTIONS.find(o => o.value === c.concern_type)?.label;
-            const nameStr = Array.isArray(c.concern_name) ? 
-              c.concern_name.map(n => n === 'อื่น ๆ' ? c.custom_concern_name : n).join(', ') : 
+            const nameStr = Array.isArray(c.concern_name) ?
+              c.concern_name.map(n => n === 'อื่น ๆ' ? c.custom_concern_name : n).join(', ') :
               (c.concern_name || c.medication_name);
             const levelLabel = RESTRICTION_LEVELS.find(l => l.value === c.restriction_level)?.label;
-            
+
             return (
               <div key={i} style={{ borderBottom: i < concerns.length - 1 ? '1px solid var(--color-neutral-200)' : 'none', paddingBottom: i < concerns.length - 1 ? '16px' : '0' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -409,9 +410,9 @@ export default function StepHealth({ onNext, onPrev }) {
       <div className="onboarding-modal-body">
         {/* Header Section */}
         <div className="onboarding-fullwidth-header">
-          <img 
-            src={ONBOARDING_STEP_ILLUSTRATIONS.safetyCheck} 
-            alt="Lowrox safety check illustration" 
+          <img
+            src={ONBOARDING_STEP_ILLUSTRATIONS.safetyCheck}
+            alt="Lowrox safety check illustration"
             onError={(e) => { e.target.style.display = 'none'; }}
           />
           <div className="onboarding-text-align">
@@ -422,13 +423,13 @@ export default function StepHealth({ onNext, onPrev }) {
           </div>
         </div>
 
-          <div style={{ backgroundColor: 'var(--color-neutral-100)', padding: '12px 16px', borderRadius: '8px', marginBottom: '32px', display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-            <span style={{ fontSize: '18px' }}>🔒</span>
-            <div>
-              <p className="body-sm" style={{ color: 'var(--color-neutral-700)', margin: 0, fontWeight: 600 }}>ข้อมูลนี้เป็นเรื่องส่วนตัว</p>
-              <p style={{ fontSize: '13px', color: 'var(--color-neutral-600)', margin: '2px 0 0 0' }}>คุณเลือกบอกเฉพาะสิ่งที่สะดวกได้ และกลับมาแก้ไขภายหลังได้เสมอ</p>
-            </div>
+        <div style={{ backgroundColor: 'var(--color-neutral-100)', padding: '12px 16px', borderRadius: '8px', marginBottom: '32px', display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+          <span style={{ fontSize: '18px' }}>🔒</span>
+          <div>
+            <p className="body-sm" style={{ color: 'var(--color-neutral-700)', margin: 0, fontWeight: 600 }}>ข้อมูลนี้เป็นเรื่องส่วนตัว</p>
+            <p style={{ fontSize: '13px', color: 'var(--color-neutral-600)', margin: '2px 0 0 0' }}>คุณเลือกบอกเฉพาะสิ่งที่สะดวกได้ และกลับมาแก้ไขภายหลังได้เสมอ</p>
           </div>
+        </div>
         {submitError && (
           <div className="error-message-area" role="alert" style={{ marginBottom: '24px' }}>
             {submitError}
@@ -442,7 +443,7 @@ export default function StepHealth({ onNext, onPrev }) {
 
         <div>
           <h3 className="onboarding-label" style={{ textAlign: 'center' }}>ตอนออกกำลังกาย มีเรื่องไหนที่เราควรระวังให้คุณไหม?</h3>
-          
+
           <div className="onboarding-choice-grid">
             {MAIN_OPTIONS.map(opt => {
               const isSelected = mainSelection.includes(opt.value);
@@ -464,7 +465,7 @@ export default function StepHealth({ onNext, onPrev }) {
                     </div>
                     {isSelected && (
                       <div style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: 'var(--color-brand-500)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', marginLeft: '12px', flexShrink: 0 }}>
-                        <svg width="14" height="10" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 5L5 9L13 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                        <svg width="14" height="10" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 5L5 9L13 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
                       </div>
                     )}
                   </div>
@@ -497,8 +498,8 @@ export default function StepHealth({ onNext, onPrev }) {
 
           {/* Add more button */}
           {!mainSelection.includes('none') && !mainSelection.includes('unsure') && concerns.length > 0 && concerns.length < 5 && !activeFormType && (
-            <button 
-              type="button" 
+            <button
+              type="button"
               onClick={() => openForm(mainSelection[0])} // just reopen the first one, or they can click a card
               style={{ marginTop: '16px', display: 'block', width: '100%', padding: '12px', borderRadius: '12px', border: '1px dashed var(--color-brand-400)', backgroundColor: 'var(--color-white)', color: 'var(--color-brand-600)', fontWeight: 600, cursor: 'pointer', fontSize: '14px' }}
             >
@@ -511,17 +512,17 @@ export default function StepHealth({ onNext, onPrev }) {
           </div>
         </div>
       </div>
-      
+
       <div className="onboarding-modal-footer">
-        <button 
-          className="btn btn-secondary btn-md" 
+        <button
+          className="btn btn-secondary btn-md"
           onClick={onPrev}
           style={{ width: 'auto', marginRight: '16px' }}
         >
           ← ย้อนกลับ
         </button>
-        <button 
-          className="btn btn-primary btn-md btn-cta w-full" 
+        <button
+          className="btn btn-primary btn-md btn-cta w-full"
           onClick={handleNext}
           disabled={isCtaDisabled()}
         >

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useOnboarding } from '../../context/OnboardingContext';
+import step4Img from '../../assets/onboarding/step4.png';
 
 const ONBOARDING_STEP_ILLUSTRATIONS = {
-  yourRhythm: "https://cdni.iconscout.com/illustration/premium/thumb/empty-state-placeholder-illustration-svg-download-png-13996746.png"
+  yourRhythm: step4Img
 };
 
 const AREA_OPTIONS = [
@@ -61,7 +62,7 @@ export default function StepAvailability({ onNext, onPrev }) {
     const newWindows = [...windows];
     newWindows[index] = { ...newWindows[index], [field]: value };
     updateFormData('availabilityWindows', newWindows);
-    
+
     // Clear error
     if (errors[index] && errors[index][field]) {
       const newErrors = { ...errors };
@@ -84,7 +85,7 @@ export default function StepAvailability({ onNext, onPrev }) {
       }
     }
     updateWindow(index, 'areaTypes', current);
-    
+
     // clear error
     if (errors[index]?.areaTypes) {
       const newErrors = { ...errors };
@@ -102,7 +103,7 @@ export default function StepAvailability({ onNext, onPrev }) {
       current.push(day);
     }
     updateWindow(index, 'selectedDays', current);
-    
+
     // clear error
     if (errors[index]?.days) {
       const newErrors = { ...errors };
@@ -125,7 +126,7 @@ export default function StepAvailability({ onNext, onPrev }) {
       }
     }
     updateWindow(index, 'timePresets', current);
-    
+
     // clear error
     if (errors[index]?.times) {
       const newErrors = { ...errors };
@@ -159,7 +160,7 @@ export default function StepAvailability({ onNext, onPrev }) {
     if (windows.length <= 1) return;
     const newWindows = windows.filter((_, i) => i !== index);
     updateFormData('availabilityWindows', newWindows);
-    
+
     const newErrors = { ...errors };
     delete newErrors[index];
     setErrors(newErrors);
@@ -171,7 +172,7 @@ export default function StepAvailability({ onNext, onPrev }) {
 
     windows.forEach((win, idx) => {
       const winErrors = {};
-      
+
       if (win.areaTypes.length === 0) {
         winErrors.areaTypes = 'เลือกประเภทพื้นที่ที่คุณสะดวก';
       }
@@ -218,7 +219,7 @@ export default function StepAvailability({ onNext, onPrev }) {
 
   const mapToConstraints = () => {
     const finalConstraints = [];
-    
+
     windows.forEach(win => {
       const daysToMap = [];
       if (win.dayPreset === 'flexible') {
@@ -242,7 +243,7 @@ export default function StepAvailability({ onNext, onPrev }) {
       win.timePresets.forEach(timeType => {
         let from = '';
         let to = '';
-        
+
         if (timeType === 'custom') {
           from = win.customTimeFrom;
           to = win.customTimeTo;
@@ -281,7 +282,7 @@ export default function StepAvailability({ onNext, onPrev }) {
     try {
       const constraints = mapToConstraints();
       updateFormData('constraints', constraints);
-      
+
       // Simulate API call
       await new Promise(r => setTimeout(r, 800));
       onNext();
@@ -307,7 +308,7 @@ export default function StepAvailability({ onNext, onPrev }) {
           color: 'white'
         }}>
           <svg width="10" height="8" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1 5L5 9L13 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M1 5L5 9L13 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
       )}
@@ -336,7 +337,7 @@ export default function StepAvailability({ onNext, onPrev }) {
       {isSelected && (
         <div style={{ position: 'absolute', top: '-4px', right: '-4px', width: '16px', height: '16px', borderRadius: '50%', backgroundColor: 'var(--color-brand-500)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
           <svg width="8" height="6" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1 5L5 9L13 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M1 5L5 9L13 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
       )}
@@ -346,10 +347,10 @@ export default function StepAvailability({ onNext, onPrev }) {
 
   const getPreviewText = () => {
     if (windows.length === 0) return null;
-    
+
     // We only preview the first window for simplicity, or combine them
     const w = windows[0];
-    
+
     let areaText = '';
     if (w.areaLabel) areaText += w.areaLabel + ' · ';
     if (w.areaTypes.includes('anywhere')) areaText += 'ที่ไหนก็ได้';
@@ -404,9 +405,9 @@ export default function StepAvailability({ onNext, onPrev }) {
       <div className="onboarding-modal-body">
         {/* Header Section */}
         <div className="onboarding-fullwidth-header">
-          <img 
-            src={ONBOARDING_STEP_ILLUSTRATIONS.yourRhythm} 
-            alt="Lowrox training availability illustration" 
+          <img
+            src={ONBOARDING_STEP_ILLUSTRATIONS.yourRhythm}
+            alt="Lowrox training availability illustration"
             onError={(e) => { e.target.style.display = 'none'; }}
           />
           <div className="onboarding-text-align">
@@ -426,7 +427,7 @@ export default function StepAvailability({ onNext, onPrev }) {
         <div className="onboarding-form-section">
           {windows.map((win, index) => (
             <div key={win.id} style={{ position: 'relative', borderBottom: index < windows.length - 1 ? '1px dashed var(--color-neutral-300)' : 'none', paddingBottom: index < windows.length - 1 ? '32px' : '0', marginBottom: index < windows.length - 1 ? '32px' : '0' }}>
-              
+
               {windows.length > 1 && (
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                   <h3 style={{ fontSize: '16px', fontWeight: '700', color: 'var(--color-brand-600)' }}>ช่วงเวลาที่ {index + 1}</h3>
@@ -476,7 +477,7 @@ export default function StepAvailability({ onNext, onPrev }) {
                       onClick={() => {
                         updateWindow(index, 'dayPreset', opt.value);
                         if (errors[index]?.days) {
-                          const ne = {...errors}; ne[index] = {...ne[index]}; delete ne[index].days; setErrors(ne);
+                          const ne = { ...errors }; ne[index] = { ...ne[index] }; delete ne[index].days; setErrors(ne);
                         }
                       }}
                     >
@@ -501,7 +502,7 @@ export default function StepAvailability({ onNext, onPrev }) {
                       {['1', '2', '3', '4', '5', '6', '7'].slice(0, win.dayPreset === 'weekends' ? 2 : (win.dayPreset === 'weekdays' ? 5 : 7)).map(num => renderPillButton(`${num} วัน`, win.weeklyFrequency === String(num), () => {
                         updateWindow(index, 'weeklyFrequency', String(num));
                         if (errors[index]?.frequency) {
-                          const ne = {...errors}; ne[index] = {...ne[index]}; delete ne[index].frequency; setErrors(ne);
+                          const ne = { ...errors }; ne[index] = { ...ne[index] }; delete ne[index].frequency; setErrors(ne);
                         }
                       }))}
                     </div>
@@ -509,7 +510,7 @@ export default function StepAvailability({ onNext, onPrev }) {
                     <div className="onboarding-helper-text" style={{ marginTop: '8px' }}>(ระบบจะช่วยกระจายวันซ้อมให้เหมาะสม)</div>
                   </div>
                 )}
-                
+
                 {win.dayPreset === 'custom' && win.selectedDays.length > 0 && (
                   <div className="onboarding-helper-text" style={{ marginTop: '8px' }}>
                     คุณมีเวลาซ้อมประมาณ {win.selectedDays.length} วันต่อสัปดาห์
@@ -555,11 +556,11 @@ export default function StepAvailability({ onNext, onPrev }) {
                 ) : (
                   <div className="onboarding-fade-in">
                     <label className="onboarding-label">ข้อจำกัดเรื่องเวลา (Optional)</label>
-                    <textarea 
-                      value={win.note} 
+                    <textarea
+                      value={win.note}
                       onChange={(e) => {
                         if (e.target.value.length <= 500) updateWindow(index, 'note', e.target.value);
-                      }} 
+                      }}
                       placeholder="เช่น สะดวกเฉพาะหลังเลิกงาน หรือเวลาอาจเปลี่ยนในแต่ละสัปดาห์"
                       rows="3"
                       style={{ width: '100%', padding: '12px', border: '1px solid var(--color-neutral-300)', borderRadius: '12px' }}
@@ -575,15 +576,15 @@ export default function StepAvailability({ onNext, onPrev }) {
           ))}
 
           {windows.length < 3 && (
-            <button 
-              type="button" 
-              onClick={addWindow} 
-              style={{ 
-                width: '100%', padding: '16px', borderRadius: '12px', 
-                border: '1px dashed var(--color-brand-400)', 
-                backgroundColor: 'var(--color-brand-50)', 
-                color: 'var(--color-brand-600)', fontWeight: 600, 
-                cursor: 'pointer', fontSize: '14px' 
+            <button
+              type="button"
+              onClick={addWindow}
+              style={{
+                width: '100%', padding: '16px', borderRadius: '12px',
+                border: '1px dashed var(--color-brand-400)',
+                backgroundColor: 'var(--color-brand-50)',
+                color: 'var(--color-brand-600)', fontWeight: 600,
+                cursor: 'pointer', fontSize: '14px'
               }}
             >
               + เพิ่มอีกช่วงเวลา
@@ -591,24 +592,25 @@ export default function StepAvailability({ onNext, onPrev }) {
           )}
 
           {getPreviewText()}
+        </div>
       </div>
-      
+
       <div className="onboarding-modal-footer">
-        <button 
-          className="btn btn-secondary btn-md" 
-          onClick={onPrev}
-          style={{ width: 'auto', marginRight: '16px' }}
-        >
-          ← ย้อนกลับ
-        </button>
-        <button 
-          className="btn btn-primary btn-md btn-cta w-full" 
-          onClick={handleNext}
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? 'กำลังบันทึก...' : 'ได้จังหวะที่ลงตัวแล้ว →'}
-        </button>
-      </div>
-    </>
-  );
+          <button
+            className="btn btn-secondary btn-md"
+            onClick={onPrev}
+            style={{ width: 'auto', marginRight: '16px' }}
+          >
+            ← ย้อนกลับ
+          </button>
+          <button
+            className="btn btn-primary btn-md btn-cta w-full"
+            onClick={handleNext}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'กำลังบันทึก...' : 'ได้จังหวะที่ลงตัวแล้ว →'}
+          </button>
+        </div>
+      </>
+      );
 }

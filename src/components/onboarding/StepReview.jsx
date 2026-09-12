@@ -18,8 +18,9 @@ export default function StepReview({ onPrev, onSubmit }) {
   };
 
   return (
-    <div className="onboarding-modal-body">
-      <div className="onboarding-fullwidth-header">
+    <>
+      <div className="onboarding-modal-body">
+        <div className="onboarding-fullwidth-header">
         <div className="onboarding-text-align">
           <h2 className="heading-2" style={{ marginBottom: '8px' }}>เช็กความพร้อมครั้งสุดท้าย</h2>
           <p className="body-md" style={{ color: 'var(--color-neutral-600)', margin: 0 }}>
@@ -117,6 +118,6 @@ export default function StepReview({ onPrev, onSubmit }) {
           {isSubmitting ? 'กำลังเตรียมโปรไฟล์ให้คุณ...' : 'ยืนยัน แล้วไปดูโปรไฟล์ →'}
         </button>
       </div>
-    </div>
+    </>
   );
 }

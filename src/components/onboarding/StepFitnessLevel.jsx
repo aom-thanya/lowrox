@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useOnboarding } from '../../context/OnboardingContext';
+import step2Img from '../../assets/onboarding/step2.png';
 
 const ONBOARDING_STEP_ILLUSTRATIONS = {
-  currentPace: "https://cdni.iconscout.com/illustration/premium/thumb/empty-state-placeholder-illustration-svg-download-png-13996746.png",
+  currentPace: step2Img,
 };
 
 const DISTANCE_OPTIONS = [
@@ -25,15 +26,15 @@ const DURATION_OPTIONS = [
 
 export default function StepFitnessLevel({ onNext, onPrev }) {
   const { formData, updateFormData } = useOnboarding();
-  
+
   // Initialize local state from context
   const [distSelect, setDistSelect] = useState(formData.fitnessLevel.distanceSelection || '');
   const [customDist, setCustomDist] = useState(formData.fitnessLevel.customDistance || '');
-  
+
   const [durSelect, setDurSelect] = useState(formData.fitnessLevel.durationSelection || '');
   const [customHrs, setCustomHrs] = useState(formData.fitnessLevel.customDurationHours || '');
   const [customMins, setCustomMins] = useState(formData.fitnessLevel.customDurationMinutes || '');
-  
+
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
@@ -70,7 +71,7 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
 
   const validate = () => {
     const newErrors = {};
-    
+
     if (!distSelect) {
       newErrors.distance = 'กรุณาเลือกระยะทางที่ใกล้เคียงที่สุด';
     } else if (distSelect === 'custom') {
@@ -122,28 +123,28 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
   const isFormValid = () => {
     if (!distSelect) return false;
     if (distSelect === 'not_tracked') return true;
-    
+
     if (distSelect === 'custom') {
       const d = Number(customDist);
       if (isNaN(d) || d <= 0 || d > 999.99) return false;
     }
-    
+
     if (!durSelect) return false;
     if (durSelect === 'unknown') return true;
     if (durSelect !== 'custom') return true;
-    
+
     const h = Number(customHrs) || 0;
     const m = Number(customMins) || 0;
     if (h === 0 && m === 0) return false;
     if (m < 0 || m > 59 || h < 0) return false;
-    
+
     return true;
   };
 
   const handleNext = async () => {
     setShowValidation(true);
     setSubmitError('');
-    
+
     if (validate()) {
       setIsSubmitting(true);
       try {
@@ -161,13 +162,13 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
   const exactDur = getExactDurationMin();
   let paceStr = '';
   let speedStr = '';
-  
+
   if (exactDist > 0 && exactDur > 0) {
     const decimalPace = exactDur / exactDist;
     const pMins = Math.floor(decimalPace);
     const pSecs = Math.round((decimalPace - pMins) * 60);
     paceStr = `${pMins}:${pSecs.toString().padStart(2, '0')}`;
-    
+
     const speed = exactDist / (exactDur / 60);
     speedStr = speed.toFixed(1);
   }
@@ -183,10 +184,10 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
       <div className="onboarding-modal-body onboarding-step-layout">
         <div className="onboarding-illustration-column" style={{ flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
           <div className="onboarding-illustration-container">
-            <img 
-              src={ONBOARDING_STEP_ILLUSTRATIONS.currentPace} 
-              alt="Lowrox current pace illustration" 
-              className="onboarding-illustration" 
+            <img
+              src={ONBOARDING_STEP_ILLUSTRATIONS.currentPace}
+              alt="Lowrox current pace illustration"
+              className="onboarding-illustration"
               onError={(e) => {
                 e.target.style.display = 'none';
               }}
@@ -208,7 +209,7 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
           {/* Question 1: Distance */}
           <div className="onboarding-form-section">
             <label className="onboarding-label">ครั้งล่าสุด คุณวิ่งได้ประมาณเท่าไร?</label>
-            
+
             <div className="choice-cards-container" style={{ flexWrap: 'wrap', marginTop: '12px' }}>
               {DISTANCE_OPTIONS.map(opt => {
                 const isSelected = distSelect === opt.value;
@@ -229,8 +230,8 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
                     {isSelected && (
                       <div className="choice-card-check">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="currentColor"/>
-                          <path d="M7.5 12L10.5 15L16.5 9" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="currentColor" />
+                          <path d="M7.5 12L10.5 15L16.5 9" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                       </div>
                     )}
@@ -247,9 +248,9 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
             <div className="onboarding-form-section" style={{ marginTop: '-16px' }}>
               <label className="onboarding-label" htmlFor="customDist">ระยะทางโดยประมาณ</label>
               <div style={{ position: 'relative', maxWidth: '200px', marginTop: '8px' }}>
-                <input 
-                  type="number" 
-                  id="customDist" 
+                <input
+                  type="number"
+                  id="customDist"
                   value={customCustomDistHandler()}
                   onChange={(e) => {
                     setCustomDist(e.target.value);
@@ -274,7 +275,7 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
               <span className="onboarding-helper-text">
                 ข้อมูลนี้ช่วยให้เรารู้ Pace คร่าวๆ ของคุณ
               </span>
-              
+
               <div className="choice-cards-container" style={{ flexWrap: 'wrap', marginTop: '12px' }}>
                 {DURATION_OPTIONS.map(opt => {
                   const isSelected = durSelect === opt.value;
@@ -294,8 +295,8 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
                       {isSelected && (
                         <div className="choice-card-check">
                           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="currentColor"/>
-                            <path d="M7.5 12L10.5 15L16.5 9" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="currentColor" />
+                            <path d="M7.5 12L10.5 15L16.5 9" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                           </svg>
                         </div>
                       )}
@@ -313,8 +314,8 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
             <div className="onboarding-form-section" style={{ marginTop: '-16px' }}>
               <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
                 <div className="onboarding-input-wrapper" style={{ width: '140px' }}>
-                  <input 
-                    type="number" 
+                  <input
+                    type="number"
                     value={customHrs}
                     onChange={(e) => {
                       setCustomHrs(e.target.value);
@@ -328,8 +329,8 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
                   <span className="onboarding-input-suffix">ชั่วโมง</span>
                 </div>
                 <div className="onboarding-input-wrapper" style={{ width: '140px' }}>
-                  <input 
-                    type="number" 
+                  <input
+                    type="number"
                     value={customMins}
                     onChange={(e) => {
                       setCustomMins(e.target.value);
@@ -384,17 +385,17 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
           )}
         </div>
       </div>
-      
+
       <div className="onboarding-modal-footer">
-        <button 
-          className="btn btn-secondary btn-md" 
+        <button
+          className="btn btn-secondary btn-md"
           onClick={onPrev}
           style={{ width: 'auto', marginRight: '16px' }}
         >
           ← ย้อนกลับ
         </button>
-        <button 
-          className="btn btn-primary btn-md btn-cta w-full" 
+        <button
+          className="btn btn-primary btn-md btn-cta w-full"
           onClick={handleNext}
           disabled={!isFormValid() || isSubmitting}
         >

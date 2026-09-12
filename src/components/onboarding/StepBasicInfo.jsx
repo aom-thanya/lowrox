@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useOnboarding } from '../../context/OnboardingContext';
+import step1Img from '../../assets/onboarding/step1.png';
 
 const ONBOARDING_STEP_ILLUSTRATIONS = {
-  aboutYou: "https://cdni.iconscout.com/illustration/premium/thumb/empty-state-placeholder-illustration-svg-download-png-13996746.png",
+  aboutYou: step1Img,
 };
 
 const GENDER_OPTIONS = [
@@ -22,7 +23,7 @@ export default function StepBasicInfo({ onNext }) {
   // Note: We use birthDate for frontend calculation, but send age to backend
   // In the future, the backend schema should support birth_date directly 
   // to calculate age dynamically and avoid stale age data.
-  
+
   useEffect(() => {
     if (birthDate !== formData.demographics.birthDate) {
       const age = calculateAge(birthDate);
@@ -44,7 +45,7 @@ export default function StepBasicInfo({ onNext }) {
 
   const validate = () => {
     const newErrors = {};
-    
+
     if (!birthDate) {
       newErrors.birthDate = 'กรุณาระบุวันเกิดของคุณ';
     } else {
@@ -56,7 +57,7 @@ export default function StepBasicInfo({ onNext }) {
         newErrors.birthDate = 'รูปแบบวันที่ไม่ถูกต้อง';
       }
     }
-    
+
     if (!formData.demographics.gender) {
       newErrors.gender = 'กรุณาเลือกข้อมูลที่ต้องการใช้เปรียบเทียบผล';
     }
@@ -70,14 +71,14 @@ export default function StepBasicInfo({ onNext }) {
   const handleNext = async () => {
     setShowValidation(true);
     setSubmitError('');
-    
+
     if (validate()) {
       setIsSubmitting(true);
-      
+
       try {
         // Mocking API call for save
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        
+
         // Simulating success
         onNext();
       } catch (error) {
@@ -93,10 +94,10 @@ export default function StepBasicInfo({ onNext }) {
       <div className="onboarding-modal-body onboarding-step-layout">
         <div className="onboarding-illustration-column" style={{ flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
           <div className="onboarding-illustration-container">
-            <img 
-              src={ONBOARDING_STEP_ILLUSTRATIONS.aboutYou} 
-              alt="Lowrox runner illustration" 
-              className="onboarding-illustration" 
+            <img
+              src={ONBOARDING_STEP_ILLUSTRATIONS.aboutYou}
+              alt="Lowrox runner illustration"
+              className="onboarding-illustration"
               onError={(e) => { e.target.style.display = 'none'; }}
             />
           </div>
@@ -118,9 +119,9 @@ export default function StepBasicInfo({ onNext }) {
 
           <div className="onboarding-form-section">
             <label className="onboarding-label" htmlFor="birthDate">คุณเกิดวันไหน?</label>
-            <input 
-              type="date" 
-              id="birthDate" 
+            <input
+              type="date"
+              id="birthDate"
               value={birthDate}
               onChange={(e) => {
                 setBirthDate(e.target.value);
@@ -134,7 +135,7 @@ export default function StepBasicInfo({ onNext }) {
             ) : (
               <span className="onboarding-helper-text">
                 {birthDate && !isNaN(new Date(birthDate).getTime()) && new Date(birthDate) <= new Date()
-                  ? `ตอนนี้คุณอายุ ${calculateAge(birthDate)} ปี` 
+                  ? `ตอนนี้คุณอายุ ${calculateAge(birthDate)} ปี`
                   : 'เราจะคำนวณอายุให้โดยอัตโนมัติ'}
               </span>
             )}
@@ -145,7 +146,7 @@ export default function StepBasicInfo({ onNext }) {
             <span className="onboarding-helper-text">
               เลือกข้อมูลที่คุณสะดวกให้เราใช้
             </span>
-            
+
             <div className="choice-cards-container">
               {GENDER_OPTIONS.map(opt => {
                 const isSelected = formData.demographics.gender === opt.value;
@@ -165,8 +166,8 @@ export default function StepBasicInfo({ onNext }) {
                     {isSelected && (
                       <div className="choice-card-check">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="currentColor"/>
-                          <path d="M7.5 12L10.5 15L16.5 9" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="currentColor" />
+                          <path d="M7.5 12L10.5 15L16.5 9" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                       </div>
                     )}
@@ -180,10 +181,10 @@ export default function StepBasicInfo({ onNext }) {
           </div>
         </div>
       </div>
-      
+
       <div className="onboarding-modal-footer">
-        <button 
-          className="btn btn-primary btn-md btn-cta w-full" 
+        <button
+          className="btn btn-primary btn-md btn-cta w-full"
           onClick={handleNext}
           disabled={!isFormValid || isSubmitting}
         >
