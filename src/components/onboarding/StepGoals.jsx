@@ -1,151 +1,706 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useOnboarding } from '../../context/OnboardingContext';
+import step3Img from '../../assets/onboarding/step3.png';
 
-// Temporary Mock Enum
-const GOAL_OPTIONS = [
-  { value: 'distance', label: 'เพิ่มระยะทางวิ่ง' },
-  { value: 'pace', label: 'วิ่งให้เร็วขึ้น (Pace)' },
-  { value: 'weight_loss', label: 'ลดน้ำหนัก' },
-  { value: 'health', label: 'เพื่อสุขภาพที่ดี' },
-  { value: 'competition', label: 'เตรียมลงแข่งขัน' }
+const ONBOARDING_STEP_ILLUSTRATIONS = {
+  nextChallenge: step3Img,
+};
+
+const GOAL_TYPES = [
+  { value: 'increase_distance', label: 'วิ่งให้ไกลขึ้น', desc: 'เพิ่มระยะทางจากที่ทำได้ตอนนี้', icon: '🏃' },
+  { value: 'improve_time', label: 'วิ่งให้เร็วขึ้น', desc: 'ทำเวลาให้ดีขึ้นในระยะเดิม', icon: '⏱️' },
+  { value: 'prepare_event', label: 'เตรียมลงแข่ง', desc: 'เตรียมตัวสำหรับสนามจริง', icon: '🏅' },
+  { value: 'buddy_event', label: 'เตรียมแข่งแบบ Buddy', desc: 'เตรียมตัวและหาคู่ร่วมทีม', icon: '👯' },
+  { value: 'improve_endurance', label: 'เพิ่มความแข็งแรงและความอึด', desc: 'พัฒนาความพร้อมโดยรวม', icon: '💪' },
+  { value: 'recommend_for_me', label: 'ให้ Lowrox ช่วยแนะนำ', desc: 'ยังไม่แน่ใจว่าจะเริ่มจากอะไร', icon: '💡' }
+];
+
+const TARGET_DATE_OPTIONS = [
+  { value: 'plus_1_month', label: 'ภายใน 1 เดือน' },
+  { value: 'plus_3_months', label: 'ภายใน 3 เดือน' },
+  { value: 'plus_6_months', label: 'ภายใน 6 เดือน' },
+  { value: 'custom_date', label: 'เลือกวันที่' },
+  { value: 'not_set', label: 'ยังไม่กำหนด' }
+];
+
+const ENDURANCE_OPTIONS = [
+  { value: 'run_longer', label: 'วิ่งได้นานขึ้น' },
+  { value: 'improve_stamina', label: 'เหนื่อยน้อยลง' },
+  { value: 'increase_strength', label: 'เพิ่มความแข็งแรง' },
+  { value: 'functional_race_readiness', label: 'เตรียมพร้อมสำหรับ Functional Race' },
+  { value: 'overall_fitness', label: 'พัฒนาโดยรวม' },
+  { value: 'unspecified', label: 'ยังไม่แน่ใจ' }
+];
+
+const EVENT_OPTIONS = [
+  // Mock System Event selection. In real app, would open a modal with events
+  { value: 'system_event', label: 'เลือกจาก Event บน Lowrox (จำลอง: BKK Night Run)' },
+  { value: 'custom_event', label: 'ระบุรายการเอง' },
+  { value: 'not_sure', label: 'ยังไม่ได้เลือกรายการ' }
+];
+
+const BUDDY_OPTIONS = [
+  { value: 'already_have_buddy', label: 'มีแล้ว' },
+  { value: 'looking_for_buddy', label: 'ยังไม่มี อยากให้ช่วยหา' },
+  { value: 'undecided', label: 'ยังไม่แน่ใจ' }
 ];
 
 export default function StepGoals({ onNext, onPrev }) {
   const { formData, updateFormData } = useOnboarding();
+  
+  // Use goals[0] for the primary challenge
+  const goalState = formData.goals[0] || {};
+  
+  const [goalType, setGoalType] = useState(goalState.goalType || '');
+  
+  // States
+  const [distSelect, setDistSelect] = useState(goalState.targetDistanceSelection || '');
+  const [customDist, setCustomDist] = useState(goalState.customTargetDistance || '');
+  const [durSelect, setDurSelect] = useState(goalState.targetDurationSelection || '');
+  const [customHrs, setCustomHrs] = useState(goalState.customTargetDurationHrs || '');
+  const [customMins, setCustomMins] = useState(goalState.customTargetDurationMins || '');
+  
+  const [eventSelect, setEventSelect] = useState(goalState.eventSelection || '');
+  const [customEvent, setCustomEvent] = useState(goalState.customEventName || '');
+  const [buddyStatus, setBuddyStatus] = useState(goalState.buddyStatus || '');
+  
+  const [enduranceFocus, setEnduranceFocus] = useState(goalState.enduranceFocus || '');
+  
+  const [dateSelect, setDateSelect] = useState(goalState.targetDateSelection || '');
+  const [customDate, setCustomDate] = useState(goalState.customTargetDate || '');
+  
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [showValidation, setShowValidation] = useState(false);
+
+  // Sync state back to context
+  useEffect(() => {
+    // Generate Target Value String
+    let targetValue = '';
+    let targetDateStr = '';
+    let recStatus = '';
+
+    // Calculate Target Date String
+    const now = new Date();
+    if (dateSelect === 'plus_1_month') {
+      now.setMonth(now.getMonth() + 1);
+      targetDateStr = now.toISOString().split('T')[0];
+    } else if (dateSelect === 'plus_3_months') {
+      now.setMonth(now.getMonth() + 3);
+      targetDateStr = now.toISOString().split('T')[0];
+    } else if (dateSelect === 'plus_6_months') {
+      now.setMonth(now.getMonth() + 6);
+      targetDateStr = now.toISOString().split('T')[0];
+    } else if (dateSelect === 'custom_date') {
+      targetDateStr = customDate;
+    } else if (eventSelect === 'system_event') {
+      // Mock system event date
+      targetDateStr = '2026-12-14';
+    }
+
+    if (goalType === 'increase_distance') {
+      const finalDist = distSelect === 'custom' ? customDist : distSelect;
+      targetValue = finalDist ? `${finalDist} km` : '';
+    } else if (goalType === 'improve_time') {
+      const finalDist = distSelect === 'custom' ? customDist : distSelect;
+      const h = Number(customHrs) || 0;
+      const m = Number(customMins) || 0;
+      const finalDur = durSelect === 'custom' ? h * 60 + m : durSelect;
+      if (finalDist && finalDur) {
+        targetValue = `${finalDist} km in ${finalDur} min`;
+      }
+    } else if (goalType === 'prepare_event' || goalType === 'buddy_event') {
+      const evName = eventSelect === 'custom_event' ? customEvent : (eventSelect === 'system_event' ? 'BKK Night Run' : 'unspecified');
+      targetValue = evName;
+      if (goalType === 'buddy_event' && buddyStatus) {
+        targetValue += `; ${buddyStatus}`;
+      }
+    } else if (goalType === 'improve_endurance') {
+      targetValue = enduranceFocus;
+    } else if (goalType === 'recommend_for_me') {
+      recStatus = 'recommendation_requested';
+    }
+
+    const updatedGoal = {
+      id: goalState.id || Date.now().toString(),
+      goalType,
+      targetValue,
+      targetDate: targetDateStr,
+      targetDistanceSelection: distSelect,
+      customTargetDistance: customDist,
+      targetDurationSelection: durSelect,
+      customTargetDurationHrs: customHrs,
+      customTargetDurationMins: customMins,
+      eventSelection: eventSelect,
+      customEventName: customEvent,
+      buddyStatus,
+      enduranceFocus,
+      targetDateSelection: dateSelect,
+      customTargetDate: customDate,
+      recommendationStatus: recStatus
+    };
+
+    updateFormData('goals', [updatedGoal]);
+  }, [goalType, distSelect, customDist, durSelect, customHrs, customMins, eventSelect, customEvent, buddyStatus, enduranceFocus, dateSelect, customDate]);
+
+  // Derived values from Step 2
+  const currentDist = Number(formData.fitnessLevel.runningDistance) || 0;
+  const currentDur = Number(formData.fitnessLevel.runningDuration) || 0;
+
+  // Recommendations for Increase Distance
+  const getRecDistances = () => {
+    if (currentDist > 0) {
+      if (currentDist < 5) return [`${currentDist + 1}`, `${currentDist + 3}`, '5', '10'];
+      if (currentDist === 5) return ['6', '8', '10'];
+      if (currentDist === 10) return ['12', '15', '21.1'];
+      return [`${currentDist + 2}`, `${currentDist + 5}`, `${currentDist + 10}`];
+    }
+    return ['3', '5', '10'];
+  };
+  const recDistances = getRecDistances();
 
   const validate = () => {
     const newErrors = {};
-    let isValid = true;
+    if (!goalType) {
+      newErrors.goalType = 'เลือก Challenge ที่อยากเริ่มก่อน';
+      setErrors(newErrors);
+      return false;
+    }
 
-    formData.goals.forEach((goal, index) => {
-      newErrors[index] = {};
-      if (!goal.goalType) {
-        newErrors[index].goalType = 'เลือกเป้าหมายที่อยากไปให้ถึงก่อนนะ';
-        isValid = false;
+    if (goalType === 'increase_distance') {
+      if (!distSelect) newErrors.distance = 'ระบุระยะทางที่อยากไปให้ถึง';
+      if (distSelect === 'custom') {
+        const d = Number(customDist);
+        if (!customDist.trim()) newErrors.distance = 'ระบุระยะทางที่อยากไปให้ถึง';
+        else if (currentDist > 0 && d <= currentDist) newErrors.distance = 'เป้าหมายควรมากกว่าระยะทางปัจจุบัน';
       }
-      if (!goal.targetValue || goal.targetValue.trim() === '') {
-        newErrors[index].targetValue = 'บอกเราอีกนิดว่าอยากทำอะไรให้สำเร็จ';
-        isValid = false;
+    }
+
+    if (goalType === 'improve_time') {
+      if (!distSelect) newErrors.distance = 'ระบุระยะทาง';
+      if (!durSelect) newErrors.duration = 'ระบุเวลาที่อยากทำให้ได้';
+      if (durSelect === 'custom') {
+        const h = Number(customHrs) || 0;
+        const m = Number(customMins) || 0;
+        const total = h * 60 + m;
+        if (total === 0) newErrors.duration = 'ระบุเวลาที่อยากทำให้ได้';
+        else if (distSelect === String(currentDist) && currentDur > 0 && total >= currentDur) {
+          newErrors.duration = 'ลองเลือกเวลาที่เร็วกว่าสถิติปัจจุบัน';
+        }
       }
-      if (!goal.targetDate) {
-        newErrors[index].targetDate = 'ลองเลือกวันที่เป้าหมายใหม่อีกครั้ง';
-        isValid = false;
+    }
+
+    if (goalType === 'prepare_event' || goalType === 'buddy_event') {
+      if (!eventSelect) newErrors.event = 'เลือกว่ามีรายการแข่งขันในใจหรือไม่';
+      if (eventSelect === 'custom_event' && !customEvent.trim()) newErrors.event = 'ระบุชื่อรายการแข่งขัน';
+    }
+
+    // Check target date for applicable goals
+    if (goalType !== 'recommend_for_me' && eventSelect !== 'system_event') {
+      if (!dateSelect) newErrors.date = 'ระบุวันที่เป้าหมาย';
+      if (dateSelect === 'custom_date') {
+        if (!customDate) newErrors.date = 'ระบุวันที่เป้าหมาย';
+        else {
+          const selectedDate = new Date(customDate);
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          if (selectedDate < today) newErrors.date = 'เลือกวันที่ตั้งแต่วันนี้เป็นต้นไป';
+        }
       }
-    });
+    }
 
     setErrors(newErrors);
-    return isValid;
+    return Object.keys(newErrors).length === 0;
   };
 
-  const handleNext = () => {
+  const isFormValid = () => {
+    if (!goalType) return false;
+    if (goalType === 'recommend_for_me') return true;
+
+    if (goalType === 'increase_distance') {
+      if (!distSelect) return false;
+      if (distSelect === 'custom' && (!customDist || (currentDist > 0 && Number(customDist) <= currentDist))) return false;
+    }
+
+    if (goalType === 'improve_time') {
+      if (!distSelect || !durSelect) return false;
+      if (durSelect === 'custom') {
+        const total = (Number(customHrs) || 0) * 60 + (Number(customMins) || 0);
+        if (total === 0) return false;
+        if (distSelect === String(currentDist) && currentDur > 0 && total >= currentDur) return false;
+      }
+    }
+
+    if (goalType === 'prepare_event' || goalType === 'buddy_event') {
+      if (!eventSelect) return false;
+      if (eventSelect === 'custom_event' && !customEvent.trim()) return false;
+    }
+    
+    if (goalType === 'improve_endurance') {
+      if (!enduranceFocus) return false;
+    }
+
+    if (eventSelect !== 'system_event') {
+      if (!dateSelect) return false;
+      if (dateSelect === 'custom_date') {
+        if (!customDate) return false;
+        const selectedDate = new Date(customDate);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (selectedDate < today) return false;
+      }
+    }
+
+    return true;
+  };
+
+  const handleNext = async () => {
+    setShowValidation(true);
+    setSubmitError('');
+    
     if (validate()) {
-      onNext();
+      setIsSubmitting(true);
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        onNext();
+      } catch (error) {
+        setSubmitError('บันทึก Challenge ไม่สำเร็จ กรุณาลองอีกครั้ง');
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
-  const updateGoal = (index, field, value) => {
-    const newGoals = [...formData.goals];
-    newGoals[index] = { ...newGoals[index], [field]: value };
-    updateFormData('goals', newGoals);
-  };
+  const renderPillButton = (label, isSelected, onClick) => (
+    <button 
+      type="button" 
+      className={`onboarding-pill-button solid ${isSelected ? 'selected' : ''}`}
+      onClick={onClick}
+    >
+      {label}
+    </button>
+  );
 
-  const addGoal = () => {
-    updateFormData('goals', [...formData.goals, { id: Date.now().toString(), goalType: '', targetValue: '', targetDate: '' }]);
-  };
-
-  const removeGoal = (index) => {
-    if (formData.goals.length > 1) {
-      const newGoals = formData.goals.filter((_, i) => i !== index);
-      updateFormData('goals', newGoals);
-    }
-  };
-
-  return (
-    <div className="onboarding-section">
-      <h2 className="display-sm" style={{ marginBottom: '8px' }}>เป้าหมายต่อไปคืออะไร?</h2>
-      <p className="body-md" style={{ color: 'var(--color-neutral-600)', marginBottom: '24px' }}>
-        ไม่ว่าจะเป็นเป้าหมายเล็กหรือใหญ่ แค่มีปลายทางที่ชัด เราก็เริ่มขยับเข้าใกล้มันได้
-      </p>
-
-      <div className="onboarding-dynamic-list" style={{ marginBottom: '24px' }}>
-        {formData.goals.map((goal, index) => (
-          <div key={goal.id} className="onboarding-card">
-            <div className="onboarding-card-header">
-              <strong style={{ fontSize: 'var(--font-size-md)' }}>เป้าหมายที่ {index + 1}</strong>
-              {formData.goals.length > 1 && (
-                <button type="button" className="btn-remove-card" onClick={() => removeGoal(index)}>
-                  ลบเป้าหมายนี้
-                </button>
-              )}
-            </div>
-
-            <div className="form-group" style={{ marginBottom: '16px' }}>
-              <label htmlFor={`goalType-${index}`}>เป้าหมายของคุณ</label>
-              <select 
-                id={`goalType-${index}`} 
-                value={goal.goalType}
-                onChange={(e) => updateGoal(index, 'goalType', e.target.value)}
-                className={errors[index]?.goalType ? 'input-error' : ''}
-              >
-                <option value="" disabled>เลือกประเภทเป้าหมาย</option>
-                {GOAL_OPTIONS.map(opt => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
-                ))}
-              </select>
-              {errors[index]?.goalType && (
-                <span className="validation-message" role="alert">{errors[index].goalType}</span>
-              )}
-            </div>
-
-            <div className="form-group" style={{ marginBottom: '16px' }}>
-              <label htmlFor={`targetValue-${index}`}>อยากทำให้ได้เท่าไร</label>
-              <input 
-                type="text" 
-                id={`targetValue-${index}`} 
-                placeholder="ระบุเป้าหมายที่ต้องการ" 
-                value={goal.targetValue}
-                onChange={(e) => updateGoal(index, 'targetValue', e.target.value)}
-                className={errors[index]?.targetValue ? 'input-error' : ''}
-              />
-              {errors[index]?.targetValue ? (
-                <span className="validation-message" role="alert">{errors[index].targetValue}</span>
-              ) : (
-                <span className="helper-text" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--color-neutral-500)', marginTop: '4px', display: 'block' }}>
-                  เขียนให้ชัดในแบบที่คุณเข้าใจ เช่น ระยะทาง เวลา หรือผลลัพธ์ที่อยากทำได้
-                </span>
-              )}
-            </div>
-
-            <div className="form-group" style={{ marginBottom: '8px' }}>
-              <label htmlFor={`targetDate-${index}`}>อยากทำให้สำเร็จภายในวันที่</label>
-              <input 
-                type="date" 
-                id={`targetDate-${index}`} 
-                value={goal.targetDate}
-                onChange={(e) => updateGoal(index, 'targetDate', e.target.value)}
-                className={errors[index]?.targetDate ? 'input-error' : ''}
-              />
-              {errors[index]?.targetDate && (
-                <span className="validation-message" role="alert">{errors[index].targetDate}</span>
-              )}
-            </div>
+  const renderIncreaseDistance = () => (
+    <div className="onboarding-fade-in">
+      <label className="onboarding-label">ครั้งต่อไปอยากวิ่งให้ถึงกี่กิโลเมตร?</label>
+      <div className="onboarding-pill-container">
+        {recDistances.map(val => renderPillButton(`${val} กม.`, distSelect === val, () => { setDistSelect(val); if (showValidation) validate(); }))}
+        {renderPillButton('ระบุเอง', distSelect === 'custom', () => { setDistSelect('custom'); if (showValidation) validate(); })}
+        {renderPillButton('ยังไม่แน่ใจ', distSelect === 'not_sure', () => { setDistSelect('not_sure'); if (showValidation) validate(); })}
+      </div>
+      
+      {distSelect === 'custom' && (
+        <div className="onboarding-form-section">
+          <div className="onboarding-input-wrapper" style={{ maxWidth: '200px' }}>
+            <input 
+              type="number" 
+              value={customDist}
+              onChange={(e) => { setCustomDist(e.target.value); if (showValidation) validate(); }}
+              className={showValidation && errors.distance ? 'input-error' : ''}
+              placeholder="เช่น 12.5"
+              step="0.01"
+              min="0.01"
+              style={{ width: '100%', paddingRight: '48px', backgroundColor: '#fff' }}
+            />
+            <span className="onboarding-input-suffix">กม.</span>
           </div>
+        </div>
+      )}
+      {showValidation && errors.distance && <div className="validation-message onboarding-error-text" role="alert">{errors.distance}</div>}
+    </div>
+  );
+
+  const renderImproveTime = () => (
+    <div className="onboarding-fade-in">
+      <label className="onboarding-label">อยากทำเวลาให้ดีขึ้นในระยะไหน?</label>
+      <div className="onboarding-pill-container">
+        {['3', '5', '10'].map(val => renderPillButton(`${val} กม.`, distSelect === val, () => { setDistSelect(val); if (showValidation) validate(); }))}
+        {renderPillButton('ระบุเอง', distSelect === 'custom', () => { setDistSelect('custom'); if (showValidation) validate(); })}
+      </div>
+
+      {distSelect === 'custom' && (
+        <div className="form-group" style={{ marginBottom: '24px' }}>
+          <div style={{ position: 'relative', maxWidth: '200px' }}>
+            <input 
+              type="number" 
+              value={customDist}
+              onChange={(e) => { setCustomDist(e.target.value); if (showValidation) validate(); }}
+              className={showValidation && errors.distance ? 'input-error' : ''}
+              placeholder="ระยะทาง"
+              step="0.01"
+              min="0.01"
+              style={{ width: '100%', paddingRight: '48px', backgroundColor: '#fff' }}
+            />
+            <span style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-neutral-500)' }}>กม.</span>
+          </div>
+        </div>
+      )}
+
+      {distSelect && (
+        <>
+          <label className="onboarding-label" style={{ marginBottom: '8px' }}>อยากทำระยะนี้ให้ได้ภายในเท่าไร?</label>
+          {distSelect === String(currentDist) && currentDur > 0 && (
+            <div className="onboarding-helper-text" style={{ marginBottom: '12px' }}>ปัจจุบัน {currentDur} นาที</div>
+          )}
+          
+          <div className="onboarding-pill-container">
+            {distSelect === String(currentDist) && currentDur > 0 && (
+              <>
+                {renderPillButton(`${Math.floor(currentDur * 0.95)} นาที`, durSelect === String(Math.floor(currentDur * 0.95)), () => { setDurSelect(String(Math.floor(currentDur * 0.95))); if (showValidation) validate(); })}
+                {renderPillButton(`${Math.floor(currentDur * 0.9)} นาที`, durSelect === String(Math.floor(currentDur * 0.9)), () => { setDurSelect(String(Math.floor(currentDur * 0.9))); if (showValidation) validate(); })}
+              </>
+            )}
+            {renderPillButton('30 นาที', durSelect === '30', () => { setDurSelect('30'); if (showValidation) validate(); })}
+            {renderPillButton('ระบุเอง', durSelect === 'custom', () => { setDurSelect('custom'); if (showValidation) validate(); })}
+          </div>
+
+          {durSelect === 'custom' && (
+            <div className="onboarding-form-section">
+              <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                <div className="onboarding-input-wrapper" style={{ width: '140px' }}>
+                  <input 
+                    type="number" 
+                    value={customHrs}
+                    onChange={(e) => { setCustomHrs(e.target.value); if (showValidation) validate(); }}
+                    className={showValidation && errors.duration ? 'input-error' : ''}
+                    placeholder="00"
+                    min="0"
+                    style={{ width: '100%', paddingRight: '64px', textAlign: 'center', backgroundColor: '#fff' }}
+                  />
+                  <span className="onboarding-input-suffix">ชั่วโมง</span>
+                </div>
+                <div className="onboarding-input-wrapper" style={{ width: '140px' }}>
+                  <input 
+                    type="number" 
+                    value={customMins}
+                    onChange={(e) => { setCustomMins(e.target.value); if (showValidation) validate(); }}
+                    className={showValidation && errors.duration ? 'input-error' : ''}
+                    placeholder="00"
+                    min="0"
+                    max="59"
+                    style={{ width: '100%', paddingRight: '48px', textAlign: 'center', backgroundColor: '#fff' }}
+                  />
+                  <span className="onboarding-input-suffix">นาที</span>
+                </div>
+              </div>
+            </div>
+          )}
+          {showValidation && errors.duration && <div className="validation-message onboarding-error-text" role="alert">{errors.duration}</div>}
+        </>
+      )}
+    </div>
+  );
+
+  const renderPrepareEvent = () => (
+    <div className="onboarding-fade-in">
+      <label className="onboarding-label">มีสนามที่อยากไปพิชิตแล้วหรือยัง?</label>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '24px' }}>
+        {EVENT_OPTIONS.map(opt => (
+          <button
+            key={opt.value}
+            type="button"
+            className={`choice-card ${eventSelect === opt.value ? 'choice-card-selected' : ''}`}
+            style={{ alignItems: 'flex-start' }}
+            onClick={() => { setEventSelect(opt.value); if (showValidation) validate(); }}
+          >
+            <div className="choice-card-label" style={{ fontSize: '14px' }}>{opt.label}</div>
+          </button>
         ))}
       </div>
 
-      <button type="button" className="btn-add-card" onClick={addGoal} style={{ marginBottom: '32px' }}>
-        + เพิ่มอีกหนึ่งเป้าหมาย
-      </button>
+      {eventSelect === 'custom_event' && (
+        <div className="onboarding-form-section">
+          <label className="onboarding-label" style={{ fontWeight: 400, marginBottom: '8px' }}>ชื่อรายการแข่งขัน</label>
+          <input 
+            type="text" 
+            value={customEvent}
+            onChange={(e) => { setCustomEvent(e.target.value); if (showValidation) validate(); }}
+            className={showValidation && errors.event ? 'input-error' : ''}
+            placeholder="เช่น HYROX Bangkok"
+            style={{ width: '100%', backgroundColor: '#fff' }}
+          />
+          {showValidation && errors.event && <div className="validation-message onboarding-error-text" role="alert">{errors.event}</div>}
+        </div>
+      )}
+    </div>
+  );
 
-      <div style={{ display: 'flex', gap: '16px' }}>
-        <button className="btn btn-secondary btn-md w-full" onClick={onPrev}>
-          ย้อนกลับ
-        </button>
-        <button className="btn btn-primary btn-md btn-cta w-full" onClick={handleNext}>
-          ล็อกเป้าหมายแล้ว ไปต่อ
-        </button>
+  const renderBuddyEvent = () => (
+    <div className="onboarding-fade-in">
+      {renderPrepareEvent()}
+      
+      {eventSelect && (
+        <>
+          <label className="onboarding-label">ตอนนี้มี Buddy แล้วหรือยัง?</label>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '24px' }}>
+            {BUDDY_OPTIONS.map(opt => (
+              <button
+                key={opt.value}
+                type="button"
+                className={`choice-card ${buddyStatus === opt.value ? 'choice-card-selected' : ''}`}
+                style={{ alignItems: 'flex-start' }}
+                onClick={() => setBuddyStatus(opt.value)}
+              >
+                <div className="choice-card-label" style={{ fontSize: '14px' }}>{opt.label}</div>
+              </button>
+            ))}
+          </div>
+          {buddyStatus === 'looking_for_buddy' && (
+            <div className="onboarding-feedback-card" style={{ marginBottom: '24px', padding: '12px 16px', backgroundColor: '#fff' }}>
+              <p style={{ fontSize: '14px', color: 'var(--color-neutral-700)' }}>
+                หลังจากรู้ Level แล้ว เราจะช่วยแนะนำ Buddy ที่มีจังหวะใกล้กับคุณ
+              </p>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+
+  const renderImproveEndurance = () => (
+    <div className="onboarding-fade-in">
+      <label className="onboarding-label">อยากพัฒนาด้านไหนมากที่สุด?</label>
+      <div className="onboarding-pill-container">
+        {ENDURANCE_OPTIONS.map(opt => renderPillButton(opt.label, enduranceFocus === opt.value, () => setEnduranceFocus(opt.value)))}
       </div>
     </div>
+  );
+
+  const renderTargetDate = () => {
+    if (!goalType || goalType === 'recommend_for_me' || eventSelect === 'system_event') return null;
+
+    if (goalType === 'increase_distance' && !distSelect) return null;
+    if (goalType === 'improve_time' && (!distSelect || !durSelect)) return null;
+    if (goalType === 'prepare_event' && !eventSelect) return null;
+    if (goalType === 'buddy_event' && !eventSelect) return null;
+    if (goalType === 'improve_endurance' && !enduranceFocus) return null;
+
+    return (
+      <div className="onboarding-fade-in" style={{ marginTop: '32px' }}>
+        <label className="onboarding-label">อยากพิชิต Challenge นี้เมื่อไร? 📅</label>
+        <div className="onboarding-pill-container">
+          {TARGET_DATE_OPTIONS.map(opt => renderPillButton(opt.label, dateSelect === opt.value, () => { setDateSelect(opt.value); if (showValidation) validate(); }))}
+        </div>
+
+        {dateSelect === 'custom_date' && (
+          <div className="onboarding-form-section">
+            <input 
+              type="date" 
+              value={customDate}
+              onChange={(e) => { setCustomDate(e.target.value); if (showValidation) validate(); }}
+              className={showValidation && errors.date ? 'input-error' : ''}
+              min={new Date().toISOString().split("T")[0]}
+              style={{ width: '100%', maxWidth: '240px', backgroundColor: '#fff' }}
+            />
+          </div>
+        )}
+        {showValidation && errors.date && <div className="validation-message onboarding-error-text" role="alert">{errors.date}</div>}
+      </div>
+    );
+  };
+
+  const getPreviewDate = () => {
+    if (eventSelect === 'system_event') return '14 ธันวาคม 2026';
+    if (dateSelect === 'plus_1_month') return 'ภายใน 1 เดือนนี้';
+    if (dateSelect === 'plus_3_months') return 'ภายใน 3 เดือนนี้';
+    if (dateSelect === 'plus_6_months') return 'ภายใน 6 เดือนนี้';
+    if (dateSelect === 'custom_date' && customDate) return `ภายใน ${customDate}`;
+    return '';
+  };
+
+  const renderFeedbackPreview = () => {
+    if (goalType === 'recommend_for_me') {
+      return (
+        <div className="onboarding-feedback-card onboarding-fade-in">
+          <h4 style={{ fontWeight: '700', marginBottom: '4px' }}>ได้เลย เดี๋ยวเราช่วยเลือกให้ ✨</h4>
+          <p style={{ fontSize: '14px', color: 'var(--color-neutral-700)' }}>
+            Lowrox จะใช้ Level จุดเริ่มต้น และเวลาที่คุณสะดวก เพื่อแนะนำ Challenge ที่เหมาะสม
+          </p>
+        </div>
+      );
+    }
+
+    if (!isFormValid()) return null;
+
+    let previewContent = null;
+    const pDate = getPreviewDate();
+
+    if (goalType === 'increase_distance') {
+      const targetVal = distSelect === 'custom' ? customDist : distSelect;
+      previewContent = (
+        <>
+          <div style={{ fontSize: '16px', fontWeight: '600', color: 'var(--color-brand-600)' }}>
+            วิ่ง {currentDist > 0 ? `จาก ${currentDist} กม. ` : ''}ให้ถึง {targetVal} กม.
+          </div>
+          {pDate && <div style={{ fontSize: '14px', marginTop: '4px', fontWeight: '600', color: 'var(--color-brand-600)' }}>{pDate}</div>}
+        </>
+      );
+    } else if (goalType === 'improve_time') {
+      const dist = distSelect === 'custom' ? customDist : distSelect;
+      const dur = durSelect === 'custom' ? ((Number(customHrs)||0)*60 + (Number(customMins)||0)) : durSelect;
+      previewContent = (
+        <>
+          <div style={{ fontSize: '16px', fontWeight: '600', color: 'var(--color-brand-600)' }}>
+            วิ่ง {dist} กม. ให้ได้ภายใน {dur} นาที
+          </div>
+          {dist === String(currentDist) && currentDur > 0 && (
+            <div style={{ fontSize: '14px', color: 'var(--color-neutral-600)', marginTop: '4px' }}>
+              ปัจจุบันประมาณ {currentDur} นาที
+            </div>
+          )}
+          {pDate && <div style={{ fontSize: '14px', marginTop: '4px', fontWeight: '600', color: 'var(--color-brand-600)' }}>{pDate}</div>}
+        </>
+      );
+    } else if (goalType === 'prepare_event' || goalType === 'buddy_event') {
+      const evName = eventSelect === 'custom_event' ? customEvent : (eventSelect === 'system_event' ? 'BKK Night Run' : '(ยังไม่ระบุ)');
+      previewContent = (
+        <>
+          <div style={{ fontSize: '16px', fontWeight: '600', color: 'var(--color-brand-600)' }}>
+            เตรียมลง {evName} {goalType === 'buddy_event' ? 'แบบ Buddy' : ''}
+          </div>
+          {goalType === 'buddy_event' && buddyStatus === 'looking_for_buddy' && (
+            <div style={{ fontSize: '14px', color: 'var(--color-neutral-600)', marginTop: '4px' }}>
+              และหา Buddy ที่ Level ใกล้กัน
+            </div>
+          )}
+          {pDate && <div style={{ fontSize: '14px', marginTop: '4px', fontWeight: '600', color: 'var(--color-brand-600)' }}>{pDate}</div>}
+        </>
+      );
+    } else if (goalType === 'improve_endurance') {
+      const lbl = ENDURANCE_OPTIONS.find(o => o.value === enduranceFocus)?.label || '';
+      previewContent = (
+        <>
+          <div style={{ fontSize: '16px', fontWeight: '600', color: 'var(--color-brand-600)' }}>
+            โฟกัส: {lbl}
+          </div>
+          {pDate && <div style={{ fontSize: '14px', marginTop: '4px', fontWeight: '600', color: 'var(--color-brand-600)' }}>{pDate}</div>}
+        </>
+      );
+    }
+
+    if (previewContent) {
+      return (
+        <div className="onboarding-feedback-card" style={{ animation: 'fadeIn 0.3s ease-out', marginTop: '24px' }}>
+          <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+            <div style={{ fontSize: '28px' }}>🎯</div>
+            <div>
+              <h4 style={{ fontSize: '13px', fontWeight: '700', color: 'var(--color-neutral-800)', marginBottom: '4px' }}>Challenge ของคุณ</h4>
+              {previewContent}
+            </div>
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const getCtaLabel = () => {
+    if (isSubmitting) return 'กำลังบันทึก...';
+    if (goalType === 'recommend_for_me') return 'ให้ Lowrox ช่วยเลือก →';
+    return 'ตั้ง Challenge นี้ →';
+  };
+
+  return (
+    <>
+      <div className="onboarding-modal-body">
+        {/* Header Section */}
+        <div className="onboarding-fullwidth-header">
+          <img 
+            src={ONBOARDING_STEP_ILLUSTRATIONS.nextChallenge} 
+            alt="Lowrox next challenge illustration" 
+            onError={(e) => { e.target.style.display = 'none'; }}
+          />
+          <div className="onboarding-text-align">
+            <h2 className="heading-2" style={{ marginBottom: '8px' }}>Challenge ต่อไปของคุณคืออะไร? 🏁</h2>
+            <p className="body-md" style={{ color: 'var(--color-neutral-600)' }}>
+              เลือกสิ่งที่อยากพิชิตที่สุดก่อน เราจะช่วยวางก้าวต่อไปให้คุณ
+            </p>
+          </div>
+        </div>
+
+        {submitError && (
+          <div className="error-message-area" role="alert" style={{ marginBottom: '24px' }}>
+            {submitError}
+          </div>
+        )}
+
+        {/* Primary Choice Cards */}
+        <div className="onboarding-choice-grid">
+          {GOAL_TYPES.map(opt => {
+            const isSelected = goalType === opt.value;
+            return (
+              <button
+                key={opt.value}
+                type="button"
+                className={`choice-card ${isSelected ? 'choice-card-selected' : ''}`}
+                style={{ 
+                  alignItems: 'center', 
+                  flexDirection: 'row', 
+                  justifyContent: 'flex-start',
+                  minHeight: '64px'
+                }}
+                onClick={() => setGoalType(opt.value)}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                  <span style={{ fontSize: '24px', marginRight: '16px' }}>{opt.icon}</span>
+                  <span className="choice-card-label" style={{ flex: 1, textAlign: 'left', fontSize: '15px', fontWeight: '600' }}>{opt.label}</span>
+                  {isSelected && (
+                    <div style={{ 
+                      width: '24px', height: '24px', borderRadius: '50%', 
+                      backgroundColor: 'var(--color-brand-500)', 
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      color: 'white', marginLeft: '12px'
+                    }}>
+                      <svg width="14" height="10" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1 5L5 9L13 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </div>
+                  )}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Conditional Questions Box */}
+        {goalType && (
+          <div className="onboarding-fade-in" style={{ 
+            backgroundColor: 'var(--color-brand-50)', 
+            borderRadius: '16px', 
+            padding: '24px'
+          }}>
+            {goalType === 'increase_distance' && renderIncreaseDistance()}
+            {goalType === 'improve_time' && renderImproveTime()}
+            {goalType === 'prepare_event' && renderPrepareEvent()}
+            {goalType === 'buddy_event' && renderBuddyEvent()}
+            {goalType === 'improve_endurance' && renderImproveEndurance()}
+            
+            {renderTargetDate()}
+          </div>
+        )}
+        
+        {/* Preview is full width outside the box, but inside the main container */}
+        {goalType && renderFeedbackPreview()}
+      </div>
+      
+      <div className="onboarding-modal-footer">
+        <button 
+          className="btn btn-secondary btn-md" 
+          onClick={onPrev}
+          style={{ width: 'auto', marginRight: '16px' }}
+        >
+          ← ย้อนกลับ
+        </button>
+        <button 
+          className="btn btn-primary btn-md btn-cta w-full" 
+          onClick={handleNext}
+          disabled={!isFormValid() || isSubmitting}
+        >
+          {getCtaLabel()}
+        </button>
+      </div>
+    </>
   );
 }

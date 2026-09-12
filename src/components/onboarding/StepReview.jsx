@@ -18,11 +18,15 @@ export default function StepReview({ onPrev, onSubmit }) {
   };
 
   return (
-    <div className="onboarding-section">
-      <h2 className="display-sm" style={{ marginBottom: '8px' }}>เช็กความพร้อมครั้งสุดท้าย</h2>
-      <p className="body-md" style={{ color: 'var(--color-neutral-600)', marginBottom: '24px' }}>
-        นี่คือข้อมูลที่จะช่วยให้เราเข้าใจคุณ ลองเช็กอีกครั้ง ถ้าทุกอย่างโอเค เราไปต่อด้วยกันเลย
-      </p>
+    <div className="onboarding-modal-body">
+      <div className="onboarding-fullwidth-header">
+        <div className="onboarding-text-align">
+          <h2 className="heading-2" style={{ marginBottom: '8px' }}>เช็กความพร้อมครั้งสุดท้าย</h2>
+          <p className="body-md" style={{ color: 'var(--color-neutral-600)', margin: 0 }}>
+            นี่คือข้อมูลที่จะช่วยให้เราเข้าใจคุณ ลองเช็กอีกครั้ง ถ้าทุกอย่างโอเค เราไปต่อด้วยกันเลย
+          </p>
+        </div>
+      </div>
 
       {error && (
         <div className="error-message-area" style={{ marginBottom: '16px' }}>
@@ -103,13 +107,14 @@ export default function StepReview({ onPrev, onSubmit }) {
           )}
         </div>
       </div>
-
-      <div style={{ display: 'flex', gap: '16px' }}>
-        <button className="btn btn-secondary btn-md w-full" onClick={onPrev} disabled={isSubmitting}>
-          ย้อนกลับ
+      </div>
+      
+      <div className="onboarding-modal-footer">
+        <button className="btn btn-secondary btn-md" onClick={onPrev} disabled={isSubmitting} style={{ width: 'auto', marginRight: '16px' }}>
+          ← ย้อนกลับ
         </button>
         <button className="btn btn-primary btn-md btn-cta w-full" onClick={handleSubmit} disabled={isSubmitting}>
-          {isSubmitting ? 'กำลังเตรียมโปรไฟล์ให้คุณ...' : 'ยืนยัน แล้วไปดูโปรไฟล์'}
+          {isSubmitting ? 'กำลังเตรียมโปรไฟล์ให้คุณ...' : 'ยืนยัน แล้วไปดูโปรไฟล์ →'}
         </button>
       </div>
     </div>

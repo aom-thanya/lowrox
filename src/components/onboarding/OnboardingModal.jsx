@@ -47,32 +47,25 @@ function OnboardingContent({ onClose, onComplete }) {
     <div className="onboarding-modal-backdrop" aria-modal="true" role="dialog" aria-labelledby="onboarding-title" aria-describedby="onboarding-desc">
       <div className="onboarding-modal-content">
         <div className="onboarding-modal-header">
-          <img src={logoImg} alt="LOWROX" className="onboarding-logo" />
-          <h1 id="onboarding-title" className="display-md" style={{ marginBottom: '8px' }}>มารู้จักคุณให้มากขึ้น</h1>
-          <p id="onboarding-desc" className="body-sm" style={{ color: 'var(--color-neutral-600)' }}>
-            กรอกข้อมูลเพื่อให้ Lowrox เข้าใจระดับ เป้าหมาย และรูปแบบการออกกำลังกายที่เหมาะกับคุณ
-          </p>
-          <div className="onboarding-progress-container">
-            <div className="onboarding-step-indicator" style={{ marginTop: '16px' }}>
-              {stepIndicators[currentStep]}
-            </div>
-            <div className="onboarding-progress-bar">
-              <div className="onboarding-progress-fill" style={{ width: `${progressPercentage}%` }}></div>
-            </div>
+          <div className="onboarding-header-top">
+            <img src={logoImg} alt="LOWROX" className="onboarding-logo" />
+            <div className="onboarding-step-text" style={{ marginRight: '32px' }}>{currentStep} / 5</div>
           </div>
-          <button className="modal-close-btn" onClick={handleCloseAttempt} aria-label="Close onboarding">
+          <div className="onboarding-progress-bar">
+            <div className="onboarding-progress-fill" style={{ width: `${progressPercentage}%` }}></div>
+          </div>
+          <button className="modal-close-btn" onClick={handleCloseAttempt} aria-label="Close onboarding" style={{ top: '24px', right: '24px' }}>
             &times;
           </button>
         </div>
 
-        <div className="onboarding-modal-body">
-          {currentStep === 1 && <StepBasicInfo onNext={nextStep} />}
-          {currentStep === 2 && <StepFitnessLevel onNext={nextStep} onPrev={prevStep} />}
-          {currentStep === 3 && <StepGoals onNext={nextStep} onPrev={prevStep} />}
-          {currentStep === 4 && <StepAvailability onNext={nextStep} onPrev={prevStep} />}
-          {currentStep === 5 && <StepHealth onNext={nextStep} onPrev={prevStep} />}
-          {currentStep === 6 && <StepReview onPrev={prevStep} onSubmit={handleSubmit} />}
-        </div>
+        {/* Steps should render their own body and footer to support sticky footers */}
+        {currentStep === 1 && <StepBasicInfo onNext={nextStep} />}
+        {currentStep === 2 && <StepFitnessLevel onNext={nextStep} onPrev={prevStep} />}
+        {currentStep === 3 && <StepGoals onNext={nextStep} onPrev={prevStep} />}
+        {currentStep === 4 && <StepAvailability onNext={nextStep} onPrev={prevStep} />}
+        {currentStep === 5 && <StepHealth onNext={nextStep} onPrev={prevStep} />}
+        {currentStep === 6 && <StepReview onPrev={prevStep} onSubmit={handleSubmit} />}
       </div>
 
       {showExitConfirm && (

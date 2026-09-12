@@ -7,7 +7,7 @@ export default function Home() {
     <div className="flex flex-col min-h-screen">
       <Header />
       
-      <main className="main-content container text-center">
+      <main className="main-content container text-center" style={{ minHeight: '80vh', padding: '120px 0' }}>
         <div className="hero-text">
           <h1 className="display-lg text-orange">Homepage</h1>
           <p className="body-lg" style={{ marginTop: 'var(--space-4)', color: 'var(--color-neutral-600)' }}>

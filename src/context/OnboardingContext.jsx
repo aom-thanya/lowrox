@@ -5,11 +5,57 @@ const OnboardingContext = createContext(null);
 export function OnboardingProvider({ children, onComplete }) {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
-    demographics: { age: '', gender: '' },
-    fitnessLevel: { runningDistance: '', runningDuration: '' },
-    goals: [{ id: Date.now().toString(), goalType: '', targetValue: '', targetDate: '' }],
+    demographics: { age: '', gender: '', birthDate: '' },
+    fitnessLevel: { 
+      runningDistance: '', 
+      runningDuration: '',
+      distanceSelection: '',
+      customDistance: '',
+      durationSelection: '',
+      customDurationHours: '',
+      customDurationMinutes: ''
+    },
+    goals: [{ 
+      id: Date.now().toString(), 
+      goalType: '', 
+      targetValue: '', 
+      targetDate: '',
+      // UI State for Step 3
+      targetDistanceSelection: '',
+      customTargetDistance: '',
+      targetDurationSelection: '',
+      customTargetDurationHrs: '',
+      customTargetDurationMins: '',
+      eventSelection: '',
+      customEventName: '',
+      buddyStatus: '',
+      goalEnduranceFocus: '', // value
+      goalTargetDateSelect: '', // 'plus_1_month', 'custom_date'
+      goalCustomDate: '', // YYYY-MM-DD
+    }],
+    // --- Step 4: Your Rhythm (UI State) ---
+    availabilityWindows: [
+      {
+        id: Date.now().toString(),
+        areaLabel: '',
+        areaTypes: [], // e.g. ['park', 'gym']
+        dayPreset: '', // 'weekdays', 'weekends', 'custom', 'flexible'
+        selectedDays: [], // e.g. ['monday', 'tuesday']
+        weeklyFrequency: '',
+        timePresets: [], // e.g. ['after_work']
+        customTimeFrom: '',
+        customTimeTo: '',
+        note: ''
+      }
+    ],
+    // --- Step 5: Safety Check (UI State) ---
+    safetyCheck: {
+      mainSelection: [], // 'none', 'injury', 'health_condition', 'medication', 'other_restriction', 'unsure'
+      concerns: [] // Array of concern details
+    },
+    // Keep original db schema mapped array just in case
     constraints: [{ id: Date.now().toString(), constraintType: '', areaType: '', areaLabel: '', dayOfWeek: '', availableFrom: '', availableTo: '', weeklyFrequency: '', note: '' }],
-    health: { hasConcerns: null, concerns: [] } // concerns items: { id, concernType, concernName, medicationName, restrictionLevel, restrictionNote, startDate, endDate, isActive }
+    health: { hasConcerns: null, concerns: [] } // Old state, can keep for now or remove if safe. Let's keep it just in case.
   });
 
   const nextStep = () => {
