@@ -4,9 +4,25 @@
 
 Create a consistent, modern, responsive visual system for Lowrox. The interface should feel energetic, sporty, fun, and approachable without becoming childish or visually noisy.
 
-This file defines visual foundations, reusable UI rules, and responsive behavior only. It does not define sitemap, page structure, product features, user flows, or business logic.
+This file defines visual foundations, reusable UI rules, responsive behavior, **as well as the high-level sitemap, page structures, and key component patterns** used across the platform.
 
-## 2. Brand Direction
+## 2. Sitemap and Page Structure
+
+### Core Sitemap
+- **Public Routes:**
+  - `/` - Landing Page / Home
+  - `/login` - Authentication Page
+- **Protected Routes (Requires Login):**
+  - `/onboarding` - Full-screen multi-step modal for new users.
+  - `/profile` - The main dashboard/profile management page.
+  - `/profile/onboarding` - The inline editor for updating onboarding answers.
+  - `/profile/settings` - Account settings.
+
+### Layout Patterns
+- **Account Layout:** A two-column structure on desktop (Sidebar navigation on the left, Content area on the right). Collapses to a mobile-friendly view on smaller screens.
+- **Onboarding Modal:** A focused, full-screen takeover view with step indicators, progress bars, and no distracting external navigation.
+
+## 3. Brand Direction
 
 - Brand personality: energetic, confident, motivating, social, modern
 - Visual tone: performance-focused but friendly
@@ -298,6 +314,17 @@ Rules:
 - Focus state: visible 2px orange ring with sufficient offset.
 - Error state: error border, message, and supporting icon; do not communicate error with color alone.
 
+### Multi-step Forms & Editors
+
+- **Component Reuse:** Form steps (e.g., Basic Info, Goals) should be designed as isolated components that can be rendered in both a wizard (Onboarding Modal) and a standard page (Profile Editor).
+- **Validation:** Multi-step inline editors must validate all encapsulated sections simultaneously upon "Save" and highlight errors clearly in their respective areas.
+- **Unsaved Changes:** Any editor page must prompt the user with a Confirm Dialog if they attempt to navigate away with unsaved modifications.
+
+### Feedback Cards & Sections
+
+- **Feedback Cards:** Use soft background colors (`--color-success-soft`, `--color-info-soft`) with a darker border to present contextual feedback or success states within forms.
+- **Add Action Buttons:** Use dashed borders with a brand color text/icon for secondary "Add more" actions (e.g., adding multiple goals or health concerns).
+
 ### Cards
 
 Card variants:
@@ -430,7 +457,7 @@ Verify text wrapping, keyboard focus, menu behavior, touch targets, overflow, im
 - Implement light surfaces as the default and use dark sections intentionally for emphasis.
 - Use orange for primary action and selected states, not for large volumes of body text.
 - Components must include default, hover, focus, active, disabled, loading, error, success, and empty states where relevant.
-- Do not invent pages, features, dashboard metrics, user roles, or workflows from this design system.
+- Do not invent pages, features, dashboard metrics, user roles, or workflows outside of the documented sitemap.
 - If product structure or content is missing, request clarification instead of creating it.
 - Keep business logic separate from presentational components.
 - Use responsive images and reserve image dimensions to prevent layout shift.
