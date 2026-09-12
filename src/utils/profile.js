@@ -12,7 +12,7 @@ export function profileFromUser(user) {
 
 export function validateProfile(profile, areas) {
   const errors = {};
-  const nameLength = characterCount(profile.displayName.trim());
+  const nameLength = characterCount((profile.displayName || '').trim());
   if (!nameLength) errors.displayName = 'กรุณากรอกชื่อที่แสดง';
   else if (nameLength < 2 || nameLength > 50) errors.displayName = 'ชื่อที่แสดงต้องมี 2–50 ตัวอักษร';
   if (characterCount(profile.bio) > 300) errors.bio = 'แนะนำตัวได้สูงสุด 300 ตัวอักษร';

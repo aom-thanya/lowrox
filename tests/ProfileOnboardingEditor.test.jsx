@@ -18,11 +18,23 @@ vi.mock('../src/context/AuthContext', () => ({
   useAuth: vi.fn()
 }));
 
+// Mock OnboardingContext to force isDirty to be true
+vi.mock('../src/context/OnboardingContext', async (importOriginal) => {
+  const React = await import('react');
+  return {
+    OnboardingProvider: ({ children }) => <>{children}</>,
+    useOnboarding: () => ({
+      formData: { mock_dirty: true },
+      updateFormData: vi.fn()
+    })
+  };
+});
+
 // Mock the step components to simulate validation triggers
 vi.mock('../src/components/onboarding/StepBasicInfo', () => ({
-  default: React.forwardRef((props, ref) => {
-    React.useImperativeHandle(ref, () => ({
-      validate: () => false // Always fail validation for this test
+  default: require('react').forwardRef((props, ref) => {
+    require('react').useImperativeHandle(ref, () => ({
+      validate: () => false // Simulate validation failure
     }));
     return <div data-testid="step-basic-info">Basic Info</div>;
   })
@@ -62,7 +74,7 @@ describe('ProfileOnboardingEditor', () => {
   const renderEditor = () => {
     useAuth.mockReturnValue({
         user: { onboardingData: {} }, 
-        loadOnboardingData: vi.fn(() => ({})),
+        loadOnboardingData: vi.fn().mockResolvedValue({}),
         saveOnboardingData
     });
     return render(

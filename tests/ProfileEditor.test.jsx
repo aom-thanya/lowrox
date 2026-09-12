@@ -9,13 +9,13 @@ import { useAuth } from '../src/context/AuthContext';
 vi.mock('../src/context/AuthContext', () => ({
   useAuth: vi.fn(() => ({
     user: { displayName: 'Test User' },
-    loadProfile: vi.fn(() => ({
+    loadProfile: vi.fn().mockResolvedValue({
       displayName: 'Test User',
       bio: 'Test Bio',
       provinceId: '1',
       districtId: '101'
-    })),
-    saveProfile: vi.fn()
+    }),
+    saveProfile: vi.fn().mockResolvedValue({})
   }))
 }));
 
@@ -75,7 +75,7 @@ describe('ProfileEditor Page', () => {
     fireEvent.change(bioInput, { target: { value: longText } });
     fireEvent.blur(bioInput);
     
-    expect(await screen.findByText(/แนะนำตัวต้องไม่เกิน 300 ตัวอักษร/)).toBeInTheDocument();
+    expect(await screen.findByText(/แนะนำตัวได้สูงสุด 300 ตัวอักษร/)).toBeInTheDocument();
     
     const saveBtn = screen.getByRole('button', { name: 'บันทึกการเปลี่ยนแปลง' });
     expect(saveBtn).toBeDisabled();
