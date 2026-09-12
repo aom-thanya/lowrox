@@ -8,6 +8,7 @@ import StepHealth from './StepHealth';
 import StepReview from './StepReview';
 import logoImg from '../../assets/logo.png';
 import ExitConfirmationModal from './ExitConfirmationModal';
+import Modal from '../common/Modal';
 
 function OnboardingContent({ onClose, onComplete }) {
   const { currentStep, nextStep, prevStep, submitForm } = useOnboarding();
@@ -44,8 +45,8 @@ function OnboardingContent({ onClose, onComplete }) {
   const progressPercentage = ((currentStep - 1) / 5) * 100;
 
   return (
-    <div className="onboarding-modal-backdrop" aria-modal="true" role="dialog" aria-labelledby="onboarding-title" aria-describedby="onboarding-desc">
-      <div className="onboarding-modal-content">
+    <>
+      <Modal isOpen={true} onClose={handleCloseAttempt} hideCloseButton={true} className="onboarding-modal-content max-w-[500px] h-[90vh] md:h-[80vh] min-h-[500px] p-0 flex flex-col">
         <div className="onboarding-modal-header">
           <div className="onboarding-header-top">
             <img src={logoImg} alt="LOWROX" className="onboarding-logo" />
@@ -66,12 +67,12 @@ function OnboardingContent({ onClose, onComplete }) {
         {currentStep === 4 && <StepAvailability onNext={nextStep} onPrev={prevStep} />}
         {currentStep === 5 && <StepHealth onNext={nextStep} onPrev={prevStep} />}
         {currentStep === 6 && <StepReview onPrev={prevStep} onSubmit={handleSubmit} />}
-      </div>
+      </Modal>
 
       {showExitConfirm && (
         <ExitConfirmationModal onConfirm={confirmExit} onCancel={cancelExit} />
       )}
-    </div>
+    </>
   );
 }
 

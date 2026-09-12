@@ -200,26 +200,58 @@ input[type="time"].input-error {
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
+  height: 100dvh;
+  background-color: var(--color-white);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  padding: 16px;
+  padding: 0;
 }
 
 .modal-content {
   position: relative;
   width: 100%;
-  max-width: 440px;
+  height: 100%;
+  max-width: none;
   background: none; /* Let the inner form handle the background if needed, or wrap it */
+}
+
+.modal-base-content {
+  background: var(--color-white);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+@media (min-width: 768px) {
+  .modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 16px;
+  }
+  .modal-content {
+    max-width: 440px;
+    height: auto;
+  }
+  .modal-base-content {
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  }
 }
 
 /* Adjust login form container when inside modal */
 .modal-content .login-form-container {
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: none;
   margin: 0;
+  height: 100%;
+  border-radius: 0;
+}
+
+@media (min-width: 768px) {
+  .modal-content .login-form-container {
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    height: auto;
+    border-radius: 16px;
+  }
 }
 
 .modal-close-btn {
