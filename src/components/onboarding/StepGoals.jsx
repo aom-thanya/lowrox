@@ -54,28 +54,28 @@ const BUDDY_OPTIONS = [
 
 export default function StepGoals({ onNext, onPrev }) {
   const { formData, updateFormData } = useOnboarding();
-  
+
   // Use goals[0] for the primary challenge
   const goalState = formData.goals[0] || {};
-  
+
   const [goalType, setGoalType] = useState(goalState.goalType || '');
-  
+
   // States
   const [distSelect, setDistSelect] = useState(goalState.targetDistanceSelection || '');
   const [customDist, setCustomDist] = useState(goalState.customTargetDistance || '');
   const [durSelect, setDurSelect] = useState(goalState.targetDurationSelection || '');
   const [customHrs, setCustomHrs] = useState(goalState.customTargetDurationHrs || '');
   const [customMins, setCustomMins] = useState(goalState.customTargetDurationMins || '');
-  
+
   const [eventSelect, setEventSelect] = useState(goalState.eventSelection || '');
   const [customEvent, setCustomEvent] = useState(goalState.customEventName || '');
   const [buddyStatus, setBuddyStatus] = useState(goalState.buddyStatus || '');
-  
+
   const [enduranceFocus, setEnduranceFocus] = useState(goalState.enduranceFocus || '');
-  
+
   const [dateSelect, setDateSelect] = useState(goalState.targetDateSelection || '');
   const [customDate, setCustomDate] = useState(goalState.customTargetDate || '');
-  
+
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
@@ -243,7 +243,7 @@ export default function StepGoals({ onNext, onPrev }) {
       if (!eventSelect) return false;
       if (eventSelect === 'custom_event' && !customEvent.trim()) return false;
     }
-    
+
     if (goalType === 'improve_endurance') {
       if (!enduranceFocus) return false;
     }
@@ -265,7 +265,7 @@ export default function StepGoals({ onNext, onPrev }) {
   const handleNext = async () => {
     setShowValidation(true);
     setSubmitError('');
-    
+
     if (validate()) {
       setIsSubmitting(true);
       try {
@@ -289,12 +289,12 @@ export default function StepGoals({ onNext, onPrev }) {
         <PillButton label="ระบุเอง" isSelected={distSelect === 'custom'} onClick={() => { setDistSelect('custom'); if (showValidation) validate(); }} />
         <PillButton label="ยังไม่แน่ใจ" isSelected={distSelect === 'not_sure'} onClick={() => { setDistSelect('not_sure'); if (showValidation) validate(); }} />
       </div>
-      
+
       {distSelect === 'custom' && (
         <FormSection error={showValidation && errors.distance}>
           <InputWrapper suffix="กม." className="max-w-[200px]">
-            <input 
-              type="number" 
+            <input
+              type="number"
               value={customDist}
               onChange={(e) => { setCustomDist(e.target.value); if (showValidation) validate(); }}
               className={`w-full pr-48 bg-white ${showValidation && errors.distance ? 'input-error' : ''}`}
@@ -319,8 +319,8 @@ export default function StepGoals({ onNext, onPrev }) {
       {distSelect === 'custom' && (
         <div className="form-group mb-24">
           <InputWrapper suffix="กม." className="max-w-[200px]">
-            <input 
-              type="number" 
+            <input
+              type="number"
               value={customDist}
               onChange={(e) => { setCustomDist(e.target.value); if (showValidation) validate(); }}
               className={`w-full pr-48 bg-white ${errors.targetGoal ? 'input-error' : ''}`}
@@ -338,7 +338,7 @@ export default function StepGoals({ onNext, onPrev }) {
           {distSelect === String(currentDist) && currentDur > 0 && (
             <div className="onboarding-helper-text mb-12">ปัจจุบัน {currentDur} นาที</div>
           )}
-          
+
           <div className="onboarding-pill-container">
             {distSelect === String(currentDist) && currentDur > 0 && (
               <>
@@ -354,8 +354,8 @@ export default function StepGoals({ onNext, onPrev }) {
             <FormSection error={showValidation && errors.duration}>
               <div className="flex gap-16 items-center">
                 <InputWrapper suffix="ชั่วโมง" className="w-[140px]">
-                  <input 
-                    type="number" 
+                  <input
+                    type="number"
                     value={customHrs}
                     onChange={(e) => { setCustomHrs(e.target.value); if (showValidation) validate(); }}
                     className={`w-full pr-64 text-center bg-white ${showValidation && errors.duration ? 'input-error' : ''}`}
@@ -364,8 +364,8 @@ export default function StepGoals({ onNext, onPrev }) {
                   />
                 </InputWrapper>
                 <InputWrapper suffix="นาที" className="w-[140px]">
-                  <input 
-                    type="number" 
+                  <input
+                    type="number"
                     value={customMins}
                     onChange={(e) => { setCustomMins(e.target.value); if (showValidation) validate(); }}
                     className={`w-full pr-48 text-center bg-white ${showValidation && errors.duration ? 'input-error' : ''}`}
@@ -403,8 +403,8 @@ export default function StepGoals({ onNext, onPrev }) {
           label="ชื่อรายการแข่งขัน"
           error={showValidation && errors.event}
         >
-          <input 
-            type="text" 
+          <input
+            type="text"
             value={customEvent}
             onChange={(e) => { setCustomEvent(e.target.value); if (showValidation) validate(); }}
             className={`w-full bg-white ${showValidation && errors.event ? 'input-error' : ''}`}
@@ -418,7 +418,7 @@ export default function StepGoals({ onNext, onPrev }) {
   const renderBuddyEvent = () => (
     <div className="onboarding-fade-in">
       {renderPrepareEvent()}
-      
+
       {eventSelect && (
         <>
           <label className="onboarding-label">ตอนนี้มี Buddy แล้วหรือยัง?</label>
@@ -473,8 +473,8 @@ export default function StepGoals({ onNext, onPrev }) {
 
         {dateSelect === 'custom_date' && (
           <FormSection error={showValidation && errors.date}>
-            <input 
-              type="date" 
+            <input
+              type="date"
               value={customDate}
               onChange={(e) => { setCustomDate(e.target.value); if (showValidation) validate(); }}
               className={`w-full max-w-[240px] bg-white ${showValidation && errors.date ? 'input-error' : ''}`}
@@ -523,7 +523,7 @@ export default function StepGoals({ onNext, onPrev }) {
       );
     } else if (goalType === 'improve_time') {
       const dist = distSelect === 'custom' ? customDist : distSelect;
-      const dur = durSelect === 'custom' ? ((Number(customHrs)||0)*60 + (Number(customMins)||0)) : durSelect;
+      const dur = durSelect === 'custom' ? ((Number(customHrs) || 0) * 60 + (Number(customMins) || 0)) : durSelect;
       previewContent = (
         <>
           <div className="text-[16px] font-semibold text-brand-600">
@@ -585,13 +585,13 @@ export default function StepGoals({ onNext, onPrev }) {
       <div className="onboarding-modal-body">
         {/* Header Section */}
         <div className="onboarding-fullwidth-header">
-          <img 
-            src={ONBOARDING_STEP_ILLUSTRATIONS.nextChallenge} 
-            alt="Lowrox next challenge illustration" 
+          <img
+            src={ONBOARDING_STEP_ILLUSTRATIONS.nextChallenge}
+            alt="Lowrox next challenge illustration"
             onError={(e) => { e.target.style.display = 'none'; }}
           />
           <div className="onboarding-text-align">
-            <h2 className="heading-2 mb-8">Challenge ต่อไปของคุณคืออะไร? 🏁</h2>
+            <h2 className="heading-2 mb-8">Challenge ต่อไปคืออะไร? 🏁</h2>
             <p className="body-md text-neutral-600">
               เลือกสิ่งที่อยากพิชิตที่สุดก่อน เราจะช่วยวางก้าวต่อไปให้คุณ
             </p>
@@ -630,24 +630,24 @@ export default function StepGoals({ onNext, onPrev }) {
             {goalType === 'prepare_event' && renderPrepareEvent()}
             {goalType === 'buddy_event' && renderBuddyEvent()}
             {goalType === 'improve_endurance' && renderImproveEndurance()}
-            
+
             {renderTargetDate()}
           </div>
         )}
-        
+
         {/* Preview is full width outside the box, but inside the main container */}
         {goalType && renderFeedbackPreview()}
       </div>
-      
+
       <div className="onboarding-modal-footer">
-        <button 
-          className="btn btn-secondary btn-sm w-auto mr-16" 
+        <button
+          className="btn btn-secondary btn-sm w-auto mr-16"
           onClick={onPrev}
         >
           ← ย้อนกลับ
         </button>
-        <button 
-          className="btn btn-primary btn-md btn-cta w-full" 
+        <button
+          className="btn btn-primary btn-md btn-cta w-full"
           onClick={handleNext}
           disabled={!isFormValid() || isSubmitting}
         >

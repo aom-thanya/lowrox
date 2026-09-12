@@ -23,8 +23,8 @@ const DISTANCE_OPTIONS = [
 
 const DURATION_OPTIONS = [
   { value: 'under_30', label: 'ต่ำกว่า 30 นาที' },
-  { value: '30_45', label: '30–45 นาที' },
-  { value: '46_60', label: '46–60 นาที' },
+  { value: '30_45', label: '30 - 45 นาที' },
+  { value: '46_60', label: '46 - 60 นาที' },
   { value: 'over_60', label: 'มากกว่า 60 นาที' },
   { value: 'custom', label: 'ระบุเวลาเอง' },
   { value: 'unknown', label: 'จำไม่ได้' }
@@ -102,7 +102,7 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
         } else if (h === 0 && m === 0) {
           newErrors.duration = 'กรุณาระบุเวลาที่ใช้';
         } else if (m < 0 || m > 59) {
-          newErrors.duration = 'กรุณาระบุนาทีระหว่าง 0–59';
+          newErrors.duration = 'กรุณาระบุนาทีระหว่าง 0 - 59';
         } else if (h < 0) {
           newErrors.duration = 'กรุณาระบุชั่วโมงที่ถูกต้อง';
         }
@@ -176,178 +176,178 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
 
   return (
     <>
-      <div className="onboarding-modal-body onboarding-step-layout">
-        <div className="onboarding-illustration-column flex flex-col items-center text-center">
-          <div className="onboarding-illustration-container">
-            <img
-              src={ONBOARDING_STEP_ILLUSTRATIONS.currentPace}
-              alt="Lowrox current pace illustration"
-              className="onboarding-illustration"
-              onError={(e) => {
-                e.target.style.display = 'none';
-              }}
-            />
-          </div>
-          <div className="onboarding-form-section mt-24">
-            <h2 className="display-sm mb-8"><Activity size={28} className="inline-block align-text-bottom mr-8" />สถิติปัจจุบันของคุณ</h2>
+      <div className="onboarding-modal-body">
+        {/* Header Section */}
+        <div className="onboarding-fullwidth-header">
+          <img
+            src={ONBOARDING_STEP_ILLUSTRATIONS.currentPace}
+            alt="Lowrox current pace illustration"
+            onError={(e) => { e.target.style.display = 'none'; }}
+          />
+          <div className="onboarding-text-align">
+            <h2 className="heading-2 mb-8 flex items-center"><Activity size={28} className="mr-8 text-brand-500" />สถิติปัจจุบันของคุณ</h2>
             <p className="body-md text-neutral-600">
               ไม่ต้องเป็นสถิติที่ดีที่สุด เลือกครั้งที่ใกล้เคียงกับคุณที่สุดได้เลย
             </p>
           </div>
+        </div>
 
-          {submitError && (
-            <div className="onboarding-error-area" role="alert">
-              {submitError}
-            </div>
-          )}
+        {submitError && (
+          <div className="onboarding-error-area" role="alert">
+            {submitError}
+          </div>
+        )}
 
-          {/* Question 1: Distance */}
+        {/* Question 1: Distance */}
+        <FormSection
+          label="ครั้งล่าสุด คุณวิ่งได้ประมาณเท่าไร?"
+          error={showValidation && errors.distance}
+        >
+          <div className="choice-cards-container flex-wrap mt-12">
+            {DISTANCE_OPTIONS.map(opt => {
+              const isSelected = distSelect === opt.value;
+              return (
+                <ChoiceCard
+                  key={opt.value}
+                  isSelected={isSelected}
+                  onClick={() => {
+                    setDistSelect(opt.value);
+                    if (opt.value === 'not_tracked') setDurSelect('');
+                    if (showValidation) validate();
+                  }}
+                  label={opt.label}
+                  className="flex-1 min-w-[120px] p-[16px_32px]"
+                />
+              );
+            })}
+          </div>
+        </FormSection>
+
+        {distSelect === 'custom' && (
           <FormSection
-            label="ครั้งล่าสุด คุณวิ่งได้ประมาณเท่าไร?"
-            error={showValidation && errors.distance}
+            label="ระยะทางโดยประมาณ"
+            htmlFor="customDist"
+            className="mt-[-16px]"
+          >
+            <InputWrapper suffix="กม." className="max-w-[200px] mt-8">
+              <input
+                type="number"
+                id="customDist"
+                value={customCustomDistHandler()}
+                onChange={(e) => {
+                  setCustomDist(e.target.value);
+                  if (showValidation) validate();
+                }}
+                placeholder="เช่น 6.5"
+                step="0.01"
+                min="0.01"
+                max="999.99"
+                className={`w-full pr-48 appearance-none ${showValidation && errors.distance ? 'input-error' : ''}`}
+              />
+            </InputWrapper>
+          </FormSection>
+        )}
+
+        {/* Question 2: Duration */}
+        {distSelect && distSelect !== 'not_tracked' && (
+          <FormSection
+            label="ใช้เวลาวิ่งไปเท่าไร? (โดยประมาณ)"
+            helperText="ข้อมูลนี้ช่วยให้เรารู้ Pace คร่าวๆ ของคุณ"
+            error={showValidation && errors.duration}
+            className="onboarding-fade-in"
           >
             <div className="choice-cards-container flex-wrap mt-12">
-              {DISTANCE_OPTIONS.map(opt => {
-                const isSelected = distSelect === opt.value;
+              {DURATION_OPTIONS.map(opt => {
+                const isSelected = durSelect === opt.value;
                 return (
                   <ChoiceCard
                     key={opt.value}
                     isSelected={isSelected}
                     onClick={() => {
-                      setDistSelect(opt.value);
-                      if (opt.value === 'not_tracked') setDurSelect('');
+                      setDurSelect(opt.value);
                       if (showValidation) validate();
                     }}
                     label={opt.label}
-                    className="flex-1 min-w-[120px] p-[16px_32px]"
+                    className="flex-[1_0_45%] min-w-[140px] p-[16px_32px]"
                   />
                 );
               })}
             </div>
           </FormSection>
+        )}
 
-          {distSelect === 'custom' && (
-            <FormSection
-              label="ระยะทางโดยประมาณ"
-              htmlFor="customDist"
-              className="mt-[-16px]"
-            >
-              <InputWrapper suffix="กม." className="max-w-[200px] mt-8">
+        {durSelect === 'custom' && (
+          <div className="onboarding-form-section mt-[-16px]">
+            <div className="flex gap-16 items-center">
+              <InputWrapper suffix="ชั่วโมง" className="w-[140px]">
                 <input
                   type="number"
-                  id="customDist"
-                  value={customCustomDistHandler()}
+                  id="customHrs"
+                  name="customHrs"
+                  value={customHrs}
                   onChange={(e) => {
-                    setCustomDist(e.target.value);
+                    setCustomHrs(e.target.value);
                     if (showValidation) validate();
                   }}
-                  placeholder="เช่น 6.5"
-                  step="0.01"
-                  min="0.01"
-                  max="999.99"
-                  className={`w-full pr-48 appearance-none ${showValidation && errors.distance ? 'input-error' : ''}`}
+                  placeholder="00"
+                  min="0"
+                  className={`w-full pr-64 appearance-none text-center ${showValidation && errors.duration ? 'input-error' : ''}`}
                 />
               </InputWrapper>
-            </FormSection>
-          )}
+              <InputWrapper suffix="นาที" className="w-[140px]">
+                <input
+                  type="number"
+                  id="customMins"
+                  name="customMins"
+                  value={customMins}
+                  onChange={(e) => {
+                    setCustomMins(e.target.value);
+                    if (showValidation) validate();
+                  }}
+                  placeholder="00"
+                  min="0"
+                  max="59"
+                  className={`w-full pr-48 appearance-none text-center ${showValidation && errors.duration ? 'input-error' : ''}`}
+                />
+              </InputWrapper>
+            </div>
+          </div>
+        )}
 
-          {/* Question 2: Duration */}
-          {distSelect && distSelect !== 'not_tracked' && (
-            <FormSection
-              label="ใช้เวลาวิ่งไปเท่าไร? (โดยประมาณ)"
-              helperText="ข้อมูลนี้ช่วยให้เรารู้ Pace คร่าวๆ ของคุณ"
-              error={showValidation && errors.duration}
-              className="onboarding-fade-in"
-            >
-              <div className="choice-cards-container flex-wrap mt-12">
-                {DURATION_OPTIONS.map(opt => {
-                  const isSelected = durSelect === opt.value;
-                  return (
-                    <ChoiceCard
-                      key={opt.value}
-                      isSelected={isSelected}
-                      onClick={() => {
-                        setDurSelect(opt.value);
-                        if (showValidation) validate();
-                      }}
-                      label={opt.label}
-                      className="flex-[1_0_45%] min-w-[140px] p-[16px_32px]"
-                    />
-                  );
-                })}
+        {/* Feedback section */}
+        {distSelect === 'not_tracked' && (
+          <FeedbackCard title="ไม่เป็นไร ทุกคนมีจุดเริ่มต้นของตัวเอง 🙌">
+            <p className="text-sm text-neutral-700">คุณสามารถทำ Quick Assessment เพื่อค้นหา Level ได้ภายหลัง</p>
+          </FeedbackCard>
+        )}
+
+        {distSelect && distSelect !== 'not_tracked' && durSelect === 'unknown' && (
+          <FeedbackCard>
+            <p className="text-sm text-neutral-700">เราบันทึกระยะทางไว้ให้แล้ว คุณสามารถเพิ่มเวลาเพื่อประเมิน Level ภายหลังได้</p>
+          </FeedbackCard>
+        )}
+
+        {exactDist > 0 && exactDur > 0 && paceStr && (
+          <FeedbackCard>
+            <h4 className="text-sm font-semibold text-neutral-600 mb-8 uppercase">จุดเริ่มต้นของคุณ</h4>
+            <div className="flex gap-24 items-baseline mb-12">
+              <div>
+                <div className="text-[28px] font-bold text-brand-600 leading-none">
+                  {exactDist} <span className="text-[16px] font-semibold">กม.</span>
+                </div>
               </div>
-            </FormSection>
-          )}
-
-          {durSelect === 'custom' && (
-            <div className="onboarding-form-section mt-[-16px]">
-              <div className="flex gap-16 items-center">
-                <InputWrapper suffix="ชั่วโมง" className="w-[140px]">
-                  <input
-                    type="number"
-                    value={customHrs}
-                    onChange={(e) => {
-                      setCustomHrs(e.target.value);
-                      if (showValidation) validate();
-                    }}
-                    placeholder="00"
-                    min="0"
-                    className={`w-full pr-64 appearance-none text-center ${showValidation && errors.duration ? 'input-error' : ''}`}
-                  />
-                </InputWrapper>
-                <InputWrapper suffix="นาที" className="w-[140px]">
-                  <input
-                    type="number"
-                    value={customMins}
-                    onChange={(e) => {
-                      setCustomMins(e.target.value);
-                      if (showValidation) validate();
-                    }}
-                    placeholder="00"
-                    min="0"
-                    max="59"
-                    className={`w-full pr-48 appearance-none text-center ${showValidation && errors.duration ? 'input-error' : ''}`}
-                  />
-                </InputWrapper>
+              <div>
+                <div className="text-[28px] font-bold text-brand-600 leading-none">
+                  {exactDur} <span className="text-[16px] font-semibold">นาที</span>
+                </div>
               </div>
             </div>
-          )}
-
-          {/* Feedback section */}
-          {distSelect === 'not_tracked' && (
-            <FeedbackCard title="ไม่เป็นไร ทุกคนมีจุดเริ่มต้นของตัวเอง 🙌">
-              <p className="text-sm text-neutral-700">คุณสามารถทำ Quick Assessment เพื่อค้นหา Level ได้ภายหลัง</p>
-            </FeedbackCard>
-          )}
-
-          {distSelect && distSelect !== 'not_tracked' && durSelect === 'unknown' && (
-            <FeedbackCard>
-              <p className="text-sm text-neutral-700">เราบันทึกระยะทางไว้ให้แล้ว คุณสามารถเพิ่มเวลาเพื่อประเมิน Level ภายหลังได้</p>
-            </FeedbackCard>
-          )}
-
-          {exactDist > 0 && exactDur > 0 && paceStr && (
-            <FeedbackCard>
-              <h4 className="text-sm font-semibold text-neutral-600 mb-8 uppercase">จุดเริ่มต้นของคุณ</h4>
-              <div className="flex gap-24 items-baseline mb-12">
-                <div>
-                  <div className="text-[28px] font-bold text-brand-600 leading-none">
-                    {exactDist} <span className="text-[16px] font-semibold">กม.</span>
-                  </div>
-                </div>
-                <div>
-                  <div className="text-[28px] font-bold text-brand-600 leading-none">
-                    {exactDur} <span className="text-[16px] font-semibold">นาที</span>
-                  </div>
-                </div>
-              </div>
-              <div className="text-[16px] font-semibold mb-8">
-                Pace โดยประมาณ {paceStr} นาที/กม. (ความเร็ว {speedStr} กม./ชม.)
-              </div>
-              <p className="text-sm text-neutral-700">ดีเลย เราเริ่มเห็นจังหวะของคุณแล้ว</p>
-            </FeedbackCard>
-          )}
-        </div>
+            <div className="text-[16px] font-semibold mb-8">
+              Pace โดยประมาณ {paceStr} นาที/กม. (ความเร็ว {speedStr} กม./ชม.)
+            </div>
+            <p className="text-sm text-neutral-700">ดีเลย เราเริ่มเห็นจังหวะของคุณแล้ว</p>
+          </FeedbackCard>
+        )}
       </div>
 
       <div className="onboarding-modal-footer">

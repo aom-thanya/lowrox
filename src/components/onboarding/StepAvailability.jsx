@@ -5,7 +5,7 @@ import PillButton from '../common/PillButton';
 import FormSection from '../common/FormSection';
 import InputWrapper from '../common/InputWrapper';
 import FeedbackCard from '../common/FeedbackCard';
-import { MapPin, Calendar as CalendarIcon, Clock, Sparkles, Check } from 'lucide-react';
+import { MapPin, Calendar as CalendarIcon, Clock, Sparkles, Check, Plus } from 'lucide-react';
 
 const ONBOARDING_STEP_ILLUSTRATIONS = {
   yourRhythm: step4Img
@@ -22,7 +22,7 @@ const AREA_OPTIONS = [
 
 const DAY_PRESETS = [
   { value: 'weekdays', label: 'วันธรรมดา' },
-  { value: 'weekends', label: 'เสาร์–อาทิตย์' },
+  { value: 'weekends', label: 'เสาร์ - อาทิตย์' },
   { value: 'custom', label: 'เลือกวันเอง' },
   { value: 'flexible', label: 'ตารางไม่แน่นอน' }
 ];
@@ -38,11 +38,11 @@ const DAYS_OF_WEEK = [
 ];
 
 const TIME_PRESETS = [
-  { value: 'early_morning', label: 'เช้าตรู่', display: '05:00–08:00' },
-  { value: 'morning', label: 'ช่วงเช้า', display: '08:00–11:00' },
-  { value: 'midday', label: 'กลางวัน', display: '11:00–14:00' },
-  { value: 'after_work', label: 'หลังเลิกงาน', display: '17:00–20:00' },
-  { value: 'evening', label: 'ช่วงค่ำ', display: '20:00–22:00' },
+  { value: 'early_morning', label: 'เช้าตรู่', display: '05:00 - 08:00' },
+  { value: 'morning', label: 'ช่วงเช้า', display: '08:00 - 11:00' },
+  { value: 'midday', label: 'กลางวัน', display: '11:00 - 14:00' },
+  { value: 'after_work', label: 'หลังเลิกงาน', display: '17:00 - 20:00' },
+  { value: 'evening', label: 'ช่วงค่ำ', display: '20:00 - 22:00' },
   { value: 'anytime', label: 'เวลาไหนก็ได้', display: 'ไม่จำกัด' }
 ];
 
@@ -589,7 +589,7 @@ export default function StepAvailability({ onNext, onPrev }) {
               className="btn btn-secondary w-full border-dashed flex items-center justify-center gap-8 mt-8"
               onClick={addWindow}
             >
-              + เพิ่มอีกช่วงเวลา
+              <Plus size={16} /> เพิ่มอีกช่วงเวลา
             </button>
           )}
 
@@ -598,20 +598,20 @@ export default function StepAvailability({ onNext, onPrev }) {
       </div>
 
       <div className="onboarding-modal-footer">
-          <button
-            className="btn btn-secondary btn-sm w-auto mr-16"
-            onClick={onPrev}
-          >
-            ← ย้อนกลับ
-          </button>
-          <button
-            className="btn btn-primary btn-md btn-cta w-full"
-            onClick={handleNext}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? 'กำลังบันทึก...' : 'ได้จังหวะที่ลงตัวแล้ว →'}
-          </button>
-        </div>
-      </>
-      );
+        <button
+          className="btn btn-secondary btn-sm w-auto mr-16"
+          onClick={onPrev}
+        >
+          ← ย้อนกลับ
+        </button>
+        <button
+          className="btn btn-primary btn-md btn-cta w-full"
+          onClick={handleNext}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? 'กำลังบันทึก...' : 'ได้จังหวะที่ลงตัวแล้ว →'}
+        </button>
+      </div>
+    </>
+  );
 }
