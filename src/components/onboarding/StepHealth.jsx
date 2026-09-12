@@ -228,7 +228,7 @@ export default function StepHealth({ onNext, onPrev }) {
   );
 
   const renderMultiSelectPills = (options, currentSelections, field) => (
-    <div className="onboarding-pill-container" style={{ gap: '8px' }}>
+    <div className="onboarding-pill-container gap-8">
       {options.map(opt => {
         const isSelected = currentSelections.includes(opt);
         return renderPillButton(opt, isSelected, () => {
@@ -268,7 +268,7 @@ export default function StepHealth({ onNext, onPrev }) {
 
             <div className="onboarding-form-section">
               <label className="onboarding-label">ตอนนี้อาการกระทบการออกกำลังกายแค่ไหน?</label>
-              <div className="onboarding-pill-container" style={{ gap: '8px' }}>
+              <div className="onboarding-pill-container gap-8">
                 {RESTRICTION_LEVELS.map(lvl => renderPillButton(lvl.label, tempConcern.restriction_level === lvl.value, () => handleTempChange('restriction_level', lvl.value)))}
               </div>
               {errors.restriction_level && <div className="validation-message onboarding-error-text" role="alert">{errors.restriction_level}</div>}
@@ -416,8 +416,8 @@ export default function StepHealth({ onNext, onPrev }) {
             onError={(e) => { e.target.style.display = 'none'; }}
           />
           <div className="onboarding-text-align">
-            <h2 className="heading-2" style={{ marginBottom: '8px' }}>ก่อนเริ่ม มีอะไรที่เราควรรู้ไหม? 🛡️</h2>
-            <p className="body-md" style={{ color: 'var(--color-neutral-600)' }}>
+            <h2 className="heading-2 mb-8">ก่อนเริ่ม มีอะไรที่เราควรรู้ไหม? 🛡️</h2>
+            <p className="body-md text-neutral-600">
               บอกเฉพาะเรื่องที่เกี่ยวข้องกับการออกกำลังกาย เพื่อให้คำแนะนำเหมาะกับคุณมากขึ้น
             </p>
           </div>

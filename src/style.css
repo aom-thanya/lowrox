@@ -162,6 +162,16 @@ input, select, textarea, button {
 .pb-16 { padding-bottom: 16px; }
 .pb-32 { padding-bottom: 32px; }
 .py-120 { padding-top: 120px; padding-bottom: 120px; }
+.p-24 { padding: 24px; }
+.p-0 { padding: 0; }
+
+/* Modal Utilities */
+.z-\[3000\] { z-index: 3000; }
+.max-w-\[400px\] { max-width: 400px; }
+.w-\[90\%\] { width: 90%; }
+.rounded-2xl { border-radius: 16px; }
+.border-none { border: none; }
+.bg-transparent { background-color: transparent; }
 
 /* Password Input */
 .password-input-wrapper { position: relative; }

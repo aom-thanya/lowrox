@@ -2,13 +2,13 @@ import React from 'react';
 
 export default function ExitConfirmationModal({ onConfirm, onCancel }) {
   return (
-    <div className="modal-backdrop" style={{ zIndex: 3000 }}>
-      <div className="onboarding-modal-body" style={{ backgroundColor: 'white', padding: '24px', borderRadius: '16px', maxWidth: '400px', width: '90%' }}>
-        <h2 className="heading-2" style={{ marginBottom: '8px' }}>จะพักก่อนใช่ไหม?</h2>
-        <p className="body-md" style={{ color: 'var(--color-neutral-600)', marginBottom: '32px' }}>
+    <div className="modal-backdrop z-[3000]">
+      <div className="onboarding-modal-body bg-white p-24 rounded-2xl max-w-[400px] w-[90%]">
+        <h2 className="heading-2 mb-8">จะพักก่อนใช่ไหม?</h2>
+        <p className="body-md text-neutral-600 mb-32">
           ข้อมูลที่ยังไม่ได้บันทึกอาจหายเมื่อออกจากหน้านี้
         </p>
-        <div className="onboarding-modal-footer" style={{ padding: 0, border: 'none', background: 'transparent' }}>
+        <div className="onboarding-modal-footer p-0 border-none bg-transparent">
           <button className="btn btn-secondary btn-md w-full" onClick={onConfirm}>
             ออกจาก Onboarding
           </button>

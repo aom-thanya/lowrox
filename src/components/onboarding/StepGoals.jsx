@@ -340,7 +340,7 @@ export default function StepGoals({ onNext, onPrev }) {
 
       {distSelect && (
         <>
-          <label className="onboarding-label" style={{ marginBottom: '8px' }}>อยากทำระยะนี้ให้ได้ภายในเท่าไร?</label>
+          <label className="onboarding-label mb-8">อยากทำระยะนี้ให้ได้ภายในเท่าไร?</label>
           {distSelect === String(currentDist) && currentDur > 0 && (
             <div className="onboarding-helper-text" style={{ marginBottom: '12px' }}>ปัจจุบัน {currentDur} นาที</div>
           )}
@@ -613,8 +613,8 @@ export default function StepGoals({ onNext, onPrev }) {
             onError={(e) => { e.target.style.display = 'none'; }}
           />
           <div className="onboarding-text-align">
-            <h2 className="heading-2" style={{ marginBottom: '8px' }}>Challenge ต่อไปของคุณคืออะไร? 🏁</h2>
-            <p className="body-md" style={{ color: 'var(--color-neutral-600)' }}>
+            <h2 className="heading-2 mb-8">Challenge ต่อไปของคุณคืออะไร? 🏁</h2>
+            <p className="body-md text-neutral-600">
               เลือกสิ่งที่อยากพิชิตที่สุดก่อน เราจะช่วยวางก้าวต่อไปให้คุณ
             </p>
           </div>

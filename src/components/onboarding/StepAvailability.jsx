@@ -411,8 +411,8 @@ export default function StepAvailability({ onNext, onPrev }) {
             onError={(e) => { e.target.style.display = 'none'; }}
           />
           <div className="onboarding-text-align">
-            <h2 className="heading-2" style={{ marginBottom: '8px' }}>จังหวะไหนเข้ากับชีวิตคุณ? 🗓️</h2>
-            <p className="body-md" style={{ color: 'var(--color-neutral-600)' }}>
+            <h2 className="heading-2 mb-8">จังหวะไหนเข้ากับชีวิตคุณ? 🗓️</h2>
+            <p className="body-md text-neutral-600">
               เลือกช่วงที่มักสะดวก เราจะช่วยหา Buddy และ Training Party ที่เข้ากับคุณ
             </p>
           </div>
@@ -458,7 +458,7 @@ export default function StepAvailability({ onNext, onPrev }) {
               {/* Area Type */}
               <div className="onboarding-form-section">
                 <label className="onboarding-label">คุณโอเคกับพื้นที่แบบไหนบ้าง?</label>
-                <div className="onboarding-pill-container" style={{ gap: '10px' }}>
+                <div className="onboarding-pill-container gap-10">
                   {AREA_OPTIONS.map(opt => renderPillButton(opt.label, win.areaTypes.includes(opt.value), () => handleAreaTypeSelect(index, opt.value), true))}
                 </div>
                 {errors[index]?.areaTypes && <div className="validation-message onboarding-error-text" role="alert">{errors[index].areaTypes}</div>}
