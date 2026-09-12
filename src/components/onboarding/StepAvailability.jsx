@@ -296,17 +296,11 @@ export default function StepAvailability({ onNext, onPrev }) {
   const renderPillButton = (label, isSelected, onClick, hasCheck = false) => (
     <button
       type="button"
-      className={`onboarding-pill-button ${isSelected ? 'selected' : ''}`}
-      style={{ flex: '0 0 auto' }}
+      className={`onboarding-pill-button ${isSelected ? 'selected' : ''} flex-none`}
       onClick={onClick}
     >
       {hasCheck && isSelected && (
-        <div style={{
-          width: '18px', height: '18px', borderRadius: '50%',
-          backgroundColor: 'var(--color-brand-500)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          color: 'white'
-        }}>
+        <div className="w-[18px] h-[18px] rounded-full bg-brand-500 flex items-center justify-center text-white">
           <svg width="10" height="8" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M1 5L5 9L13 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
@@ -319,23 +313,11 @@ export default function StepAvailability({ onNext, onPrev }) {
   const renderDayChip = (day, isSelected, onClick) => (
     <button
       type="button"
-      className={`onboarding-pill-button ${isSelected ? 'selected' : ''}`}
-      style={{
-        width: '40px',
-        height: '40px',
-        minWidth: '40px',
-        padding: '0',
-        borderRadius: '50%',
-        position: 'relative',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flex: '0 0 auto'
-      }}
+      className={`onboarding-pill-button ${isSelected ? 'selected' : ''} w-[40px] h-[40px] min-w-[40px] p-0 rounded-full relative flex items-center justify-center flex-none`}
       onClick={onClick}
     >
       {isSelected && (
-        <div style={{ position: 'absolute', top: '-4px', right: '-4px', width: '16px', height: '16px', borderRadius: '50%', backgroundColor: 'var(--color-brand-500)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
+        <div className="absolute top-[-4px] right-[-4px] w-16 h-16 rounded-full bg-brand-500 flex items-center justify-center text-white">
           <svg width="8" height="6" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M1 5L5 9L13 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
@@ -386,16 +368,16 @@ export default function StepAvailability({ onNext, onPrev }) {
     }
 
     return (
-      <div className="onboarding-feedback-card onboarding-fade-in" style={{ marginTop: '24px' }}>
-        <h4 style={{ fontSize: '13px', fontWeight: '700', color: 'var(--color-brand-600)', marginBottom: '12px' }}>
-          <span style={{ fontSize: '16px', marginRight: '6px' }}>✨</span>จังหวะที่เหมาะกับคุณ
+      <div className="onboarding-feedback-card onboarding-fade-in mt-24">
+        <h4 className="text-[13px] font-bold text-brand-600 mb-12">
+          <span className="text-[16px] mr-8">✨</span>จังหวะที่เหมาะกับคุณ
         </h4>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          {areaText && <div style={{ fontSize: '14px', color: 'var(--color-neutral-800)' }}><strong style={{ color: 'var(--color-brand-500)', marginRight: '8px' }}>📍</strong> {areaText}</div>}
-          {daysText && <div style={{ fontSize: '14px', color: 'var(--color-neutral-800)' }}><strong style={{ color: 'var(--color-brand-500)', marginRight: '8px' }}>🗓️</strong> {daysText}</div>}
-          {timeText && <div style={{ fontSize: '14px', color: 'var(--color-neutral-800)' }}><strong style={{ color: 'var(--color-brand-500)', marginRight: '8px' }}>🕒</strong> {timeText}</div>}
+        <div className="flex flex-col gap-8">
+          {areaText && <div className="text-sm text-neutral-800"><strong className="text-brand-500 mr-8">📍</strong> {areaText}</div>}
+          {daysText && <div className="text-sm text-neutral-800"><strong className="text-brand-500 mr-8">🗓️</strong> {daysText}</div>}
+          {timeText && <div className="text-sm text-neutral-800"><strong className="text-brand-500 mr-8">🕒</strong> {timeText}</div>}
         </div>
-        {freqText && <div style={{ fontSize: '14px', color: 'var(--color-neutral-500)', marginTop: '12px', borderTop: '1px solid var(--color-neutral-200)', paddingTop: '12px' }}>{freqText}</div>}
+        {freqText && <div className="text-sm text-neutral-500 mt-12 border-t border-neutral-200 pt-12">{freqText}</div>}
       </div>
     );
   };
@@ -419,38 +401,44 @@ export default function StepAvailability({ onNext, onPrev }) {
         </div>
 
         {submitError && (
-          <div className="error-message-area" role="alert" style={{ marginBottom: '24px' }}>
+          <div className="error-message-area mb-24" role="alert">
             {submitError}
           </div>
         )}
 
         <div className="onboarding-form-section">
           {windows.map((win, index) => (
-            <div key={win.id} style={{ position: 'relative', borderBottom: index < windows.length - 1 ? '1px dashed var(--color-neutral-300)' : 'none', paddingBottom: index < windows.length - 1 ? '32px' : '0', marginBottom: index < windows.length - 1 ? '32px' : '0' }}>
+            <div
+              key={win.id}
+              className={`relative ${index < windows.length - 1 ? 'border-b border-dashed border-neutral-300 pb-32 mb-32' : ''}`}
+            >
 
               {windows.length > 1 && (
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                  <h3 style={{ fontSize: '16px', fontWeight: '700', color: 'var(--color-brand-600)' }}>ช่วงเวลาที่ {index + 1}</h3>
-                  <button onClick={() => removeWindow(index)} style={{ background: 'none', border: 'none', color: 'var(--color-error-500)', fontSize: '14px', cursor: 'pointer', textDecoration: 'underline' }}>
+                <div className="flex justify-between items-center mb-16">
+                  <h3 className="text-[16px] font-bold text-brand-600">ช่วงเวลาที่ {index + 1}</h3>
+                  <button
+                    type="button"
+                    onClick={() => removeWindow(index)}
+                    className="bg-transparent border-none text-error-500 text-[14px] cursor-pointer underline"
+                  >
                     ลบ
                   </button>
                 </div>
               )}
 
               {/* Area Input */}
-              <div style={{ marginBottom: '24px' }}>
-                <label style={{ display: 'block', fontWeight: 600, marginBottom: '12px' }}>ปกติคุณสะดวกซ้อมแถวไหน? 📍</label>
-                <div style={{ position: 'relative' }}>
-                  <span style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)' }}>📌</span>
+              <div className="mb-24">
+                <label className="block font-semibold mb-12">ปกติคุณสะดวกซ้อมแถวไหน? 📍</label>
+                <div className="relative">
+                  <span className="absolute left-16 top-1/2 -translate-y-1/2">📌</span>
                   <input
                     type="text"
                     value={win.areaLabel}
                     onChange={(e) => updateWindow(index, 'areaLabel', e.target.value)}
-                    placeholder="ค้นหาเขต ย่าน หรือสถานที่ใกล้คุณ"
-                    style={{ width: '100%', padding: '12px 16px 12px 48px', backgroundColor: '#fff' }}
+                    className={`w-full p-[12px_16px_12px_48px] bg-white ${showValidation && !win.area ? 'input-error' : ''}`}
                   />
                 </div>
-                <div className="onboarding-helper-text" style={{ marginTop: '8px' }}>
+                <div className="onboarding-helper-text mt-8">
                   ใส่ชื่อย่านเช่น สวนลุมพินี, อารีย์, บางนา หรือเว้นว่างหากยังไม่กำหนด
                 </div>
               </div>
@@ -467,13 +455,12 @@ export default function StepAvailability({ onNext, onPrev }) {
               {/* Day Selection */}
               <div className="onboarding-form-section">
                 <label className="onboarding-label">วันไหนที่คุณมักสะดวกซ้อม?</label>
-                <div className="onboarding-pill-container" style={{ gap: '10px', marginBottom: '16px' }}>
+                <div className="onboarding-pill-container gap-[10px] mb-16">
                   {DAY_PRESETS.map(opt => (
                     <button
                       key={opt.value}
                       type="button"
-                      className={`choice-card ${win.dayPreset === opt.value ? 'choice-card-selected' : ''}`}
-                      style={{ padding: '10px 16px', flex: '0 0 auto', minHeight: '44px' }}
+                      className={`onboarding-pill-button p-[10px_16px] flex-none min-h-[44px] ${win.dayPreset === opt.value ? 'selected' : ''}`}
                       onClick={() => {
                         updateWindow(index, 'dayPreset', opt.value);
                         if (errors[index]?.days) {
@@ -481,24 +468,24 @@ export default function StepAvailability({ onNext, onPrev }) {
                         }
                       }}
                     >
-                      <div className="choice-card-label" style={{ fontSize: '14px' }}>{opt.label}</div>
+                      {opt.label}
                     </button>
                   ))}
                 </div>
                 {errors[index]?.days && <div className="validation-message onboarding-error-text" role="alert">{errors[index].days}</div>}
 
                 {win.dayPreset === 'custom' && (
-                  <div className="onboarding-fade-in" style={{ marginBottom: '16px' }}>
-                    <div className="onboarding-pill-container" style={{ gap: '12px' }}>
+                  <div className="onboarding-fade-in mb-16">
+                    <div className="onboarding-pill-container gap-12">
                       {DAYS_OF_WEEK.map(day => renderDayChip(day, win.selectedDays.includes(day.value), () => handleDaySelect(index, day.value)))}
                     </div>
                   </div>
                 )}
 
                 {(win.dayPreset === 'weekdays' || win.dayPreset === 'weekends' || win.dayPreset === 'flexible') && (
-                  <div className="onboarding-fade-in" style={{ marginTop: '16px', backgroundColor: 'var(--color-neutral-50)', padding: '16px', borderRadius: '12px' }}>
-                    <label className="onboarding-label" style={{ fontSize: '14px', marginBottom: '12px' }}>อยากซ้อมประมาณกี่วันต่อสัปดาห์?</label>
-                    <div className="onboarding-pill-container" style={{ gap: '8px' }}>
+                  <div className="onboarding-fade-in mt-16 bg-neutral-50 p-16 rounded-xl">
+                    <label className="onboarding-label text-sm mb-12">อยากซ้อมประมาณกี่วันต่อสัปดาห์?</label>
+                    <div className="onboarding-pill-container gap-8">
                       {['1', '2', '3', '4', '5', '6', '7'].slice(0, win.dayPreset === 'weekends' ? 2 : (win.dayPreset === 'weekdays' ? 5 : 7)).map(num => renderPillButton(`${num} วัน`, win.weeklyFrequency === String(num), () => {
                         updateWindow(index, 'weeklyFrequency', String(num));
                         if (errors[index]?.frequency) {
@@ -507,12 +494,12 @@ export default function StepAvailability({ onNext, onPrev }) {
                       }))}
                     </div>
                     {errors[index]?.frequency && <div className="validation-message onboarding-error-text" role="alert">{errors[index].frequency}</div>}
-                    <div className="onboarding-helper-text" style={{ marginTop: '8px' }}>(ระบบจะช่วยกระจายวันซ้อมให้เหมาะสม)</div>
+                    <div className="onboarding-helper-text mt-8">(ระบบจะช่วยกระจายวันซ้อมให้เหมาะสม)</div>
                   </div>
                 )}
 
                 {win.dayPreset === 'custom' && win.selectedDays.length > 0 && (
-                  <div className="onboarding-helper-text" style={{ marginTop: '8px' }}>
+                  <div className="onboarding-helper-text mt-8">
                     คุณมีเวลาซ้อมประมาณ {win.selectedDays.length} วันต่อสัปดาห์
                   </div>
                 )}
@@ -521,36 +508,36 @@ export default function StepAvailability({ onNext, onPrev }) {
               {/* Time Selection */}
               <div className="onboarding-form-section">
                 <label className="onboarding-label">ช่วงไหนที่มักสะดวก?</label>
-                <div className="onboarding-pill-container" style={{ gap: '10px', marginBottom: '16px' }}>
+                <div className="onboarding-pill-container gap-[10px] mb-16">
                   {TIME_PRESETS.map(opt => renderPillButton(opt.label, win.timePresets.includes(opt.value), () => handleTimeSelect(index, opt.value), true))}
                   {renderPillButton('กำหนดเวลาเอง', win.timePresets.includes('custom'), () => handleTimeSelect(index, 'custom'), true)}
                 </div>
                 {errors[index]?.times && <div className="validation-message onboarding-error-text" role="alert">{errors[index].times}</div>}
 
                 {win.timePresets.includes('custom') && (
-                  <div className="onboarding-fade-in" style={{ backgroundColor: 'var(--color-brand-50)', padding: '16px', borderRadius: '12px' }}>
-                    <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                  <div className="onboarding-fade-in bg-brand-50 p-16 rounded-xl">
+                    <div className="flex gap-16 items-center">
                       <div>
-                        <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: 'var(--color-neutral-600)', marginBottom: '4px' }}>ตั้งแต่เวลา</label>
-                        <input type="time" value={win.customTimeFrom} onChange={(e) => updateWindow(index, 'customTimeFrom', e.target.value)} style={{ padding: '10px 16px', borderRadius: '8px', border: '1px solid var(--color-neutral-300)' }} />
+                        <label className="block text-[12px] font-semibold text-neutral-600 mb-4">ตั้งแต่เวลา</label>
+                        <input type="time" value={win.customTimeFrom} onChange={(e) => updateWindow(index, 'customTimeFrom', e.target.value)} className="p-[10px_16px] rounded-lg border border-neutral-300" />
                       </div>
                       <div>
-                        <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: 'var(--color-neutral-600)', marginBottom: '4px' }}>ถึงเวลา</label>
-                        <input type="time" value={win.customTimeTo} onChange={(e) => updateWindow(index, 'customTimeTo', e.target.value)} style={{ padding: '10px 16px', borderRadius: '8px', border: '1px solid var(--color-neutral-300)' }} />
+                        <label className="block text-[12px] font-semibold text-neutral-600 mb-4">ถึงเวลา</label>
+                        <input type="time" value={win.customTimeTo} onChange={(e) => updateWindow(index, 'customTimeTo', e.target.value)} className="p-[10px_16px] rounded-lg border border-neutral-300" />
                       </div>
                     </div>
                     {errors[index]?.customTimeFrom && <div className="validation-message onboarding-error-text" role="alert">{errors[index].customTimeFrom}</div>}
                     {errors[index]?.customTimeTo && <div className="validation-message onboarding-error-text" role="alert">{errors[index].customTimeTo}</div>}
                     {errors[index]?.customTimeOrder && <div className="validation-message onboarding-error-text" role="alert">{errors[index].customTimeOrder}</div>}
-                    <div className="onboarding-helper-text" style={{ marginTop: '8px' }}>หากเวลาข้ามเที่ยงคืน คุณสามารถเพิ่มภายหลังได้ใน Profile</div>
+                    <div className="onboarding-helper-text mt-8">หากเวลาข้ามเที่ยงคืน คุณสามารถเพิ่มภายหลังได้ใน Profile</div>
                   </div>
                 )}
               </div>
 
               {/* Note */}
-              <div className="onboarding-form-section" style={{ marginBottom: '16px' }}>
+              <div className="onboarding-form-section mb-16">
                 {!showNote[index] ? (
-                  <button type="button" onClick={() => setShowNote({ ...showNote, [index]: true })} style={{ background: 'none', border: 'none', color: 'var(--color-brand-600)', fontWeight: 600, cursor: 'pointer', fontSize: '14px', textDecoration: 'underline' }}>
+                  <button type="button" onClick={() => setShowNote({ ...showNote, [index]: true })} className="bg-transparent border-none text-brand-600 font-semibold cursor-pointer text-sm underline">
                     มีข้อจำกัดเรื่องเวลาเพิ่มเติมไหม?
                   </button>
                 ) : (
@@ -562,10 +549,9 @@ export default function StepAvailability({ onNext, onPrev }) {
                         if (e.target.value.length <= 500) updateWindow(index, 'note', e.target.value);
                       }}
                       placeholder="เช่น สะดวกเฉพาะหลังเลิกงาน หรือเวลาอาจเปลี่ยนในแต่ละสัปดาห์"
-                      rows="3"
-                      style={{ width: '100%', padding: '12px', border: '1px solid var(--color-neutral-300)', borderRadius: '12px' }}
+                      className={`w-full p-12 border rounded-xl ${win.note.length > 400 ? 'border-error-500' : 'border-neutral-300'}`}
                     />
-                    <div style={{ textAlign: 'right', fontSize: '12px', color: win.note.length > 400 ? 'var(--color-error-500)' : 'var(--color-neutral-500)', marginTop: '4px' }}>
+                    <div className={`text-right text-[12px] mt-4 ${win.note.length > 400 ? 'text-error-500' : 'text-neutral-500'}`}>
                       {win.note.length}/500
                     </div>
                   </div>
@@ -578,14 +564,8 @@ export default function StepAvailability({ onNext, onPrev }) {
           {windows.length < 3 && (
             <button
               type="button"
+              className="btn btn-secondary w-full border-dashed flex items-center justify-center gap-8 mt-8"
               onClick={addWindow}
-              style={{
-                width: '100%', padding: '16px', borderRadius: '12px',
-                border: '1px dashed var(--color-brand-400)',
-                backgroundColor: 'var(--color-brand-50)',
-                color: 'var(--color-brand-600)', fontWeight: 600,
-                cursor: 'pointer', fontSize: '14px'
-              }}
             >
               + เพิ่มอีกช่วงเวลา
             </button>
@@ -597,9 +577,8 @@ export default function StepAvailability({ onNext, onPrev }) {
 
       <div className="onboarding-modal-footer">
           <button
-            className="btn btn-secondary btn-md"
+            className="btn btn-secondary btn-sm w-auto mr-16"
             onClick={onPrev}
-            style={{ width: 'auto', marginRight: '16px' }}
           >
             ← ย้อนกลับ
           </button>

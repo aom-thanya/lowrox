@@ -30,7 +30,7 @@ export default function StepReview({ onPrev, onSubmit }) {
       </div>
 
       {error && (
-        <div className="error-message-area" style={{ marginBottom: '16px' }}>
+        <div className="error-message-area mb-16">
           <strong>สะดุดนิดหน่อย แต่ข้อมูลยังอยู่ครบ</strong><br/>
           {error}
         </div>
@@ -39,10 +39,10 @@ export default function StepReview({ onPrev, onSubmit }) {
       {/* Basic Info */}
       <div className="onboarding-card mb-16">
         <div className="onboarding-card-header mb-8">
-          <strong style={{ fontSize: 'var(--font-size-md)' }}>ข้อมูลพื้นฐาน</strong>
-          <button type="button" className="btn-remove-card" style={{ color: 'var(--color-primary-600)' }} onClick={() => goToStep(1)}>แก้ไข</button>
+          <strong className="text-[var(--font-size-md)]">ข้อมูลพื้นฐาน</strong>
+          <button type="button" className="btn-remove-card text-brand-600" onClick={() => goToStep(1)}>แก้ไข</button>
         </div>
-        <div style={{ fontSize: 'var(--font-size-sm)' }}>
+        <div className="text-[var(--font-size-sm)]">
           <p><strong>อายุ:</strong> {formData.demographics.age}</p>
           <p><strong>เพศ:</strong> {formData.demographics.gender}</p>
         </div>
@@ -51,10 +51,10 @@ export default function StepReview({ onPrev, onSubmit }) {
       {/* Fitness Level */}
       <div className="onboarding-card mb-16">
         <div className="onboarding-card-header mb-8">
-          <strong style={{ fontSize: 'var(--font-size-md)' }}>จุดเริ่มต้นของคุณ</strong>
-          <button type="button" className="btn-remove-card" style={{ color: 'var(--color-primary-600)' }} onClick={() => goToStep(2)}>แก้ไข</button>
+          <strong className="text-[var(--font-size-md)]">จุดเริ่มต้นของคุณ</strong>
+          <button type="button" className="btn-remove-card text-brand-600" onClick={() => goToStep(2)}>แก้ไข</button>
         </div>
-        <div style={{ fontSize: 'var(--font-size-sm)' }}>
+        <div className="text-[var(--font-size-sm)]">
           <p><strong>ระยะทาง:</strong> {formData.fitnessLevel.runningDistance} กม.</p>
           <p><strong>เวลา:</strong> {formData.fitnessLevel.runningDuration} นาที</p>
         </div>
@@ -63,12 +63,12 @@ export default function StepReview({ onPrev, onSubmit }) {
       {/* Goals */}
       <div className="onboarding-card mb-16">
         <div className="onboarding-card-header mb-8">
-          <strong style={{ fontSize: 'var(--font-size-md)' }}>เป้าหมายที่อยากไปให้ถึง</strong>
-          <button type="button" className="btn-remove-card" style={{ color: 'var(--color-primary-600)' }} onClick={() => goToStep(3)}>แก้ไข</button>
+          <strong className="text-[var(--font-size-md)]">เป้าหมายที่อยากไปให้ถึง</strong>
+          <button type="button" className="btn-remove-card text-brand-600" onClick={() => goToStep(3)}>แก้ไข</button>
         </div>
-        <div style={{ fontSize: 'var(--font-size-sm)' }}>
+        <div className="text-[var(--font-size-sm)]">
           {formData.goals.map((g, i) => (
-            <div key={g.id} style={{ marginBottom: '8px' }}>
+            <div key={g.id} className="mb-8">
               <p><strong>เป้าหมาย {i+1}:</strong> {g.goalType} - {g.targetValue} (ภายใน {g.targetDate})</p>
             </div>
           ))}
@@ -78,12 +78,12 @@ export default function StepReview({ onPrev, onSubmit }) {
       {/* Constraints */}
       <div className="onboarding-card mb-16">
         <div className="onboarding-card-header mb-8">
-          <strong style={{ fontSize: 'var(--font-size-md)' }}>พื้นที่และเวลาที่สะดวก</strong>
-          <button type="button" className="btn-remove-card" style={{ color: 'var(--color-primary-600)' }} onClick={() => goToStep(4)}>แก้ไข</button>
+          <strong className="text-[var(--font-size-md)]">พื้นที่และเวลาที่สะดวก</strong>
+          <button type="button" className="btn-remove-card text-brand-600" onClick={() => goToStep(4)}>แก้ไข</button>
         </div>
-        <div style={{ fontSize: 'var(--font-size-sm)' }}>
+        <div className="text-[var(--font-size-sm)]">
           {formData.constraints.map((c, i) => (
-            <div key={c.id} style={{ marginBottom: '8px' }}>
+            <div key={c.id} className="mb-8">
               <p><strong>ช่วงที่ {i+1}:</strong> {c.areaLabel} ({c.dayOfWeek} {c.availableFrom}-{c.availableTo})</p>
             </div>
           ))}
@@ -93,15 +93,15 @@ export default function StepReview({ onPrev, onSubmit }) {
       {/* Health */}
       <div className="onboarding-card mb-32">
         <div className="onboarding-card-header mb-8">
-          <strong style={{ fontSize: 'var(--font-size-md)' }}>ข้อมูลสุขภาพ</strong>
-          <button type="button" className="btn-remove-card" style={{ color: 'var(--color-primary-600)' }} onClick={() => goToStep(5)}>แก้ไข</button>
+          <strong className="text-[var(--font-size-md)]">ข้อมูลสุขภาพ</strong>
+          <button type="button" className="btn-remove-card text-brand-600" onClick={() => goToStep(5)}>แก้ไข</button>
         </div>
-        <div style={{ fontSize: 'var(--font-size-sm)' }}>
+        <div className="text-[var(--font-size-sm)]">
           {formData.health.hasConcerns === false ? (
             <p>ไม่มีข้อมูลสุขภาพที่ต้องระบุ</p>
           ) : (
             formData.health.concerns.map((h, i) => (
-              <div key={h.id} style={{ marginBottom: '8px' }}>
+              <div key={h.id} className="mb-8">
                 <p><strong>อาการที่ {i+1}:</strong> {h.concernName} ({h.concernType})</p>
               </div>
             ))
@@ -111,7 +111,7 @@ export default function StepReview({ onPrev, onSubmit }) {
       </div>
       
       <div className="onboarding-modal-footer">
-        <button className="btn btn-secondary btn-md" onClick={onPrev} disabled={isSubmitting} style={{ width: 'auto', marginRight: '16px' }}>
+        <button className="btn btn-secondary btn-sm w-auto mr-16" onClick={onPrev} disabled={isSubmitting}>
           ← ย้อนกลับ
         </button>
         <button className="btn btn-primary btn-md btn-cta w-full" onClick={handleSubmit} disabled={isSubmitting}>
