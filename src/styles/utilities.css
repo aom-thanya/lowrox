@@ -119,3 +119,17 @@
 .mr-32 { margin-right: 32px; }
 .top-\[24px\] { top: 24px; }
 .right-\[24px\] { right: 24px; }
+.p-\[16px_32px\] { padding: 16px 32px; }
+.mt-\[-16px\] { margin-top: -16px; }
+.relative { position: relative; }
+.max-w-\[200px\] { max-width: 200px; }
+.pr-48 { padding-right: 48px; }
+.pr-64 { padding-right: 64px; }
+.appearance-none { appearance: none; }
+.flex-\[1_0_45\%\] { flex: 1 0 45%; }
+.w-\[140px\] { width: 140px; }
+.uppercase { text-transform: uppercase; }
+.items-baseline { align-items: baseline; }
+.leading-none { line-height: 1; }
+.text-\[28px\] { font-size: 28px; }
+.gap-24 { gap: 24px; }

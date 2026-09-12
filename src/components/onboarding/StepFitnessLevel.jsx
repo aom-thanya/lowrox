@@ -210,15 +210,14 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
           <div className="onboarding-form-section">
             <label className="onboarding-label">ครั้งล่าสุด คุณวิ่งได้ประมาณเท่าไร?</label>
 
-            <div className="choice-cards-container" style={{ flexWrap: 'wrap', marginTop: '12px' }}>
+            <div className="choice-cards-container flex-wrap mt-12">
               {DISTANCE_OPTIONS.map(opt => {
                 const isSelected = distSelect === opt.value;
                 return (
                   <button
                     key={opt.value}
                     type="button"
-                    className={`choice-card ${isSelected ? 'choice-card-selected' : ''}`}
-                    style={{ flex: '1 0 30%', minWidth: '120px', padding: '16px 32px' }}
+                    className={`choice-card flex-1 min-w-[120px] p-[16px_32px] ${isSelected ? 'choice-card-selected' : ''}`}
                     onClick={() => {
                       setDistSelect(opt.value);
                       if (opt.value === 'not_tracked') setDurSelect('');
@@ -226,7 +225,7 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
                     }}
                     aria-pressed={isSelected}
                   >
-                    <div className="choice-card-label" style={{ fontSize: '14px' }}>{opt.label}</div>
+                    <div className="choice-card-label text-sm">{opt.label}</div>
                     {isSelected && (
                       <div className="choice-card-check">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -245,9 +244,9 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
           </div>
 
           {distSelect === 'custom' && (
-            <div className="onboarding-form-section" style={{ marginTop: '-16px' }}>
+            <div className="onboarding-form-section mt-[-16px]">
               <label className="onboarding-label" htmlFor="customDist">ระยะทางโดยประมาณ</label>
-              <div style={{ position: 'relative', maxWidth: '200px', marginTop: '8px' }}>
+              <div className="relative max-w-[200px] mt-8">
                 <input
                   type="number"
                   id="customDist"
@@ -261,7 +260,7 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
                   step="0.01"
                   min="0.01"
                   max="999.99"
-                  style={{ width: '100%', paddingRight: '48px', appearance: 'none' }}
+                  className="w-full pr-48 appearance-none"
                 />
                 <span className="onboarding-input-suffix">กม.</span>
               </div>
@@ -276,22 +275,21 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
                 ข้อมูลนี้ช่วยให้เรารู้ Pace คร่าวๆ ของคุณ
               </span>
 
-              <div className="choice-cards-container" style={{ flexWrap: 'wrap', marginTop: '12px' }}>
+              <div className="choice-cards-container flex-wrap mt-12">
                 {DURATION_OPTIONS.map(opt => {
                   const isSelected = durSelect === opt.value;
                   return (
                     <button
                       key={opt.value}
                       type="button"
-                      className={`choice-card ${isSelected ? 'choice-card-selected' : ''}`}
-                      style={{ flex: '1 0 45%', minWidth: '140px', padding: '16px 32px' }}
+                      className={`choice-card flex-[1_0_45%] min-w-[140px] p-[16px_32px] ${isSelected ? 'choice-card-selected' : ''}`}
                       onClick={() => {
                         setDurSelect(opt.value);
                         if (showValidation) validate();
                       }}
                       aria-pressed={isSelected}
                     >
-                      <div className="choice-card-label" style={{ fontSize: '14px' }}>{opt.label}</div>
+                      <div className="choice-card-label text-sm">{opt.label}</div>
                       {isSelected && (
                         <div className="choice-card-check">
                           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -311,9 +309,9 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
           )}
 
           {durSelect === 'custom' && (
-            <div className="onboarding-form-section" style={{ marginTop: '-16px' }}>
-              <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-                <div className="onboarding-input-wrapper" style={{ width: '140px' }}>
+            <div className="onboarding-form-section mt-[-16px]">
+              <div className="flex gap-16 items-center">
+                <div className="onboarding-input-wrapper w-[140px]">
                   <input
                     type="number"
                     value={customHrs}
@@ -324,11 +322,11 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
                     className={showValidation && errors.duration ? 'input-error' : ''}
                     placeholder="00"
                     min="0"
-                    style={{ width: '100%', paddingRight: '64px', appearance: 'none', textAlign: 'center' }}
+                    className="w-full pr-64 appearance-none text-center"
                   />
                   <span className="onboarding-input-suffix">ชั่วโมง</span>
                 </div>
-                <div className="onboarding-input-wrapper" style={{ width: '140px' }}>
+                <div className="onboarding-input-wrapper w-[140px]">
                   <input
                     type="number"
                     value={customMins}
@@ -340,7 +338,7 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
                     placeholder="00"
                     min="0"
                     max="59"
-                    style={{ width: '100%', paddingRight: '48px', appearance: 'none', textAlign: 'center' }}
+                    className="w-full pr-48 appearance-none text-center"
                   />
                   <span className="onboarding-input-suffix">นาที</span>
                 </div>
@@ -351,33 +349,33 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
           {/* Feedback section */}
           {distSelect === 'not_tracked' && (
             <div className="onboarding-feedback-card onboarding-fade-in">
-              <h4 style={{ fontWeight: '700', marginBottom: '4px' }}>ไม่เป็นไร ทุกคนมีจุดเริ่มต้นของตัวเอง 🙌</h4>
-              <p style={{ fontSize: '14px', color: 'var(--color-neutral-700)' }}>คุณสามารถทำ Quick Assessment เพื่อค้นหา Level ได้ภายหลัง</p>
+              <h4 className="font-bold mb-4">ไม่เป็นไร ทุกคนมีจุดเริ่มต้นของตัวเอง 🙌</h4>
+              <p className="text-sm text-neutral-700">คุณสามารถทำ Quick Assessment เพื่อค้นหา Level ได้ภายหลัง</p>
             </div>
           )}
 
           {distSelect && distSelect !== 'not_tracked' && durSelect === 'unknown' && (
             <div className="onboarding-feedback-card onboarding-fade-in">
-              <p style={{ fontSize: '14px', color: 'var(--color-neutral-700)' }}>เราบันทึกระยะทางไว้ให้แล้ว คุณสามารถเพิ่มเวลาเพื่อประเมิน Level ภายหลังได้</p>
+              <p className="text-sm text-neutral-700">เราบันทึกระยะทางไว้ให้แล้ว คุณสามารถเพิ่มเวลาเพื่อประเมิน Level ภายหลังได้</p>
             </div>
           )}
 
           {exactDist > 0 && exactDur > 0 && paceStr && (
             <div className="onboarding-feedback-card onboarding-fade-in">
-              <h4 className="text-sm font-semibold text-neutral-600 mb-8" style={{ textTransform: 'uppercase' }}>จุดเริ่มต้นของคุณ</h4>
-              <div style={{ display: 'flex', gap: '24px', alignItems: 'baseline', marginBottom: '12px' }}>
+              <h4 className="text-sm font-semibold text-neutral-600 mb-8 uppercase">จุดเริ่มต้นของคุณ</h4>
+              <div className="flex gap-24 items-baseline mb-12">
                 <div>
-                  <div style={{ fontSize: '28px', fontWeight: '700', color: 'var(--color-brand-600)', lineHeight: '1' }}>
-                    {exactDist} <span style={{ fontSize: '16px', fontWeight: '600' }}>กม.</span>
+                  <div className="text-[28px] font-bold text-brand-600 leading-none">
+                    {exactDist} <span className="text-[16px] font-semibold">กม.</span>
                   </div>
                 </div>
                 <div>
-                  <div style={{ fontSize: '28px', fontWeight: '700', color: 'var(--color-brand-600)', lineHeight: '1' }}>
-                    {exactDur} <span style={{ fontSize: '16px', fontWeight: '600' }}>นาที</span>
+                  <div className="text-[28px] font-bold text-brand-600 leading-none">
+                    {exactDur} <span className="text-[16px] font-semibold">นาที</span>
                   </div>
                 </div>
               </div>
-              <div style={{ fontSize: '16px', fontWeight: '600', marginBottom: '8px' }}>
+              <div className="text-[16px] font-semibold mb-8">
                 Pace โดยประมาณ {paceStr} นาที/กม. (ความเร็ว {speedStr} กม./ชม.)
               </div>
               <p className="text-sm text-neutral-700">ดีเลย เราเริ่มเห็นจังหวะของคุณแล้ว</p>
@@ -388,9 +386,8 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
 
       <div className="onboarding-modal-footer">
         <button
-          className="btn btn-secondary btn-md"
+          className="btn btn-secondary btn-md w-auto mr-16"
           onClick={onPrev}
-          style={{ width: 'auto', marginRight: '16px' }}
         >
           ← ย้อนกลับ
         </button>
