@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useOnboarding } from '../../context/OnboardingContext';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 
-export default function StepReview({ onPrev, onSubmit }) {
+export default function StepReview({ onPrev, onSubmit, redirectDestination = '/profile' }) {
   const { formData, goToStep } = useOnboarding();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -117,7 +117,9 @@ export default function StepReview({ onPrev, onSubmit }) {
         </button>
         <button className="btn btn-primary btn-md btn-cta w-full flex items-center justify-center gap-4" onClick={handleSubmit} disabled={isSubmitting}>
           {isSubmitting ? 'กำลังเตรียมโปรไฟล์ให้คุณ...' : (
-            <>ยืนยัน แล้วไปดูโปรไฟล์ <ArrowRight size={16} /></>
+            <>
+              ยืนยัน แล้วไป{redirectDestination === '/buddies' ? 'หา Buddy' : 'ดูโปรไฟล์'} <ArrowRight size={16} />
+            </>
           )}
         </button>
       </div>

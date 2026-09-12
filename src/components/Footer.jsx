@@ -16,10 +16,8 @@ export default function Footer() {
             <p className="body-sm footer-desc">ประเมินระดับ วางแผนฝึก และหาเพื่อนซ้อมที่เหมาะกับคุณ</p>
           </div>
           <nav className="footer-nav" aria-label="Footer navigation">
-            <a href="#" className="nav-link">การประเมินระดับ</a>
-            <a href="#" className="nav-link">แผนการซ้อม</a>
-            <a href="#" className="nav-link">หาเพื่อนซ้อม</a>
-            <Link to="/login" className="nav-link">เข้าสู่ระบบ</Link>
+            <Link to="/privacy" className="nav-link">นโยบายความเป็นส่วนตัว</Link>
+            <Link to="/terms" className="nav-link">ข้อกำหนดการใช้งาน</Link>
           </nav>
         </div>
         <div className="footer-bottom">

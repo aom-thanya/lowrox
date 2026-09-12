@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate, Navigate } from 'react-router-dom';
+import { useNavigate, Navigate, useLocation } from 'react-router-dom';
 import OnboardingModal from '../components/onboarding/OnboardingModal';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -8,6 +8,9 @@ import Footer from '../components/Footer';
 export default function Onboarding() {
   const { user, updateOnboardingStatus } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const redirectDestination = location.state?.redirectOnComplete || '/profile';
+  
   // Ensure we open the modal as soon as this page is rendered if onboarding is not started.
   const [isModalOpen, setIsModalOpen] = useState(true);
 
@@ -19,7 +22,7 @@ export default function Onboarding() {
   const handleComplete = () => {
     setIsModalOpen(false);
     updateOnboardingStatus('completed');
-    navigate('/profile', { replace: true });
+    navigate(redirectDestination, { replace: true });
   };
 
   const handleClose = () => {
@@ -44,6 +47,7 @@ export default function Onboarding() {
         isOpen={isModalOpen} 
         onClose={handleClose} 
         onComplete={handleComplete} 
+        redirectDestination={redirectDestination}
       />
     </>
   );

@@ -3,13 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import LoginForm from './LoginForm';
 import Modal from './common/Modal';
 
-export default function LoginModal({ isOpen, onClose }) {
+export default function LoginModal({ isOpen, onClose, redirectOnComplete }) {
   const navigate = useNavigate();
 
   const handleSuccess = (user) => {
     onClose();
     if (user.onboardingStatus === 'completed') {
-      navigate('/profile');
+      navigate(redirectOnComplete || '/profile');
     } else {
       navigate('/onboarding');
     }

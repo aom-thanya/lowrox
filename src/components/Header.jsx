@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import Avatar from './common/Avatar';
 import { useUnsavedChanges } from '../context/UnsavedChangesContext';
 import LoginModal from './LoginModal';
+import FindBuddyCTA from './home/FindBuddyCTA';
 
 export default function Header() {
   const navigate = useNavigate();
@@ -59,14 +60,33 @@ export default function Header() {
           </Link>
           
           <nav className="desktop-nav" aria-label="Main Navigation">
-            <a href="#" className="nav-link">การประเมินระดับ</a>
-            <a href="#" className="nav-link">แผนการซ้อม</a>
-            <a href="#" className="nav-link">หาเพื่อนซ้อม</a>
-            {user && <NavLink to="/profile" className="nav-link nav-profile"><Avatar src={user.avatarUrl} size="small" /><span><span className="nav-profile-name">{user.displayName || user.username}</span><span className="body-sm">My Profile</span></span></NavLink>}
+            {!user ? (
+              <>
+                <a href="/#how-it-works" className="nav-link">วิธีใช้งาน</a>
+                <button className="nav-link bg-transparent border-none p-0 cursor-pointer" onClick={() => setIsLoginModalOpen(true)}>เข้าสู่ระบบ</button>
+              </>
+            ) : (
+              <>
+                <Link to="/buddies" className="nav-link">หา Buddy</Link>
+                <Link to="/my-buddies" className="nav-link">My Buddies</Link>
+                <Link to="/messages" className="nav-link">Messages</Link>
+                <NavLink to="/profile" className="nav-link nav-profile">
+                  <Avatar src={user.avatarUrl} size="small" />
+                  <span>
+                    <span className="nav-profile-name">{user.displayName || user.username}</span>
+                    <span className="body-sm">My Profile</span>
+                  </span>
+                </NavLink>
+              </>
+            )}
           </nav>
           
           <div className="header-actions">
-            {user ? <button className="btn btn-secondary btn-md" onClick={handleLogout}>ออกจากระบบ</button> : <button className="btn btn-primary btn-md btn-cta" onClick={() => setIsLoginModalOpen(true)}>เข้าสู่ระบบ</button>}
+            {user ? (
+              <button className="btn btn-secondary btn-md" onClick={handleLogout}>ออกจากระบบ</button>
+            ) : (
+              <FindBuddyCTA variant="primary" />
+            )}
           </div>
 
           <button 
@@ -89,13 +109,34 @@ export default function Header() {
         inert={!isMenuOpen}
       >
         <nav className="mobile-drawer-nav" aria-label="Mobile Navigation">
-          <a href="#" className="nav-link" onClick={() => setIsMenuOpen(false)}>การประเมินระดับ</a>
-          <a href="#" className="nav-link" onClick={() => setIsMenuOpen(false)}>แผนการซ้อม</a>
-          <a href="#" className="nav-link" onClick={() => setIsMenuOpen(false)}>หาเพื่อนซ้อม</a>
-          {user && <NavLink to="/profile" className="nav-link nav-profile" onClick={() => setIsMenuOpen(false)}><Avatar src={user.avatarUrl} size="small" /><span><span className="nav-profile-name">{user.displayName || user.username}</span><span className="body-sm">My Profile</span></span></NavLink>}
+            {!user ? (
+              <>
+                <a href="/#how-it-works" className="nav-link" onClick={() => setIsMenuOpen(false)}>วิธีใช้งาน</a>
+                <button className="nav-link bg-transparent border-none p-0 cursor-pointer text-left w-full" onClick={() => { setIsMenuOpen(false); setIsLoginModalOpen(true); }}>เข้าสู่ระบบ</button>
+              </>
+            ) : (
+              <>
+                <Link to="/buddies" className="nav-link" onClick={() => setIsMenuOpen(false)}>หา Buddy</Link>
+                <Link to="/my-buddies" className="nav-link" onClick={() => setIsMenuOpen(false)}>My Buddies</Link>
+                <Link to="/messages" className="nav-link" onClick={() => setIsMenuOpen(false)}>Messages</Link>
+                <NavLink to="/profile" className="nav-link nav-profile" onClick={() => setIsMenuOpen(false)}>
+                  <Avatar src={user.avatarUrl} size="small" />
+                  <span>
+                    <span className="nav-profile-name">{user.displayName || user.username}</span>
+                    <span className="body-sm">My Profile</span>
+                  </span>
+                </NavLink>
+              </>
+            )}
         </nav>
         <div className="mobile-drawer-actions">
-          {user ? <button className="btn btn-secondary btn-md w-full" onClick={handleLogout}>ออกจากระบบ</button> : <button className="btn btn-primary btn-md btn-cta w-full" onClick={() => { setIsMenuOpen(false); setIsLoginModalOpen(true); }}>เข้าสู่ระบบ</button>}
+          {user ? (
+            <button className="btn btn-secondary btn-md w-full" onClick={handleLogout}>ออกจากระบบ</button>
+          ) : (
+            <div onClick={() => setIsMenuOpen(false)}>
+              <FindBuddyCTA variant="primary" className="w-full" />
+            </div>
+          )}
         </div>
       </div>
 

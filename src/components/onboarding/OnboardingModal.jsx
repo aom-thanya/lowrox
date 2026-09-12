@@ -10,7 +10,7 @@ import logoImg from '../../assets/logo.png';
 import ExitConfirmationModal from './ExitConfirmationModal';
 import Modal from '../common/Modal';
 
-function OnboardingContent({ onClose, onComplete }) {
+function OnboardingContent({ onClose, onComplete, redirectDestination }) {
   const { currentStep, nextStep, prevStep, submitForm } = useOnboarding();
   const [showExitConfirm, setShowExitConfirm] = useState(false);
 
@@ -66,7 +66,7 @@ function OnboardingContent({ onClose, onComplete }) {
         {currentStep === 3 && <StepGoals onNext={nextStep} onPrev={prevStep} />}
         {currentStep === 4 && <StepAvailability onNext={nextStep} onPrev={prevStep} />}
         {currentStep === 5 && <StepHealth onNext={nextStep} onPrev={prevStep} />}
-        {currentStep === 6 && <StepReview onPrev={prevStep} onSubmit={handleSubmit} />}
+        {currentStep === 6 && <StepReview onPrev={prevStep} onSubmit={handleSubmit} redirectDestination={redirectDestination} />}
       </Modal>
 
       {showExitConfirm && (
@@ -76,12 +76,12 @@ function OnboardingContent({ onClose, onComplete }) {
   );
 }
 
-export default function OnboardingModal({ isOpen, onClose, onComplete }) {
+export default function OnboardingModal({ isOpen, onClose, onComplete, redirectDestination = '/profile' }) {
   if (!isOpen) return null;
 
   return (
     <OnboardingProvider onComplete={onComplete}>
-      <OnboardingContent onClose={onClose} onComplete={onComplete} />
+      <OnboardingContent onClose={onClose} onComplete={onComplete} redirectDestination={redirectDestination} />
     </OnboardingProvider>
   );
 }
