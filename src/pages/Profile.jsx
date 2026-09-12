@@ -1,31 +1,25 @@
-import React from 'react';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
-import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import PageHeader from '../components/common/PageHeader';
+import ContentCard from '../components/common/ContentCard';
 
-export default function Profile() {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
+export default function Profile({ page }) {
+  const Icon = page.icon;
+  useEffect(() => {
+    const previousTitle = document.title;
+    document.title = `${page.label} | My Profile | Lowrox`;
+    return () => { document.title = previousTitle; };
+  }, [page.label]);
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Header />
-      <main className="main-content container text-center">
-        <div className="hero-text">
-          <h1 className="display-lg text-orange">Profile</h1>
-          <p className="body-lg mt-16 text-neutral-600">
-            ยินดีต้อนรับคุณ {user?.username}
-          </p>
-          <button onClick={handleLogout} className="btn btn-secondary mt-32">ออกจากระบบ</button>
+    <>
+      <PageHeader title={page.label} description={page.description} />
+      <ContentCard>
+        <div className="content-placeholder">
+          <span className="content-placeholder-icon"><Icon size={32} aria-hidden="true" /></span>
+          <h2 className="heading-4">พื้นที่สำหรับ{page.label}</h2>
+          <p className="body-md">เนื้อหาส่วนนี้จะพร้อมใช้งานในภายหลัง</p>
         </div>
-      </main>
-      <Footer />
-    </div>
+      </ContentCard>
+    </>
   );
 }

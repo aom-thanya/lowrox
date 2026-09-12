@@ -727,3 +727,23 @@ input[type="time"].input-error {
   border-color: var(--color-primary-500);
   background-color: var(--color-primary-50);
 }
+
+/* Shared account shell: navigation stacks above content on small screens. */
+.account-layout { background-color: var(--color-neutral-50); }
+.account-container {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-8);
+  padding-top: var(--space-8);
+  padding-bottom: var(--space-16);
+  flex: 1;
+}
+.account-content { min-width: 0; }
+@media (min-width: 1024px) {
+  .account-container {
+    grid-template-columns: 280px minmax(0, 1fr);
+    gap: var(--space-12);
+    padding-top: var(--space-12);
+  }
+}

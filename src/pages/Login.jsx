@@ -1,18 +1,14 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { getLoginDestination } from '../utils/authRedirect';
 import LoginForm from '../components/LoginForm';
 
 export default function Login() {
   const navigate = useNavigate();
 
+  const location = useLocation();
   const handleSuccess = (user) => {
-    // If the backend has full data, we use the onboardingStatus. 
-    // In our mock, test user is 'completed', new user is 'not_started'
-    if (user.onboardingStatus === 'completed') {
-      navigate('/profile', { replace: true });
-    } else {
-      navigate('/onboarding', { replace: true });
-    }
+    navigate(getLoginDestination(user, location.state?.from), { replace: true });
   };
 
   return (

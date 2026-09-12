@@ -1,8 +1,9 @@
 import React from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { getLoginDestination } from '../utils/authRedirect';
 import { useAuth } from '../context/AuthContext';
 
-export function ProtectedRoute({ requireOnboardingComplete = false }) {
+export function ProtectedRoute({ requireOnboardingComplete = null }) {
   const { user, loading } = useAuth();
   const location = useLocation();
 
@@ -24,7 +25,7 @@ export function ProtectedRoute({ requireOnboardingComplete = false }) {
     return <Navigate to="/onboarding" replace />;
   }
 
-  if (!requireOnboardingComplete && onboardingStatus === 'completed') {
+  if (requireOnboardingComplete === false && onboardingStatus === 'completed') {
     return <Navigate to="/profile" replace />;
   }
 
@@ -32,6 +33,7 @@ export function ProtectedRoute({ requireOnboardingComplete = false }) {
 }
 
 export function PublicRoute() {
+  const location = useLocation();
   const { user, loading } = useAuth();
   
   if (loading) {
@@ -43,11 +45,7 @@ export function PublicRoute() {
   }
 
   if (user) {
-    if (user.onboardingStatus === 'completed') {
-      return <Navigate to="/profile" replace />;
-    } else {
-      return <Navigate to="/onboarding" replace />;
-    }
+    return <Navigate to={getLoginDestination(user, location.state?.from)} replace />;
   }
 
   return <Outlet />;
