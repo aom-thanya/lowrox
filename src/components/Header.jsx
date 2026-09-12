@@ -44,7 +44,7 @@ export default function Header() {
       <header className={`header ${isScrolled ? 'scrolled' : ''}`} id="site-header">
         <div className="container">
           <a href="/" className="logo" aria-label="Lowrox homepage">
-            <img src={logoImg} alt="LOWROX" style={{ height: '32px' }} />
+            <img src={logoImg} alt="LOWROX" className="h-8" />
           </a>
           
           <nav className="desktop-nav" aria-label="Main Navigation">

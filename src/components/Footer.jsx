@@ -11,7 +11,7 @@ export default function Footer() {
         <div className="footer-top">
           <div className="footer-brand">
             <a href="/" className="logo" aria-label="Lowrox homepage">
-              <img src={logoImg} alt="LOWROX" style={{ height: '32px' }} />
+              <img src={logoImg} alt="LOWROX" className="h-8" />
             </a>
             <p className="body-sm footer-desc">ประเมินระดับ วางแผนฝึก และหาเพื่อนซ้อมที่เหมาะกับคุณ</p>
           </div>

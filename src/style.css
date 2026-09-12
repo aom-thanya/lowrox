@@ -169,6 +169,9 @@ input, select, textarea, button {
 .gap-12 { gap: 12px; }
 .gap-16 { gap: 16px; }
 
+/* Sizing Utilities */
+.h-8 { height: 32px; }
+
 /* Typography & Colors Utilities */
 .text-brand-500 { color: var(--color-brand-500); }
 .text-brand-600 { color: var(--color-brand-600); }
