@@ -22,8 +22,8 @@ export default function StepReview({ onPrev, onSubmit }) {
       <div className="onboarding-modal-body">
         <div className="onboarding-fullwidth-header">
         <div className="onboarding-text-align">
-          <h2 className="heading-2" style={{ marginBottom: '8px' }}>เช็กความพร้อมครั้งสุดท้าย</h2>
-          <p className="body-md" style={{ color: 'var(--color-neutral-600)', margin: 0 }}>
+          <h2 className="heading-2 mb-8">เช็กความพร้อมครั้งสุดท้าย</h2>
+          <p className="body-md text-neutral-600">
             นี่คือข้อมูลที่จะช่วยให้เราเข้าใจคุณ ลองเช็กอีกครั้ง ถ้าทุกอย่างโอเค เราไปต่อด้วยกันเลย
           </p>
         </div>
@@ -37,8 +37,8 @@ export default function StepReview({ onPrev, onSubmit }) {
       )}
 
       {/* Basic Info */}
-      <div className="onboarding-card" style={{ marginBottom: '16px' }}>
-        <div className="onboarding-card-header" style={{ marginBottom: '8px' }}>
+      <div className="onboarding-card mb-16">
+        <div className="onboarding-card-header mb-8">
           <strong style={{ fontSize: 'var(--font-size-md)' }}>ข้อมูลพื้นฐาน</strong>
           <button type="button" className="btn-remove-card" style={{ color: 'var(--color-primary-600)' }} onClick={() => goToStep(1)}>แก้ไข</button>
         </div>
@@ -49,8 +49,8 @@ export default function StepReview({ onPrev, onSubmit }) {
       </div>
 
       {/* Fitness Level */}
-      <div className="onboarding-card" style={{ marginBottom: '16px' }}>
-        <div className="onboarding-card-header" style={{ marginBottom: '8px' }}>
+      <div className="onboarding-card mb-16">
+        <div className="onboarding-card-header mb-8">
           <strong style={{ fontSize: 'var(--font-size-md)' }}>จุดเริ่มต้นของคุณ</strong>
           <button type="button" className="btn-remove-card" style={{ color: 'var(--color-primary-600)' }} onClick={() => goToStep(2)}>แก้ไข</button>
         </div>
@@ -61,8 +61,8 @@ export default function StepReview({ onPrev, onSubmit }) {
       </div>
 
       {/* Goals */}
-      <div className="onboarding-card" style={{ marginBottom: '16px' }}>
-        <div className="onboarding-card-header" style={{ marginBottom: '8px' }}>
+      <div className="onboarding-card mb-16">
+        <div className="onboarding-card-header mb-8">
           <strong style={{ fontSize: 'var(--font-size-md)' }}>เป้าหมายที่อยากไปให้ถึง</strong>
           <button type="button" className="btn-remove-card" style={{ color: 'var(--color-primary-600)' }} onClick={() => goToStep(3)}>แก้ไข</button>
         </div>
@@ -76,8 +76,8 @@ export default function StepReview({ onPrev, onSubmit }) {
       </div>
 
       {/* Constraints */}
-      <div className="onboarding-card" style={{ marginBottom: '16px' }}>
-        <div className="onboarding-card-header" style={{ marginBottom: '8px' }}>
+      <div className="onboarding-card mb-16">
+        <div className="onboarding-card-header mb-8">
           <strong style={{ fontSize: 'var(--font-size-md)' }}>พื้นที่และเวลาที่สะดวก</strong>
           <button type="button" className="btn-remove-card" style={{ color: 'var(--color-primary-600)' }} onClick={() => goToStep(4)}>แก้ไข</button>
         </div>
@@ -91,8 +91,8 @@ export default function StepReview({ onPrev, onSubmit }) {
       </div>
 
       {/* Health */}
-      <div className="onboarding-card" style={{ marginBottom: '32px' }}>
-        <div className="onboarding-card-header" style={{ marginBottom: '8px' }}>
+      <div className="onboarding-card mb-32">
+        <div className="onboarding-card-header mb-8">
           <strong style={{ fontSize: 'var(--font-size-md)' }}>ข้อมูลสุขภาพ</strong>
           <button type="button" className="btn-remove-card" style={{ color: 'var(--color-primary-600)' }} onClick={() => goToStep(5)}>แก้ไข</button>
         </div>

@@ -19,10 +19,10 @@ export default function Profile() {
       <main className="main-content container text-center">
         <div className="hero-text">
           <h1 className="display-lg text-orange">Profile</h1>
-          <p className="body-lg" style={{ marginTop: 'var(--space-4)', color: 'var(--color-neutral-600)' }}>
+          <p className="body-lg mt-16 text-neutral-600">
             ยินดีต้อนรับคุณ {user?.username}
           </p>
-          <button onClick={handleLogout} className="btn btn-secondary" style={{ marginTop: '32px' }}>ออกจากระบบ</button>
+          <button onClick={handleLogout} className="btn btn-secondary mt-32">ออกจากระบบ</button>
         </div>
       </main>
       <Footer />

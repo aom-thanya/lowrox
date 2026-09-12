@@ -78,7 +78,7 @@ export default function LoginForm({ onSuccess }) {
 
         <div className="form-group">
           <label htmlFor="password">รหัสผ่าน</label>
-          <div style={{ position: 'relative' }}>
+          <div className="password-input-wrapper">
             <input
               type={showPassword ? "text" : "password"}
               id="password"
@@ -86,23 +86,11 @@ export default function LoginForm({ onSuccess }) {
               onChange={(e) => setPassword(e.target.value)}
               className={errors.password && password ? 'input-error' : ''}
               disabled={isSubmitting}
-              style={{ paddingRight: '3.5rem', width: '100%', boxSizing: 'border-box' }}
             />
             <button
               type="button"
+              className="password-toggle"
               onClick={() => setShowPassword(!showPassword)}
-              style={{
-                position: 'absolute',
-                right: '10px',
-                top: '50%',
-                transform: 'translateY(-50%)',
-                background: 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-                fontSize: '0.85rem',
-                color: '#666',
-                padding: '0'
-              }}
             >
               {showPassword ? 'ซ่อน' : 'แสดง'}
             </button>

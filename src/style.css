@@ -138,6 +138,7 @@ input, select, textarea, button {
 .bg-black { background-color: var(--color-black); color: var(--color-white); }
 .bg-white { background-color: var(--color-white); color: var(--color-neutral-800); }
 .min-h-screen { min-height: 100vh; }
+.min-h-80vh { min-height: 80vh; }
 .flex { display: flex; }
 .flex-col { flex-direction: column; }
 .items-center { align-items: center; }
@@ -158,9 +159,25 @@ input, select, textarea, button {
 .mb-16 { margin-bottom: 16px; }
 .mb-24 { margin-bottom: 24px; }
 .mb-32 { margin-bottom: 32px; }
-.pt-12 { padding-top: 12px; }
 .pb-16 { padding-bottom: 16px; }
 .pb-32 { padding-bottom: 32px; }
+.py-120 { padding-top: 120px; padding-bottom: 120px; }
+
+/* Password Input */
+.password-input-wrapper { position: relative; }
+.password-input-wrapper input { padding-right: 3.5rem; width: 100%; box-sizing: border-box; }
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--color-neutral-600);
+  padding: 0;
+}
 
 /* Gap Utilities */
 .gap-4 { gap: 4px; }
