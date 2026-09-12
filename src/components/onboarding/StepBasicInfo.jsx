@@ -92,7 +92,7 @@ export default function StepBasicInfo({ onNext }) {
   return (
     <>
       <div className="onboarding-modal-body onboarding-step-layout">
-        <div className="onboarding-illustration-column" style={{ flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+        <div className="onboarding-illustration-column flex flex-col items-center text-center">
           <div className="onboarding-illustration-container">
             <img
               src={ONBOARDING_STEP_ILLUSTRATIONS.aboutYou}
@@ -101,9 +101,9 @@ export default function StepBasicInfo({ onNext }) {
               onError={(e) => { e.target.style.display = 'none'; }}
             />
           </div>
-          <div className="onboarding-form-section" style={{ marginTop: '24px' }}>
-            <h2 className="display-sm" style={{ marginBottom: '8px' }}>มาทำความรู้จักกันหน่อย 👋</h2>
-            <p className="body-md" style={{ color: 'var(--color-neutral-600)' }}>
+          <div className="onboarding-form-section mt-24">
+            <h2 className="display-sm mb-8">มาทำความรู้จักกันหน่อย 👋</h2>
+            <p className="body-md text-neutral-600">
               ข้อมูลนี้จะช่วยให้ Lowrox ปรับแต่งประสบการณ์และเป้าหมายให้เหมาะกับคุณที่สุด
             </p>
           </div>

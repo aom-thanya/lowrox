@@ -182,7 +182,7 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
   return (
     <>
       <div className="onboarding-modal-body onboarding-step-layout">
-        <div className="onboarding-illustration-column" style={{ flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+        <div className="onboarding-illustration-column flex flex-col items-center text-center">
           <div className="onboarding-illustration-container">
             <img
               src={ONBOARDING_STEP_ILLUSTRATIONS.currentPace}
@@ -193,9 +193,9 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
               }}
             />
           </div>
-          <div className="onboarding-form-section" style={{ marginTop: '24px' }}>
-            <h2 className="display-sm" style={{ marginBottom: '8px' }}>สถิติปัจจุบันของคุณ 🏃‍♂️</h2>
-            <p className="body-md" style={{ color: 'var(--color-neutral-600)' }}>
+          <div className="onboarding-form-section mt-24">
+            <h2 className="display-sm mb-8">สถิติปัจจุบันของคุณ 🏃‍♂️</h2>
+            <p className="body-md text-neutral-600">
               ไม่ต้องเป็นสถิติที่ดีที่สุด เลือกครั้งที่ใกล้เคียงกับคุณที่สุดได้เลย
             </p>
           </div>
@@ -364,7 +364,7 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
 
           {exactDist > 0 && exactDur > 0 && paceStr && (
             <div className="onboarding-feedback-card onboarding-fade-in">
-              <h4 style={{ fontSize: '14px', fontWeight: '600', color: 'var(--color-neutral-600)', marginBottom: '8px', textTransform: 'uppercase' }}>จุดเริ่มต้นของคุณ</h4>
+              <h4 className="text-sm font-semibold text-neutral-600 mb-8" style={{ textTransform: 'uppercase' }}>จุดเริ่มต้นของคุณ</h4>
               <div style={{ display: 'flex', gap: '24px', alignItems: 'baseline', marginBottom: '12px' }}>
                 <div>
                   <div style={{ fontSize: '28px', fontWeight: '700', color: 'var(--color-brand-600)', lineHeight: '1' }}>
@@ -380,7 +380,7 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
               <div style={{ fontSize: '16px', fontWeight: '600', marginBottom: '8px' }}>
                 Pace โดยประมาณ {paceStr} นาที/กม. (ความเร็ว {speedStr} กม./ชม.)
               </div>
-              <p style={{ fontSize: '14px', color: 'var(--color-neutral-700)' }}>ดีเลย เราเริ่มเห็นจังหวะของคุณแล้ว</p>
+              <p className="text-sm text-neutral-700">ดีเลย เราเริ่มเห็นจังหวะของคุณแล้ว</p>
             </div>
           )}
         </div>
