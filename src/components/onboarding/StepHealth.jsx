@@ -249,10 +249,10 @@ export default function StepHealth({ onNext, onPrev }) {
     const typeLabel = MAIN_OPTIONS.find(o => o.value === activeFormType)?.label;
 
     return (
-      <div className="onboarding-fade-in" style={{ backgroundColor: 'var(--color-brand-50)', padding: '24px', borderRadius: '16px', marginTop: '16px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-          <h3 style={{ fontSize: '16px', fontWeight: '700', color: 'var(--color-brand-600)' }}>รายละเอียด: {typeLabel}</h3>
-          <button type="button" onClick={closeForm} style={{ background: 'none', border: 'none', fontSize: '20px', cursor: 'pointer', color: 'var(--color-neutral-500)' }}>✕</button>
+      <div className="onboarding-fade-in bg-brand-50 p-24 rounded-2xl mt-16">
+        <div className="flex justify-between items-center mb-24">
+          <h3 className="text-brand-600 font-bold text-[16px]">รายละเอียด: {typeLabel}</h3>
+          <button type="button" onClick={closeForm} className="bg-transparent border-none text-[20px] cursor-pointer text-neutral-500">✕</button>
         </div>
 
         {activeFormType === 'injury' && (
@@ -261,7 +261,7 @@ export default function StepHealth({ onNext, onPrev }) {
               <label className="onboarding-label">มีอาการบริเวณไหน?</label>
               {renderMultiSelectPills(INJURY_PARTS, tempConcern.concern_name || [], 'concern_name')}
               {tempConcern.concern_name?.includes('อื่น ๆ') && (
-                <input type="text" value={tempConcern.custom_concern_name} onChange={e => handleTempChange('custom_concern_name', e.target.value)} placeholder="ระบุบริเวณ" style={{ width: '100%', marginBottom: '16px', backgroundColor: '#fff' }} className={errors.custom_concern_name ? 'input-error' : ''} />
+                <input type="text" value={tempConcern.custom_concern_name} onChange={e => handleTempChange('custom_concern_name', e.target.value)} placeholder="ระบุบริเวณ" className={`w-full mb-16 bg-white ${errors.custom_concern_name ? 'input-error' : ''}`} />
               )}
               {errors.concern_name && <div className="validation-message onboarding-error-text" role="alert">{errors.concern_name}</div>}
             </div>
@@ -275,8 +275,8 @@ export default function StepHealth({ onNext, onPrev }) {
             </div>
 
             <div className="onboarding-form-section">
-              <label className="onboarding-label" style={{ fontWeight: 400 }}>มีอะไรที่อยากให้เราระวังเป็นพิเศษไหม? (Optional)</label>
-              <textarea value={tempConcern.restriction_note} onChange={e => handleTempChange('restriction_note', e.target.value)} placeholder="เช่น หลีกเลี่ยงการกระโดดหรือใช้แรงกดเข่า" rows="2" style={{ width: '100%', padding: '12px', border: '1px solid var(--color-neutral-300)', borderRadius: '12px' }} />
+              <label className="onboarding-label font-normal">มีอะไรที่อยากให้เราระวังเป็นพิเศษไหม? (Optional)</label>
+              <textarea value={tempConcern.restriction_note} onChange={e => handleTempChange('restriction_note', e.target.value)} placeholder="เช่น หลีกเลี่ยงการกระโดดหรือใช้แรงกดเข่า" rows="2" className="w-full p-[12px] border border-neutral-300 rounded-xl" />
             </div>
           </>
         )}
@@ -285,18 +285,18 @@ export default function StepHealth({ onNext, onPrev }) {
           <>
             <div className="onboarding-form-section">
               <label className="onboarding-label">มีภาวะสุขภาพอะไรที่เกี่ยวข้อง?</label>
-              <input type="text" value={tempConcern.concern_name} onChange={e => handleTempChange('concern_name', e.target.value)} placeholder="ระบุเฉพาะข้อมูลที่เกี่ยวข้องกับการออกกำลังกาย" style={{ width: '100%', backgroundColor: '#fff' }} className={errors.concern_name ? 'input-error' : ''} />
+              <input type="text" value={tempConcern.concern_name} onChange={e => handleTempChange('concern_name', e.target.value)} placeholder="ระบุเฉพาะข้อมูลที่เกี่ยวข้องกับการออกกำลังกาย" className={`w-full bg-white ${errors.concern_name ? 'input-error' : ''}`} />
               {errors.concern_name && <div className="validation-message onboarding-error-text" role="alert">{errors.concern_name}</div>}
             </div>
 
             <div className="onboarding-form-section">
-              <label className="onboarding-label" style={{ fontWeight: 400 }}>มีข้อแนะนำหรือสิ่งที่ควรหลีกเลี่ยงไหม? (Optional)</label>
-              <textarea value={tempConcern.restriction_note} onChange={e => handleTempChange('restriction_note', e.target.value)} placeholder="เช่น ควรพักเมื่อมีอาการ หรือหลีกเลี่ยงกิจกรรมบางประเภท" rows="2" style={{ width: '100%', padding: '12px', border: '1px solid var(--color-neutral-300)', borderRadius: '12px' }} />
+              <label className="onboarding-label font-normal">มีข้อแนะนำหรือสิ่งที่ควรหลีกเลี่ยงไหม? (Optional)</label>
+              <textarea value={tempConcern.restriction_note} onChange={e => handleTempChange('restriction_note', e.target.value)} placeholder="เช่น ควรพักเมื่อมีอาการ หรือหลีกเลี่ยงกิจกรรมบางประเภท" rows="2" className="w-full p-[12px] border border-neutral-300 rounded-xl" />
             </div>
 
             <div className="onboarding-form-section">
               <label className="onboarding-label">เรื่องนี้กระทบการออกกำลังกายแค่ไหน?</label>
-              <div className="onboarding-pill-container" style={{ gap: '8px' }}>
+              <div className="onboarding-pill-container gap-8">
                 {RESTRICTION_LEVELS.map(lvl => renderPillButton(lvl.label, tempConcern.restriction_level === lvl.value, () => handleTempChange('restriction_level', lvl.value)))}
               </div>
               {errors.restriction_level && <div className="validation-message onboarding-error-text" role="alert">{errors.restriction_level}</div>}
@@ -308,13 +308,13 @@ export default function StepHealth({ onNext, onPrev }) {
           <>
             <div className="onboarding-form-section">
               <label className="onboarding-label">มียาอะไรที่เกี่ยวข้อง?</label>
-              <input type="text" value={tempConcern.medication_name} onChange={e => handleTempChange('medication_name', e.target.value)} placeholder="ระบุชื่อยา หากทราบ" style={{ width: '100%', backgroundColor: '#fff' }} className={errors.medication_name ? 'input-error' : ''} />
+              <input type="text" value={tempConcern.medication_name} onChange={e => handleTempChange('medication_name', e.target.value)} placeholder="ระบุชื่อยา หากทราบ" className={`w-full bg-white ${errors.medication_name ? 'input-error' : ''}`} />
               {errors.medication_name && <div className="validation-message onboarding-error-text" role="alert">{errors.medication_name}</div>}
             </div>
 
             <div className="onboarding-form-section">
-              <label className="onboarding-label" style={{ fontWeight: 400 }}>มีสิ่งที่ต้องระวังจากยานี้ไหม? (Optional)</label>
-              <textarea value={tempConcern.restriction_note} onChange={e => handleTempChange('restriction_note', e.target.value)} placeholder="ระบุเฉพาะข้อมูลที่เกี่ยวข้องกับการออกกำลังกาย" rows="2" style={{ width: '100%', padding: '12px', border: '1px solid var(--color-neutral-300)', borderRadius: '12px' }} />
+              <label className="onboarding-label font-normal">มีสิ่งที่ต้องระวังจากยานี้ไหม? (Optional)</label>
+              <textarea value={tempConcern.restriction_note} onChange={e => handleTempChange('restriction_note', e.target.value)} placeholder="ระบุเฉพาะข้อมูลที่เกี่ยวข้องกับการออกกำลังกาย" rows="2" className="w-full p-[12px] border border-neutral-300 rounded-xl" />
             </div>
           </>
         )}
@@ -330,12 +330,12 @@ export default function StepHealth({ onNext, onPrev }) {
           </div>
         )}
 
-        <hr style={{ border: 'none', borderTop: '1px solid var(--color-brand-200)', margin: '24px 0' }} />
+        <hr className="border-none border-t border-brand-200 my-24" />
 
         {/* Active Status */}
         <div className="onboarding-form-section">
           <label className="onboarding-label">เรื่องนี้ยังมีผลอยู่ตอนนี้ไหม?</label>
-          <div className="onboarding-pill-container" style={{ gap: '8px' }}>
+          <div className="onboarding-pill-container gap-8">
             {['active', 'intermittent', 'resolved'].map(status => renderPillButton(STATUS_MAPPING[status].label, tempConcern.status === status, () => handleTempChange('status', status)))}
           </div>
         </div>
@@ -343,25 +343,25 @@ export default function StepHealth({ onNext, onPrev }) {
         {/* Dates */}
         <div className="onboarding-form-section">
           {!showDateFields ? (
-            <button type="button" onClick={() => setShowDateFields(true)} style={{ background: 'none', border: 'none', color: 'var(--color-brand-600)', fontWeight: 600, cursor: 'pointer', fontSize: '14px', textDecoration: 'underline', display: 'block' }}>
+            <button type="button" onClick={() => setShowDateFields(true)} className="bg-transparent border-none text-brand-600 font-semibold cursor-pointer text-sm underline block">
               + เพิ่มช่วงเวลาของอาการ (Optional)
             </button>
           ) : (
-            <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-              <div style={{ flex: '1 1 120px' }}>
-                <label className="onboarding-label" style={{ fontSize: '13px', fontWeight: 400 }}>เริ่มมีอาการเมื่อ</label>
-                <input type="date" value={tempConcern.start_date} onChange={e => handleTempChange('start_date', e.target.value)} style={{ width: '100%', backgroundColor: '#fff' }} max={new Date().toISOString().split("T")[0]} />
+            <div className="flex flex-wrap gap-16">
+              <div className="flex-1 min-w-[120px]">
+                <label className="onboarding-label text-[13px] font-normal">เริ่มมีอาการเมื่อ</label>
+                <input type="date" value={tempConcern.start_date} onChange={e => handleTempChange('start_date', e.target.value)} className="w-full bg-white" max={new Date().toISOString().split("T")[0]} />
               </div>
-              <div style={{ flex: '1 1 120px' }}>
-                <label className="onboarding-label" style={{ fontSize: '13px', fontWeight: 400 }}>สิ้นสุดเมื่อ</label>
-                <input type="date" value={tempConcern.end_date} onChange={e => handleTempChange('end_date', e.target.value)} style={{ width: '100%', backgroundColor: '#fff' }} disabled={tempConcern.status === 'active' || tempConcern.status === 'intermittent'} />
+              <div className="flex-1 min-w-[120px]">
+                <label className="onboarding-label text-[13px] font-normal">สิ้นสุดเมื่อ</label>
+                <input type="date" value={tempConcern.end_date} onChange={e => handleTempChange('end_date', e.target.value)} className="w-full bg-white" disabled={tempConcern.status === 'active' || tempConcern.status === 'intermittent'} />
               </div>
             </div>
           )}
           {errors.dates && <div className="validation-message onboarding-error-text" role="alert">{errors.dates}</div>}
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
+        <div className="flex justify-end gap-12">
           <button type="button" className="btn btn-secondary btn-sm" onClick={closeForm}>ยกเลิก</button>
           <button type="button" className="btn btn-primary btn-sm" onClick={saveForm}>ยืนยัน</button>
         </div>
@@ -372,11 +372,11 @@ export default function StepHealth({ onNext, onPrev }) {
   const getSummaryCard = () => {
     if (concerns.length === 0) return null;
     return (
-      <div className="onboarding-feedback-card onboarding-fade-in" style={{ marginTop: '24px' }}>
-        <h4 style={{ fontSize: '13px', fontWeight: '700', color: 'var(--color-brand-600)', marginBottom: '16px', display: 'flex', alignItems: 'center' }}>
-          <span style={{ fontSize: '18px', marginRight: '8px' }}>🛡️</span>สิ่งที่เราจะคำนึงถึง
+      <div className="onboarding-feedback-card onboarding-fade-in mt-24">
+        <h4 className="text-[13px] font-bold text-brand-600 mb-16 flex items-center">
+          <span className="text-[18px] mr-8">🛡️</span>สิ่งที่เราจะคำนึงถึง
         </h4>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div className="flex flex-col gap-16">
           {concerns.map((c, i) => {
             const typeLabel = MAIN_OPTIONS.find(o => o.value === c.concern_type)?.label;
             const nameStr = Array.isArray(c.concern_name) ?
@@ -395,7 +395,7 @@ export default function StepHealth({ onNext, onPrev }) {
                     {c.restriction_note && <div style={{ fontSize: '13px', color: 'var(--color-neutral-600)', marginTop: '4px' }}>• {c.restriction_note}</div>}
                     <div style={{ fontSize: '13px', color: 'var(--color-brand-500)', marginTop: '4px' }}>• {STATUS_MAPPING[c.status].label}</div>
                   </div>
-                  <button type="button" onClick={() => openForm(c.concern_type, i)} style={{ background: 'none', border: 'none', color: 'var(--color-neutral-500)', fontSize: '13px', textDecoration: 'underline', cursor: 'pointer' }}>แก้ไข</button>
+                  <button type="button" onClick={() => openForm(c.concern_type, i)} className="bg-transparent border-none text-neutral-500 text-[13px] underline cursor-pointer">แก้ไข</button>
                 </div>
               </div>
             );
@@ -423,26 +423,26 @@ export default function StepHealth({ onNext, onPrev }) {
           </div>
         </div>
 
-        <div style={{ backgroundColor: 'var(--color-neutral-100)', padding: '12px 16px', borderRadius: '8px', marginBottom: '32px', display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-          <span style={{ fontSize: '18px' }}>🔒</span>
+        <div className="onboarding-privacy-notice">
+          <span className="text-lg">🔒</span>
           <div>
-            <p className="body-sm" style={{ color: 'var(--color-neutral-700)', margin: 0, fontWeight: 600 }}>ข้อมูลนี้เป็นเรื่องส่วนตัว</p>
-            <p style={{ fontSize: '13px', color: 'var(--color-neutral-600)', margin: '2px 0 0 0' }}>คุณเลือกบอกเฉพาะสิ่งที่สะดวกได้ และกลับมาแก้ไขภายหลังได้เสมอ</p>
+            <p className="body-sm text-neutral-700 m-0 font-semibold">ข้อมูลนี้เป็นเรื่องส่วนตัว</p>
+            <p className="text-sm text-neutral-600 mt-1">คุณเลือกบอกเฉพาะสิ่งที่สะดวกได้ และกลับมาแก้ไขภายหลังได้เสมอ</p>
           </div>
         </div>
         {submitError && (
-          <div className="error-message-area" role="alert" style={{ marginBottom: '24px' }}>
+          <div className="error-message-area mb-24" role="alert">
             {submitError}
           </div>
         )}
         {errors.main && (
-          <div className="error-message-area" role="alert" style={{ marginBottom: '24px' }}>
+          <div className="error-message-area mb-24" role="alert">
             {errors.main}
           </div>
         )}
 
         <div>
-          <h3 className="onboarding-label" style={{ textAlign: 'center' }}>ตอนออกกำลังกาย มีเรื่องไหนที่เราควรระวังให้คุณไหม?</h3>
+          <h3 className="onboarding-label text-center">ตอนออกกำลังกาย มีเรื่องไหนที่เราควรระวังให้คุณไหม?</h3>
 
           <div className="onboarding-choice-grid">
             {MAIN_OPTIONS.map(opt => {
@@ -479,16 +479,16 @@ export default function StepHealth({ onNext, onPrev }) {
 
           {/* Special states feedbacks */}
           {mainSelection.includes('none') && (
-            <div className="onboarding-feedback-card onboarding-fade-in" style={{ marginTop: '24px', backgroundColor: '#e8f5e9', border: '1px solid #c8e6c9' }}>
-              <p style={{ margin: 0, color: '#2e7d32', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '18px' }}>✅</span> พร้อมแล้ว เราจะใช้ข้อมูลที่มีเพื่อแนะนำจุดเริ่มต้นให้คุณ
+            <div className="onboarding-feedback-card onboarding-fade-in mt-24 bg-success-soft border border-success">
+              <p className="m-0 text-success font-semibold flex items-center gap-8">
+                <span className="text-[18px]">✅</span> พร้อมแล้ว เราจะใช้ข้อมูลที่มีเพื่อแนะนำจุดเริ่มต้นให้คุณ
               </p>
             </div>
           )}
           {mainSelection.includes('unsure') && (
-            <div className="onboarding-feedback-card onboarding-fade-in" style={{ marginTop: '24px' }}>
-              <p style={{ margin: 0, color: 'var(--color-neutral-700)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '18px' }}>ℹ️</span> ไม่เป็นไร คุณกลับมาเพิ่มหรือแก้ไขข้อมูลนี้ใน Profile ได้ภายหลัง
+            <div className="onboarding-feedback-card onboarding-fade-in mt-24">
+              <p className="m-0 text-neutral-700 flex items-center gap-8">
+                <span className="text-[18px]">ℹ️</span> ไม่เป็นไร คุณกลับมาเพิ่มหรือแก้ไขข้อมูลนี้ใน Profile ได้ภายหลัง
               </p>
             </div>
           )}
@@ -500,14 +500,14 @@ export default function StepHealth({ onNext, onPrev }) {
           {!mainSelection.includes('none') && !mainSelection.includes('unsure') && concerns.length > 0 && concerns.length < 5 && !activeFormType && (
             <button
               type="button"
-              onClick={() => openForm(mainSelection[0])} // just reopen the first one, or they can click a card
-              style={{ marginTop: '16px', display: 'block', width: '100%', padding: '12px', borderRadius: '12px', border: '1px dashed var(--color-brand-400)', backgroundColor: 'var(--color-white)', color: 'var(--color-brand-600)', fontWeight: 600, cursor: 'pointer', fontSize: '14px' }}
+              onClick={() => openForm(mainSelection[0])}
+              className="mt-16 block w-full p-[12px] rounded-xl border border-dashed border-brand-400 bg-white text-brand-600 font-semibold cursor-pointer text-sm"
             >
               + เพิ่มอีกเรื่อง
             </button>
           )}
 
-          <div className="onboarding-helper-text" style={{ marginTop: '32px', textAlign: 'center' }}>
+          <div className="onboarding-helper-text mt-32 text-center">
             ⓘ Lowrox ใช้ข้อมูลนี้เพื่อปรับคำแนะนำเบื้องต้นเท่านั้น ไม่ใช่การวินิจฉัยหรือการรับรองความพร้อมทางการแพทย์
           </div>
         </div>
