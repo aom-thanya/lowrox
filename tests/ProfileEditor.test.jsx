@@ -6,18 +6,22 @@ import ProfileEditor from '../src/pages/ProfileEditor';
 import { useUnsavedChanges, UnsavedChangesProvider } from '../src/context/UnsavedChangesContext';
 import { useAuth } from '../src/context/AuthContext';
 
-vi.mock('../src/context/AuthContext', () => ({
-  useAuth: vi.fn(() => ({
-    user: { displayName: 'Test User' },
-    loadProfile: vi.fn().mockResolvedValue({
-      displayName: 'Test User',
-      bio: 'Test Bio',
-      provinceId: '1',
-      districtId: '101'
-    }),
-    saveProfile: vi.fn().mockResolvedValue({})
-  }))
-}));
+vi.mock('../src/context/AuthContext', () => {
+  const mockLoadProfile = vi.fn().mockResolvedValue({
+    displayName: 'Test User',
+    bio: 'Test Bio',
+    provinceId: '1',
+    districtId: '101'
+  });
+  const mockSaveProfile = vi.fn().mockResolvedValue({});
+  return {
+    useAuth: vi.fn(() => ({
+      user: { displayName: 'Test User' },
+      loadProfile: mockLoadProfile,
+      saveProfile: mockSaveProfile
+    }))
+  };
+});
 
 vi.mock('../src/services/userRepository', () => ({
   readCurrentUser: vi.fn(() => ({
