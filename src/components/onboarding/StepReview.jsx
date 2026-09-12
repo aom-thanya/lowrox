@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useOnboarding } from '../../context/OnboardingContext';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 export default function StepReview({ onPrev, onSubmit }) {
   const { formData, goToStep } = useOnboarding();
@@ -111,11 +112,13 @@ export default function StepReview({ onPrev, onSubmit }) {
       </div>
       
       <div className="onboarding-modal-footer">
-        <button className="btn btn-secondary btn-sm w-auto mr-16" onClick={onPrev} disabled={isSubmitting}>
-          ← ย้อนกลับ
+        <button className="btn btn-secondary btn-sm w-auto mr-16 flex items-center gap-4" onClick={onPrev} disabled={isSubmitting}>
+          <ArrowLeft size={16} /> ย้อนกลับ
         </button>
-        <button className="btn btn-primary btn-md btn-cta w-full" onClick={handleSubmit} disabled={isSubmitting}>
-          {isSubmitting ? 'กำลังเตรียมโปรไฟล์ให้คุณ...' : 'ยืนยัน แล้วไปดูโปรไฟล์ →'}
+        <button className="btn btn-primary btn-md btn-cta w-full flex items-center justify-center gap-4" onClick={handleSubmit} disabled={isSubmitting}>
+          {isSubmitting ? 'กำลังเตรียมโปรไฟล์ให้คุณ...' : (
+            <>ยืนยัน แล้วไปดูโปรไฟล์ <ArrowRight size={16} /></>
+          )}
         </button>
       </div>
     </>

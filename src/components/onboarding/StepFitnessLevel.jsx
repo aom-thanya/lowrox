@@ -6,6 +6,7 @@ import FormSection from '../common/FormSection';
 import InputWrapper from '../common/InputWrapper';
 import FeedbackCard from '../common/FeedbackCard';
 import { calculatePaceAndSpeed } from '../../utils/onboardingUtils';
+import { Activity } from 'lucide-react';
 
 const ONBOARDING_STEP_ILLUSTRATIONS = {
   currentPace: step2Img,
@@ -188,7 +189,7 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
             />
           </div>
           <div className="onboarding-form-section mt-24">
-            <h2 className="display-sm mb-8">สถิติปัจจุบันของคุณ 🏃‍♂️</h2>
+            <h2 className="display-sm mb-8"><Activity size={28} className="inline-block align-text-bottom mr-8" />สถิติปัจจุบันของคุณ</h2>
             <p className="body-md text-neutral-600">
               ไม่ต้องเป็นสถิติที่ดีที่สุด เลือกครั้งที่ใกล้เคียงกับคุณที่สุดได้เลย
             </p>

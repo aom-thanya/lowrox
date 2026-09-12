@@ -4,15 +4,16 @@ import ChoiceCard from '../common/ChoiceCard';
 import FormSection from '../common/FormSection';
 import step1Img from '../../assets/onboarding/step1.png';
 import { calculateAge } from '../../utils/onboardingUtils';
+import { Venus, Mars, CircleUser } from 'lucide-react';
 
 const ONBOARDING_STEP_ILLUSTRATIONS = {
   aboutYou: step1Img,
 };
 
 const GENDER_OPTIONS = [
-  { value: 'female', label: 'หญิง', icon: '♀' },
-  { value: 'male', label: 'ชาย', icon: '♂' },
-  { value: 'unspecified', label: 'ไม่ระบุ', icon: '⊝' }
+  { value: 'female', label: 'หญิง', icon: <Venus size={24} /> },
+  { value: 'male', label: 'ชาย', icon: <Mars size={24} /> },
+  { value: 'unspecified', label: 'ไม่ระบุ', icon: <CircleUser size={24} /> }
 ];
 
 export default function StepBasicInfo({ onNext }) {
@@ -110,8 +111,8 @@ export default function StepBasicInfo({ onNext }) {
             </div>
           )}
 
-          <FormSection 
-            label="คุณเกิดวันไหน?" 
+          <FormSection
+            label="คุณเกิดวันไหน?"
             htmlFor="birthDate"
             error={showValidation && errors.birthDate}
             helperText={

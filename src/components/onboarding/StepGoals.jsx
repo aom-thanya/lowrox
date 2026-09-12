@@ -7,18 +7,19 @@ import FormSection from '../common/FormSection';
 import InputWrapper from '../common/InputWrapper';
 import FeedbackCard from '../common/FeedbackCard';
 import { calculateTargetDateString } from '../../utils/onboardingUtils';
+import { Footprints, Timer, Medal, Users, Dumbbell, Lightbulb } from 'lucide-react';
 
 const ONBOARDING_STEP_ILLUSTRATIONS = {
   nextChallenge: step3Img,
 };
 
 const GOAL_TYPES = [
-  { value: 'increase_distance', label: 'วิ่งให้ไกลขึ้น', desc: 'เพิ่มระยะทางจากที่ทำได้ตอนนี้', icon: '🏃' },
-  { value: 'improve_time', label: 'วิ่งให้เร็วขึ้น', desc: 'ทำเวลาให้ดีขึ้นในระยะเดิม', icon: '⏱️' },
-  { value: 'prepare_event', label: 'เตรียมลงแข่ง', desc: 'เตรียมตัวสำหรับสนามจริง', icon: '🏅' },
-  { value: 'buddy_event', label: 'เตรียมแข่งแบบ Buddy', desc: 'เตรียมตัวและหาคู่ร่วมทีม', icon: '👯' },
-  { value: 'improve_endurance', label: 'เพิ่มความแข็งแรงและความอึด', desc: 'พัฒนาความพร้อมโดยรวม', icon: '💪' },
-  { value: 'recommend_for_me', label: 'ให้ Lowrox ช่วยแนะนำ', desc: 'ยังไม่แน่ใจว่าจะเริ่มจากอะไร', icon: '💡' }
+  { value: 'increase_distance', label: 'วิ่งให้ไกลขึ้น', desc: 'เพิ่มระยะทางจากที่ทำได้ตอนนี้', icon: <Footprints /> },
+  { value: 'improve_time', label: 'วิ่งให้เร็วขึ้น', desc: 'ทำเวลาให้ดีขึ้นในระยะเดิม', icon: <Timer /> },
+  { value: 'prepare_event', label: 'เตรียมลงแข่ง', desc: 'เตรียมตัวสำหรับสนามจริง', icon: <Medal /> },
+  { value: 'buddy_event', label: 'เตรียมแข่งแบบ Buddy', desc: 'เตรียมตัวและหาคู่ร่วมทีม', icon: <Users /> },
+  { value: 'improve_endurance', label: 'เพิ่มความแข็งแรงและความอึด', desc: 'พัฒนาความพร้อมโดยรวม', icon: <Dumbbell /> },
+  { value: 'recommend_for_me', label: 'ให้ Lowrox ช่วยแนะนำ', desc: 'ยังไม่แน่ใจว่าจะเริ่มจากอะไร', icon: <Lightbulb /> }
 ];
 
 const TARGET_DATE_OPTIONS = [
@@ -612,7 +613,7 @@ export default function StepGoals({ onNext, onPrev }) {
                 key={opt.value}
                 isSelected={goalType === opt.value}
                 onClick={() => { setGoalType(opt.value); resetForm(); if (showValidation) validate(); }}
-                icon={<span className="text-[24px] mr-16">{opt.icon}</span>}
+                icon={<span className="mr-16 flex items-center justify-center">{opt.icon}</span>}
                 label={<span className="text-[15px] font-semibold">{opt.label}</span>}
                 description=""
                 className="flex-col items-start p-16 border-2 transition-all duration-200 hover:border-brand-300 hover:shadow-sm"

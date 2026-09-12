@@ -5,18 +5,19 @@ import ChoiceCard from '../common/ChoiceCard';
 import PillButton from '../common/PillButton';
 import FormSection from '../common/FormSection';
 import FeedbackCard from '../common/FeedbackCard';
+import { CheckCircle2, Bandage, HeartPulse, Pill, ClipboardList, HelpCircle, TriangleAlert, CheckCircle, ShieldAlert, Lock, Info } from 'lucide-react';
 
 const ONBOARDING_STEP_ILLUSTRATIONS = {
   safetyCheck: step5Img
 };
 
 const MAIN_OPTIONS = [
-  { value: 'none', label: 'ไม่มีเรื่องที่ต้องระวัง', desc: 'สุขภาพแข็งแรง พร้อมลุยได้เลย', icon: '✅' },
-  { value: 'injury', label: 'มีอาการบาดเจ็บหรือปวดอยู่', desc: 'เช่น ปวดเข่า ไหล่ หลัง เป็นต้น', icon: '🩹' },
-  { value: 'health_condition', label: 'มีภาวะสุขภาพที่เกี่ยวข้อง', desc: 'เช่น ความดัน เบาหวาน หอบหืด เป็นต้น', icon: '❤️' },
-  { value: 'medication', label: 'มียาที่เกี่ยวข้อง', desc: 'เช่น ยาความดัน ยาเบาหวาน เป็นต้น', icon: '💊' },
-  { value: 'other_restriction', label: 'มีข้อจำกัดอื่น', desc: 'เช่น จำกัดการกระโดด จำกัดน้ำหนัก', icon: '📋' },
-  { value: 'unsure', label: 'ยังไม่แน่ใจ', desc: 'ขอข้ามไปก่อนก็ได้', icon: '❓' }
+  { value: 'none', label: 'ไม่มีเรื่องที่ต้องระวัง', desc: 'สุขภาพแข็งแรง พร้อมลุยได้เลย', icon: <CheckCircle2 /> },
+  { value: 'injury', label: 'มีอาการบาดเจ็บหรือปวดอยู่', desc: 'เช่น ปวดเข่า ไหล่ หลัง เป็นต้น', icon: <Bandage /> },
+  { value: 'health_condition', label: 'มีภาวะสุขภาพที่เกี่ยวข้อง', desc: 'เช่น ความดัน เบาหวาน หอบหืด เป็นต้น', icon: <HeartPulse /> },
+  { value: 'medication', label: 'มียาที่เกี่ยวข้อง', desc: 'เช่น ยาความดัน ยาเบาหวาน เป็นต้น', icon: <Pill /> },
+  { value: 'other_restriction', label: 'มีข้อจำกัดอื่น', desc: 'เช่น จำกัดการกระโดด จำกัดน้ำหนัก', icon: <ClipboardList /> },
+  { value: 'unsure', label: 'ยังไม่แน่ใจ', desc: 'ขอข้ามไปก่อนก็ได้', icon: <HelpCircle /> }
 ];
 
 const INJURY_PARTS = ['เข่า', 'ข้อเท้า', 'เท้าหรือฝ่าเท้า', 'สะโพก', 'หลัง', 'ไหล่', 'แขนหรือข้อมือ', 'อื่น ๆ'];
@@ -388,7 +389,7 @@ export default function StepHealth({ onNext, onPrev }) {
             onError={(e) => { e.target.style.display = 'none'; }}
           />
           <div className="onboarding-text-align">
-            <h2 className="heading-2 mb-8">ก่อนเริ่ม มีอะไรที่เราควรรู้ไหม? 🛡️</h2>
+            <h2 className="heading-2 mb-8 flex items-center">ก่อนเริ่ม มีอะไรที่เราควรรู้ไหม? <ShieldAlert size={28} className="ml-8 text-brand-500" /></h2>
             <p className="body-md text-neutral-600">
               บอกเฉพาะเรื่องที่เกี่ยวข้องกับการออกกำลังกาย เพื่อให้คำแนะนำเหมาะกับคุณมากขึ้น
             </p>
@@ -396,7 +397,7 @@ export default function StepHealth({ onNext, onPrev }) {
         </div>
 
         <div className="onboarding-privacy-notice">
-          <span className="text-lg">🔒</span>
+          <span className="text-neutral-500 mr-12"><Lock size={24} /></span>
           <div>
             <p className="body-sm text-neutral-700 m-0 font-semibold">ข้อมูลนี้เป็นเรื่องส่วนตัว</p>
             <p className="text-sm text-neutral-600 mt-1">คุณเลือกบอกเฉพาะสิ่งที่สะดวกได้ และกลับมาแก้ไขภายหลังได้เสมอ</p>
@@ -424,7 +425,7 @@ export default function StepHealth({ onNext, onPrev }) {
                   key={opt.value}
                   isSelected={isSelected}
                   onClick={() => handleMainSelection(opt.value)}
-                  icon={<span className="text-[20px]">{opt.icon}</span>}
+                  icon={<span className="flex items-center text-brand-500 mr-8">{opt.icon}</span>}
                   label={<span className="text-[15px] font-semibold">{opt.label}</span>}
                   description={<span className="text-[13px] text-neutral-500">{opt.desc}</span>}
                   className="p-16 items-center flex-row justify-start min-h-[80px]"
@@ -447,7 +448,7 @@ export default function StepHealth({ onNext, onPrev }) {
           {mainSelection.includes('unsure') && (
             <FeedbackCard className="mt-24">
               <p className="m-0 text-neutral-700 flex items-center gap-8">
-                <span className="text-[18px]">ℹ️</span> ไม่เป็นไร คุณกลับมาเพิ่มหรือแก้ไขข้อมูลนี้ใน Profile ได้ภายหลัง
+                <span className="text-brand-500 mr-8"><Info size={20} /></span> ไม่เป็นไร คุณกลับมาเพิ่มหรือแก้ไขข้อมูลนี้ใน Profile ได้ภายหลัง
               </p>
             </FeedbackCard>
           )}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Menu } from 'lucide-react';
 import logoImg from '../assets/logo.png';
 import LoginModal from './LoginModal';
 
@@ -65,9 +66,7 @@ export default function Header() {
             aria-controls="mobile-drawer"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M3 18V16H21V18H3ZM3 13V11H21V13H3ZM3 8V6H21V8H3Z"/>
-            </svg>
+            <Menu size={24} />
           </button>
         </div>
       </header>

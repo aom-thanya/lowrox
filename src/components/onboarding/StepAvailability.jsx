@@ -5,6 +5,7 @@ import PillButton from '../common/PillButton';
 import FormSection from '../common/FormSection';
 import InputWrapper from '../common/InputWrapper';
 import FeedbackCard from '../common/FeedbackCard';
+import { MapPin, Calendar as CalendarIcon, Clock, Sparkles, Check } from 'lucide-react';
 
 const ONBOARDING_STEP_ILLUSTRATIONS = {
   yourRhythm: step4Img
@@ -309,9 +310,7 @@ export default function StepAvailability({ onNext, onPrev }) {
     >
       {isSelected && (
         <div className="absolute top-[-4px] right-[-4px] w-16 h-16 rounded-full bg-brand-500 flex items-center justify-center text-white">
-          <svg width="8" height="6" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1 5L5 9L13 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+          <Check size={10} strokeWidth={3} />
         </div>
       )}
       {day.label}
@@ -361,12 +360,12 @@ export default function StepAvailability({ onNext, onPrev }) {
     return (
       <FeedbackCard className="mt-24">
         <h4 className="text-[13px] font-bold text-brand-600 mb-12">
-          <span className="text-[16px] mr-8">✨</span>จังหวะที่เหมาะกับคุณ
+          <span className="mr-8 text-brand-500"><Sparkles size={16} /></span>จังหวะที่เหมาะกับคุณ
         </h4>
         <div className="flex flex-col gap-8">
-          {areaText && <div className="text-sm text-neutral-800"><strong className="text-brand-500 mr-8">📍</strong> {areaText}</div>}
-          {daysText && <div className="text-sm text-neutral-800"><strong className="text-brand-500 mr-8">🗓️</strong> {daysText}</div>}
-          {timeText && <div className="text-sm text-neutral-800"><strong className="text-brand-500 mr-8">🕒</strong> {timeText}</div>}
+          {areaText && <div className="text-sm text-neutral-800 flex items-center"><MapPin size={16} className="text-brand-500 mr-8" /> {areaText}</div>}
+          {daysText && <div className="text-sm text-neutral-800 flex items-center mt-4"><CalendarIcon size={16} className="text-brand-500 mr-8" /> {daysText}</div>}
+          {timeText && <div className="text-sm text-neutral-800 flex items-center mt-4"><Clock size={16} className="text-brand-500 mr-8" /> {timeText}</div>}
         </div>
         {freqText && <div className="text-sm text-neutral-500 mt-12 border-t border-neutral-200 pt-12">{freqText}</div>}
       </FeedbackCard>
@@ -384,7 +383,7 @@ export default function StepAvailability({ onNext, onPrev }) {
             onError={(e) => { e.target.style.display = 'none'; }}
           />
           <div className="onboarding-text-align">
-            <h2 className="heading-2 mb-8">จังหวะไหนเข้ากับชีวิตคุณ? 🗓️</h2>
+            <h2 className="heading-2 mb-8 flex items-center">จังหวะไหนเข้ากับชีวิตคุณ? <CalendarIcon size={28} className="ml-8" /></h2>
             <p className="body-md text-neutral-600">
               เลือกช่วงที่มักสะดวก เราจะช่วยหา Buddy และ Training Party ที่เข้ากับคุณ
             </p>
@@ -419,9 +418,9 @@ export default function StepAvailability({ onNext, onPrev }) {
 
               {/* Area Input */}
               <div className="mb-24">
-                <label className="block font-semibold mb-12">ปกติคุณสะดวกซ้อมแถวไหน? 📍</label>
+                <label className="flex items-center font-semibold mb-12">ปกติคุณสะดวกซ้อมแถวไหน? <MapPin size={20} className="ml-8" /></label>
                 <div className="relative">
-                  <span className="absolute left-16 top-1/2 -translate-y-1/2">📌</span>
+                  <span className="absolute left-16 top-1/2 -translate-y-1/2 text-neutral-400"><MapPin size={18} /></span>
                   <input
                     type="text"
                     value={win.areaLabel}
