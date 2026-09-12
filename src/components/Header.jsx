@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import Avatar from './common/Avatar';
 import { useUnsavedChanges } from '../context/UnsavedChangesContext';
 import LoginModal from './LoginModal';
-import FindBuddyCTA from './home/FindBuddyCTA';
+
 
 export default function Header() {
   const navigate = useNavigate();
@@ -62,12 +62,13 @@ export default function Header() {
           <nav className="desktop-nav" aria-label="Main Navigation">
             {!user ? (
               <>
+                <Link to="/events" className="nav-link">กิจกรรม</Link>
                 <a href="/#how-it-works" className="nav-link">วิธีใช้งาน</a>
                 <button className="nav-link bg-transparent border-none p-0 cursor-pointer" onClick={() => setIsLoginModalOpen(true)}>เข้าสู่ระบบ</button>
               </>
             ) : (
               <>
-                <Link to="/buddies" className="nav-link">หา Buddy</Link>
+                <Link to="/events" className="nav-link">กิจกรรม</Link>
                 <Link to="/my-buddies" className="nav-link">My Buddies</Link>
                 <Link to="/messages" className="nav-link">Messages</Link>
                 <NavLink to="/profile" className="nav-link nav-profile">
@@ -85,7 +86,7 @@ export default function Header() {
             {user ? (
               <button className="btn btn-secondary btn-md" onClick={handleLogout}>ออกจากระบบ</button>
             ) : (
-              <FindBuddyCTA variant="primary" />
+              <Link to="/events" className="btn btn-primary btn-md btn-cta">ดูกิจกรรม</Link>
             )}
           </div>
 
@@ -111,12 +112,13 @@ export default function Header() {
         <nav className="mobile-drawer-nav" aria-label="Mobile Navigation">
             {!user ? (
               <>
+                <Link to="/events" className="nav-link" onClick={() => setIsMenuOpen(false)}>กิจกรรม</Link>
                 <a href="/#how-it-works" className="nav-link" onClick={() => setIsMenuOpen(false)}>วิธีใช้งาน</a>
                 <button className="nav-link bg-transparent border-none p-0 cursor-pointer text-left w-full" onClick={() => { setIsMenuOpen(false); setIsLoginModalOpen(true); }}>เข้าสู่ระบบ</button>
               </>
             ) : (
               <>
-                <Link to="/buddies" className="nav-link" onClick={() => setIsMenuOpen(false)}>หา Buddy</Link>
+                <Link to="/events" className="nav-link" onClick={() => setIsMenuOpen(false)}>กิจกรรม</Link>
                 <Link to="/my-buddies" className="nav-link" onClick={() => setIsMenuOpen(false)}>My Buddies</Link>
                 <Link to="/messages" className="nav-link" onClick={() => setIsMenuOpen(false)}>Messages</Link>
                 <NavLink to="/profile" className="nav-link nav-profile" onClick={() => setIsMenuOpen(false)}>
@@ -133,9 +135,7 @@ export default function Header() {
           {user ? (
             <button className="btn btn-secondary btn-md w-full" onClick={handleLogout}>ออกจากระบบ</button>
           ) : (
-            <div onClick={() => setIsMenuOpen(false)}>
-              <FindBuddyCTA variant="primary" className="w-full" />
-            </div>
+            <Link to="/events" className="btn btn-primary btn-md btn-cta w-full" onClick={() => setIsMenuOpen(false)}>ดูกิจกรรม</Link>
           )}
         </div>
       </div>

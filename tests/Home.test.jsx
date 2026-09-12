@@ -69,7 +69,7 @@ describe('Homepage', () => {
     });
     renderHome();
     
-    const buddyLinks = screen.getAllByRole('link', { name: 'หา Buddy' });
+    const buddyLinks = screen.getAllByRole('link', { name: 'กิจกรรม' });
     expect(buddyLinks.length).toBeGreaterThan(0);
     
     const profileLinks = screen.getAllByRole('link', { name: /My Profile/i });

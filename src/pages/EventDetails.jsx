@@ -1,0 +1,292 @@
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { MapPin, Calendar, Activity, ArrowLeft, ExternalLink, User } from 'lucide-react';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
+import Badge from '../components/common/Badge';
+import Avatar from '../components/common/Avatar';
+import LoginModal from '../components/LoginModal';
+import CommentList from '../components/events/CommentList';
+import CommentComposer from '../components/events/CommentComposer';
+import { useAuth } from '../context/AuthContext';
+import { getEventById, getJoinGroupUrl, isEventEnded } from '../services/eventRepository';
+import { getCommentsByEventId, postComment } from '../services/commentRepository';
+
+function formatEventDateFull(dateString) {
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat('th-TH', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZoneName: 'short'
+  }).format(date);
+}
+
+export default function EventDetails() {
+  const { eventId } = useParams();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  
+  const [event, setEvent] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
+  
+  const [comments, setComments] = useState([]);
+  const [isLoadingComments, setIsLoadingComments] = useState(true);
+  const [isSubmittingComment, setIsSubmittingComment] = useState(false);
+  
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isJoining, setIsJoining] = useState(false);
+  const [joinError, setJoinError] = useState('');
+
+  useEffect(() => {
+    let isMounted = true;
+    
+    const fetchData = async () => {
+      setIsLoading(true);
+      setIsLoadingComments(true);
+      setError('');
+      
+      try {
+        const eventData = await getEventById(eventId);
+        if (isMounted) setEvent(eventData);
+        
+        try {
+          const commentsData = await getCommentsByEventId(eventId);
+          if (isMounted) setComments(commentsData);
+        } catch (commentErr) {
+          console.error('Failed to fetch comments', commentErr);
+        }
+      } catch (err) {
+        if (isMounted) setError('ไม่พบกิจกรรมที่คุณต้องการ หรือกิจกรรมนี้ถูกซ่อนไว้');
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+          setIsLoadingComments(false);
+        }
+      }
+    };
+    
+    fetchData();
+    
+    return () => { isMounted = false; };
+  }, [eventId]);
+
+  const handleBack = () => {
+    // Navigate back to preserve search params if we came from list
+    navigate(-1);
+  };
+
+  const handleJoinGroup = async () => {
+    if (!user) {
+      setIsLoginModalOpen(true);
+      return;
+    }
+    
+    setIsJoining(true);
+    setJoinError('');
+    
+    try {
+      const url = await getJoinGroupUrl(event.id, user);
+      if (url) {
+        // Open external group link
+        window.open(url, '_blank', 'noopener,noreferrer');
+      }
+    } catch (err) {
+      setJoinError('ไม่สามารถเข้าร่วมกลุ่มได้ กรุณาลองอีกครั้ง');
+    } finally {
+      setIsJoining(false);
+    }
+  };
+
+  const handlePostComment = async (message) => {
+    setIsSubmittingComment(true);
+    try {
+      const newComment = await postComment(event.id, user, message);
+      setComments([...comments, newComment]);
+    } finally {
+      setIsSubmittingComment(false);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <Header />
+        <main className="main-content flex-grow pt-24 pb-16 bg-neutral-50 flex items-center justify-center">
+          <div className="w-12 h-12 border-4 border-brand-200 border-t-brand-500 rounded-full animate-spin"></div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (error || !event) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <Header />
+        <main className="main-content flex-grow pt-24 pb-16 bg-neutral-50">
+          <div className="container max-w-3xl text-center py-20">
+            <h2 className="heading-3 mb-4">{error}</h2>
+            <button onClick={() => navigate('/events')} className="btn btn-primary btn-md mx-auto">
+              ดูกิจกรรมทั้งหมด
+            </button>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  const isEnded = isEventEnded(event);
+  const isCancelled = event.status === 'cancelled';
+  const isActive = !isEnded && !isCancelled;
+
+  return (
+    <div className="flex flex-col min-h-screen">
+      <Header />
+      
+      <main className="main-content flex-grow pt-24 pb-16 bg-neutral-50">
+        <div className="container max-w-4xl">
+          {/* Back Button */}
+          <button 
+            onClick={handleBack} 
+            className="flex items-center gap-2 text-neutral-600 hover:text-brand-600 font-medium mb-6 transition-colors"
+          >
+            <ArrowLeft size={20} /> กลับหน้ากิจกรรม
+          </button>
+          
+          <div className="bg-white rounded-2xl shadow-sm overflow-hidden mb-8">
+            {/* Event Header Image */}
+            <div className="relative h-64 md:h-80 w-full bg-neutral-200 flex items-center justify-center text-neutral-400">
+              <Activity size={80} opacity={0.5} />
+              {isCancelled && (
+                <div className="absolute inset-0 bg-white/50 backdrop-blur-sm flex items-center justify-center">
+                  <Badge variant="error" className="text-lg px-4 py-2">กิจกรรมนี้ถูกยกเลิกแล้ว</Badge>
+                </div>
+              )}
+              {isEnded && !isCancelled && (
+                <div className="absolute inset-0 bg-white/50 backdrop-blur-sm flex items-center justify-center">
+                  <Badge variant="neutral" className="text-lg px-4 py-2 bg-neutral-800 text-white border-transparent">กิจกรรมจบลงแล้ว</Badge>
+                </div>
+              )}
+            </div>
+            
+            {/* Event Info */}
+            <div className="p-6 md:p-10">
+              <div className="flex flex-wrap gap-3 mb-4">
+                <Badge variant="neutral">{event.type}</Badge>
+                {isCancelled && <Badge variant="error">ยกเลิก</Badge>}
+                {isEnded && !isCancelled && <Badge variant="neutral">จบแล้ว</Badge>}
+              </div>
+              
+              <h1 className="heading-2 mb-8">{event.title}</h1>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+                <div className="space-y-6">
+                  <div className="flex gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center flex-shrink-0">
+                      <Calendar size={24} />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-neutral-900 mb-1">วันและเวลา</h3>
+                      <p className="text-neutral-600">{formatEventDateFull(event.date)}</p>
+                      {event.endDate && (
+                        <p className="text-neutral-600 mt-1">ถึง {formatEventDateFull(event.endDate)}</p>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center flex-shrink-0">
+                      <MapPin size={24} />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-neutral-900 mb-1">สถานที่</h3>
+                      <p className="text-neutral-600">{event.location}</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="bg-neutral-50 rounded-xl p-6 flex flex-col items-center justify-center text-center">
+                  <h3 className="font-semibold text-neutral-900 mb-2 w-full text-left">ผู้จัดกิจกรรม</h3>
+                  <div className="flex items-center gap-4 w-full mt-2">
+                    <Avatar src={event.organizer?.avatarUrl} size="medium" />
+                    <span className="font-medium text-lg">{event.organizer?.name || 'ไม่ระบุชื่อ'}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="border-t border-neutral-200 pt-8 mb-10">
+                <h3 className="heading-4 mb-4">รายละเอียด</h3>
+                <p className="body-lg text-neutral-700 whitespace-pre-wrap">
+                  {event.description}
+                </p>
+              </div>
+              
+              {/* Join Group Section */}
+              <div className="border-t border-neutral-200 pt-8 text-center flex flex-col items-center">
+                {!isActive ? (
+                  <p className="text-neutral-500 font-medium">ไม่สามารถเข้าร่วมได้ (กิจกรรมจบหรือถูกยกเลิกแล้ว)</p>
+                ) : !event.joinUrl ? (
+                  <p className="text-neutral-500 font-medium bg-neutral-100 px-6 py-3 rounded-xl inline-block">ยังไม่เปิดให้เข้าร่วมกลุ่ม</p>
+                ) : (
+                  <>
+                    <button 
+                      onClick={handleJoinGroup}
+                      disabled={isJoining}
+                      className="btn btn-primary btn-lg min-w-[200px] flex items-center justify-center gap-2"
+                    >
+                      {isJoining ? 'กำลังตรวจสอบ...' : (
+                        <>Join Group <ExternalLink size={20} /></>
+                      )}
+                    </button>
+                    {joinError && <p className="text-error mt-2 text-sm">{joinError}</p>}
+                    {!user && <p className="text-neutral-500 text-sm mt-3">เข้าสู่ระบบเพื่อเข้าร่วมกลุ่มกิจกรรมนี้</p>}
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+          
+          {/* Comments Section */}
+          <div className="bg-white rounded-2xl shadow-sm p-6 md:p-10" id="comments">
+            <h3 className="heading-4 mb-2">ความคิดเห็น</h3>
+            <p className="text-neutral-500 text-sm mb-6">ทุกคนสามารถอ่านคอมเมนต์ที่เผยแพร่ได้ แต่ต้องเข้าสู่ระบบก่อนส่ง</p>
+            
+            {user ? (
+              <CommentComposer 
+                user={user} 
+                onSubmit={handlePostComment} 
+                isSubmitting={isSubmittingComment} 
+              />
+            ) : (
+              <div className="bg-brand-50 border border-brand-100 rounded-xl p-6 flex flex-col md:flex-row items-center justify-between gap-4 mt-6">
+                <p className="text-brand-800 font-medium">เข้าสู่ระบบเพื่อแสดงความคิดเห็น</p>
+                <button 
+                  onClick={() => setIsLoginModalOpen(true)} 
+                  className="btn btn-primary btn-sm flex-shrink-0"
+                >
+                  เข้าสู่ระบบ
+                </button>
+              </div>
+            )}
+            
+            <CommentList comments={comments} isLoading={isLoadingComments} />
+          </div>
+        </div>
+      </main>
+      
+      <Footer />
+      
+      <LoginModal 
+        isOpen={isLoginModalOpen} 
+        onClose={() => setIsLoginModalOpen(false)} 
+        redirectOnComplete={`/events/${event.id}`}
+      />
+    </div>
+  );
+}

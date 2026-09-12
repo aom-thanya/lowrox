@@ -2,7 +2,7 @@ import React from 'react';
 import { Target, Activity, Clock } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import FindBuddyCTA from '../components/home/FindBuddyCTA';
+import { Link } from 'react-router-dom';
 import FeatureCard from '../components/home/FeatureCard';
 import heroImg from '../assets/hero.png';
 
@@ -23,7 +23,9 @@ export default function Home() {
                 </p>
                 
                 <div className="flex flex-wrap items-center gap-4 mb-4">
-                  <FindBuddyCTA variant="primary" />
+                  <Link to="/events" className="btn btn-primary btn-md btn-cta">
+                    ดูกิจกรรม
+                  </Link>
                   <a href="#how-it-works" className="btn btn-secondary btn-md">
                     ดูวิธีใช้งาน
                   </a>
@@ -114,7 +116,9 @@ export default function Home() {
             <p className="body-lg text-neutral-600 mb-8">
               เริ่มจากบอกเราเกี่ยวกับคุณ แล้วไปหา Buddy กัน
             </p>
-            <FindBuddyCTA variant="primary" />
+            <Link to="/events" className="btn btn-primary btn-md btn-cta">
+              ดูกิจกรรม
+            </Link>
           </div>
         </section>
       </main>
