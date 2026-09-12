@@ -1,0 +1,85 @@
+/* Lowrox Design System */
+
+:root {
+  /* Brand Colors */
+  --color-brand-50: #FFF5EB;
+  --color-brand-100: #FFE7CC;
+  --color-brand-200: #FFCC99;
+  --color-brand-300: #FFAD5C;
+  --color-brand-400: #FF8A24;
+  --color-brand-500: #FF6B00;
+  --color-brand-600: #E85D00;
+  --color-brand-700: #BF4900;
+  --color-brand-800: #963A08;
+  --color-brand-900: #7A320C;
+
+  /* Neutral Colors */
+  --color-black: #0B0B0C;
+  --color-neutral-950: #111113;
+  --color-neutral-900: #19191C;
+  --color-neutral-800: #29292D;
+  --color-neutral-700: #3F3F46;
+  --color-neutral-600: #5F5F68;
+  --color-neutral-500: #7A7A85;
+  --color-neutral-400: #A2A2AA;
+  --color-neutral-300: #CECED3;
+  --color-neutral-200: #E5E5E8;
+  --color-neutral-100: #F3F3F5;
+  --color-neutral-50: #FAFAFB;
+  --color-white: #FFFFFF;
+
+  /* Semantic Colors */
+  --color-success: #16A36A;
+  --color-success-soft: #EAF8F1;
+  --color-warning: #E99A00;
+  --color-warning-soft: #FFF7DD;
+  --color-error: #D9363E;
+  --color-error-soft: #FFF0F1;
+  --color-info: #2878D0;
+  --color-info-soft: #EDF6FF;
+
+  /* Typography */
+  --font-primary: "IBM Plex Sans Thai", "Noto Sans Thai", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  /* Spacing */
+  --space-0: 0;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+
+  /* Layout and Grid */
+  --container-max: 1200px;
+  --container-wide: 1440px;
+
+  /* Shape, Border, and Elevation */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 999px;
+
+  --border-subtle: 1px solid #E5E5E8;
+  --border-strong: 1px solid #A2A2AA;
+  --border-dark: 1px solid #29292D;
+
+  --shadow-sm: 0 2px 8px rgba(11, 11, 12, 0.06);
+  --shadow-md: 0 10px 30px rgba(11, 11, 12, 0.10);
+  --shadow-lg: 0 20px 50px rgba(11, 11, 12, 0.16);
+
+  /* Animation */
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 320ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasized: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
