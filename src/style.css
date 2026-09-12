@@ -169,10 +169,27 @@ input, select, textarea, button {
   opacity: 0.4;
   cursor: not-allowed;
 }
-.btn-primary { background-color: var(--color-brand-500); color: var(--color-white); }
-.btn-primary:hover:not(:disabled) { background-color: var(--color-brand-600); }
-.btn-primary:active:not(:disabled) { background-color: var(--color-brand-700); }
+.btn-primary { background-color: var(--color-brand-500); color: var(--color-white); border: 1px solid var(--color-brand-500); }
+.btn-primary:hover:not(:disabled) { background-color: var(--color-brand-600); border-color: var(--color-brand-600); }
+.btn-primary:active:not(:disabled) { background-color: var(--color-brand-700); border-color: var(--color-brand-700); }
+
+.btn-secondary { background-color: var(--color-white); color: var(--color-neutral-800); border: 1px solid var(--color-neutral-300); }
+.btn-secondary:hover:not(:disabled) { background-color: var(--color-neutral-50); }
+.btn-secondary:active:not(:disabled) { background-color: var(--color-neutral-100); }
+
 .btn-md { height: 44px; }
+.btn-sm { height: 36px; padding: 0 var(--space-3); font-size: 13px; }
+
+/* Global Button Base */
+button {
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+button:focus-visible {
+  outline: 2px solid var(--color-brand-300);
+  outline-offset: 2px;
+}
 
 /* Header */
 .header {
