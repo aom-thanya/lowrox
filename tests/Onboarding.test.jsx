@@ -9,6 +9,14 @@ vi.mock('../src/context/AuthContext', () => ({
   useAuth: vi.fn()
 }));
 
+vi.mock('../src/context/UnsavedChangesContext', () => ({
+  useUnsavedChanges: vi.fn(() => ({
+    setDirty: vi.fn(),
+    requestAction: vi.fn(action => action())
+  })),
+  UnsavedChangesProvider: ({ children }) => <>{children}</>
+}));
+
 // Mock the child steps because we want to test the flow, not the individual step DOMs deeply here.
 // But we actually need to test "prevent advancing to next step if validation fails".
 // So we can mock OnboardingModal or test it directly.

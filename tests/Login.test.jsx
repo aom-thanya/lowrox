@@ -84,6 +84,6 @@ describe('Login Page', () => {
     const submitButton = screen.getByRole('button', { name: /เข้าสู่ระบบ/i });
     fireEvent.click(submitButton);
 
-    expect(await screen.findByText('ข้อมูลการเข้าสู่ระบบไม่ถูกต้อง')).toBeInTheDocument();
+    expect(await screen.findByText('ไม่สามารถเข้าสู่ระบบได้ กรุณาตรวจสอบข้อมูลแล้วลองอีกครั้ง')).toBeInTheDocument();
   });
 });
