@@ -5,6 +5,7 @@ import ChoiceCard from '../common/ChoiceCard';
 import FormSection from '../common/FormSection';
 import InputWrapper from '../common/InputWrapper';
 import FeedbackCard from '../common/FeedbackCard';
+import { calculatePaceAndSpeed } from '../../utils/onboardingUtils';
 
 const ONBOARDING_STEP_ILLUSTRATIONS = {
   currentPace: step2Img,
@@ -164,18 +165,7 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
 
   const exactDist = getExactDistance();
   const exactDur = getExactDurationMin();
-  let paceStr = '';
-  let speedStr = '';
-
-  if (exactDist > 0 && exactDur > 0) {
-    const decimalPace = exactDur / exactDist;
-    const pMins = Math.floor(decimalPace);
-    const pSecs = Math.round((decimalPace - pMins) * 60);
-    paceStr = `${pMins}:${pSecs.toString().padStart(2, '0')}`;
-
-    const speed = exactDist / (exactDur / 60);
-    speedStr = speed.toFixed(1);
-  }
+  const { paceStr, speedStr } = calculatePaceAndSpeed(exactDist, exactDur);
 
   const getCtaLabel = () => {
     if (isSubmitting) return 'กำลังบันทึก...';

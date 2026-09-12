@@ -6,6 +6,7 @@ import PillButton from '../common/PillButton';
 import FormSection from '../common/FormSection';
 import InputWrapper from '../common/InputWrapper';
 import FeedbackCard from '../common/FeedbackCard';
+import { calculateTargetDateString } from '../../utils/onboardingUtils';
 
 const ONBOARDING_STEP_ILLUSTRATIONS = {
   nextChallenge: step3Img,
@@ -87,22 +88,7 @@ export default function StepGoals({ onNext, onPrev }) {
     let recStatus = '';
 
     // Calculate Target Date String
-    const now = new Date();
-    if (dateSelect === 'plus_1_month') {
-      now.setMonth(now.getMonth() + 1);
-      targetDateStr = now.toISOString().split('T')[0];
-    } else if (dateSelect === 'plus_3_months') {
-      now.setMonth(now.getMonth() + 3);
-      targetDateStr = now.toISOString().split('T')[0];
-    } else if (dateSelect === 'plus_6_months') {
-      now.setMonth(now.getMonth() + 6);
-      targetDateStr = now.toISOString().split('T')[0];
-    } else if (dateSelect === 'custom_date') {
-      targetDateStr = customDate;
-    } else if (eventSelect === 'system_event') {
-      // Mock system event date
-      targetDateStr = '2026-12-14';
-    }
+    targetDateStr = calculateTargetDateString(dateSelect, customDate, eventSelect);
 
     if (goalType === 'increase_distance') {
       const finalDist = distSelect === 'custom' ? customDist : distSelect;
@@ -164,6 +150,21 @@ export default function StepGoals({ onNext, onPrev }) {
     return ['3', '5', '10'];
   };
   const recDistances = getRecDistances();
+
+  const resetForm = () => {
+    setDistSelect('');
+    setCustomDist('');
+    setDurSelect('');
+    setCustomHrs('');
+    setCustomMins('');
+    setEventSelect('');
+    setCustomEvent('');
+    setBuddyStatus('');
+    setEnduranceFocus('');
+    setDateSelect('');
+    setCustomDate('');
+    setErrors({});
+  };
 
   const validate = () => {
     const newErrors = {};

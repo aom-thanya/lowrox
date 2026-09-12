@@ -3,6 +3,7 @@ import { useOnboarding } from '../../context/OnboardingContext';
 import ChoiceCard from '../common/ChoiceCard';
 import FormSection from '../common/FormSection';
 import step1Img from '../../assets/onboarding/step1.png';
+import { calculateAge } from '../../utils/onboardingUtils';
 
 const ONBOARDING_STEP_ILLUSTRATIONS = {
   aboutYou: step1Img,
@@ -33,17 +34,7 @@ export default function StepBasicInfo({ onNext }) {
     }
   }, [birthDate]);
 
-  const calculateAge = (dob) => {
-    if (!dob) return '';
-    const today = new Date();
-    const birthDateObj = new Date(dob);
-    let age = today.getFullYear() - birthDateObj.getFullYear();
-    const m = today.getMonth() - birthDateObj.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDateObj.getDate())) {
-      age--;
-    }
-    return age;
-  };
+
 
   const validate = () => {
     const newErrors = {};

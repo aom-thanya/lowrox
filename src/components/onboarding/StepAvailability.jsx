@@ -58,6 +58,7 @@ export default function StepAvailability({ onNext, onPrev }) {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
+  const [showValidation, setShowValidation] = useState(false);
   const [showNote, setShowNote] = useState({}); // { [index]: boolean }
 
   const windows = formData.availabilityWindows || [];
@@ -279,6 +280,7 @@ export default function StepAvailability({ onNext, onPrev }) {
   };
 
   const handleNext = async () => {
+    setShowValidation(true);
     if (!validate()) return;
     setIsSubmitting(true);
     setSubmitError('');
