@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import ProfileOnboardingEditor from '../src/pages/ProfileOnboardingEditor';
-import { useUnsavedChanges } from '../src/context/UnsavedChangesContext';
+import { useUnsavedChanges, UnsavedChangesProvider } from '../src/context/UnsavedChangesContext';
 import { useAuth } from '../src/context/AuthContext';
 
 vi.mock('../src/context/UnsavedChangesContext', () => ({
@@ -77,8 +77,8 @@ describe('ProfileOnboardingEditor', () => {
   test('validates all steps when saving and stops if invalid', async () => {
     renderEditor();
     
-    // Attempt to save
-    const saveBtn = screen.getByRole('button', { name: 'บันทึกการเปลี่ยนแปลง' });
+    // Attempt to save (waiting for it to appear after loading)
+    const saveBtn = await screen.findByRole('button', { name: 'บันทึกการเปลี่ยนแปลง' });
     fireEvent.click(saveBtn);
     
     // Basic Info mock returns false, so it should show error and not save

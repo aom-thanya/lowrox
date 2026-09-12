@@ -3,7 +3,16 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import ProfileEditor from '../src/pages/ProfileEditor';
-import { useUnsavedChanges } from '../src/context/UnsavedChangesContext';
+import { useUnsavedChanges, UnsavedChangesProvider } from '../src/context/UnsavedChangesContext';
+import { useAuth } from '../src/context/AuthContext';
+
+vi.mock('../src/context/AuthContext', () => ({
+  useAuth: vi.fn(() => ({
+    user: { displayName: 'Test User' },
+    loadProfile: vi.fn(() => ({})),
+    saveProfile: vi.fn()
+  }))
+}));
 
 vi.mock('../src/services/userRepository', () => ({
   readCurrentUser: vi.fn(() => ({

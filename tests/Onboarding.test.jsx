@@ -86,6 +86,6 @@ describe('Onboarding Page', () => {
     const closeBtn = screen.getByLabelText('Close onboarding');
     fireEvent.click(closeBtn);
     
-    expect(screen.getByText('ต้องการออกจากการเตรียมความพร้อมหรือไม่?')).toBeInTheDocument();
+    expect(screen.getByText('จะพักก่อนใช่ไหม?')).toBeInTheDocument();
   });
 });
