@@ -9,7 +9,12 @@ import { useAuth } from '../src/context/AuthContext';
 vi.mock('../src/context/AuthContext', () => ({
   useAuth: vi.fn(() => ({
     user: { displayName: 'Test User' },
-    loadProfile: vi.fn(() => ({})),
+    loadProfile: vi.fn(() => ({
+      displayName: 'Test User',
+      bio: 'Test Bio',
+      provinceId: '1',
+      districtId: '101'
+    })),
     saveProfile: vi.fn()
   }))
 }));
