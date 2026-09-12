@@ -1,5 +1,6 @@
-import test from 'node:test';
-import assert from 'node:assert/strict';
+import { test, assert } from 'vitest';
+
+
 import { calculateAge, calculatePaceAndSpeed, calculateTargetDateString } from '../src/utils/onboardingUtils.js';
 
 test('calculateAge calculates correct age considering birth month/day', () => {

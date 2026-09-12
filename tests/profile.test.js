@@ -1,11 +1,12 @@
-import test from 'node:test';
-import assert from 'node:assert/strict';
+import { test, assert } from 'vitest';
+
+
 import { readFileSync } from 'node:fs';
 import { profileFromUser, validateProfile, hasProfileChanges, characterCount } from '../src/utils/profile.js';
 import { validateImageFile, cropBounds, MAX_AVATAR_BYTES } from '../src/utils/imageUpload.js';
 import { restoreSession, startSession, readUser, readCurrentUser, updateCurrentUser } from '../src/services/userRepository.js';
 
-const areas = JSON.parse(readFileSync(new URL('../src/data/thaiAreas.json', import.meta.url)));
+import areas from '../src/data/thaiAreas.json';
 const profile = profileFromUser({ username: 'test' });
 const storage = () => {
   const data = new Map();

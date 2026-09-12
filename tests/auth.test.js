@@ -1,5 +1,6 @@
-import test from 'node:test';
-import assert from 'node:assert/strict';
+import { test, assert } from 'vitest';
+
+
 import { getLoginDestination } from '../src/utils/authRedirect.js';
 
 test('getLoginDestination returns onboarding if status is not completed', () => {
