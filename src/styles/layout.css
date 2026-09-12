@@ -526,6 +526,10 @@ input[type="time"].input-error {
   position: relative;
 }
 
+.choice-card-has-check {
+  padding-right: 32px;
+}
+
 .choice-card:hover {
   border-color: var(--color-brand-300);
   background-color: var(--color-brand-50);
@@ -563,8 +567,8 @@ input[type="time"].input-error {
 
 .choice-card-check {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 8px;
+  right: 8px;
   color: var(--color-brand-500);
 }
 

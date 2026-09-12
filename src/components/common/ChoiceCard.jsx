@@ -14,7 +14,7 @@ export default function ChoiceCard({
   return (
     <button
       type="button"
-      className={`choice-card ${isSelected ? 'choice-card-selected' : ''} ${className}`}
+      className={`choice-card ${isSelected ? 'choice-card-selected' : ''} ${hasCheckMark ? 'choice-card-has-check' : ''} ${className}`}
       onClick={onClick}
       aria-pressed={isSelected}
     >
@@ -24,7 +24,7 @@ export default function ChoiceCard({
       {children}
       {hasCheckMark && isSelected && (
         <div className="choice-card-check">
-          <CheckCircle2 size={24} fill="currentColor" stroke="white" />
+          <CheckCircle2 size={20} fill="currentColor" stroke="white" />
         </div>
       )}
     </button>
