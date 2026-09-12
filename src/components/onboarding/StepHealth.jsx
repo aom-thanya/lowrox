@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { useOnboarding } from '../../context/OnboardingContext';
 import step5Img from '../../assets/onboarding/step5.png';
 import ChoiceCard from '../common/ChoiceCard';
@@ -34,11 +34,31 @@ const STATUS_MAPPING = {
   'resolved': { label: 'ไม่มีผลแล้ว', is_active: false }
 };
 
-export default function StepHealth({ onNext, onPrev }) {
+const StepHealth = forwardRef(({ onNext, onPrev, isEditor, externalShowValidation }, ref) => {
   const { formData, updateFormData, submitForm } = useOnboarding();
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
+  const [internalShowValidation, setShowValidation] = useState(false);
+  const showValidation = internalShowValidation || externalShowValidation;
+
+  useImperativeHandle(ref, () => ({
+    validate: () => {
+      // StepHealth doesn't have a direct top-level validate like others.
+      // We check mainSelection and concerns.
+      if (mainSelection.length === 0) {
+        setErrors({ main: 'เลือกคำตอบที่ใกล้เคียงกับคุณ' });
+        return false;
+      }
+      if (!mainSelection.includes('none') && !mainSelection.includes('unsure')) {
+        if (concerns.length === 0) {
+          setErrors({ main: 'กรุณาระบุรายละเอียด หรือเลือก "ไม่มีเรื่องที่ต้องระวัง"' });
+          return false;
+        }
+      }
+      return true;
+    }
+  }));
 
   const safetyCheck = formData.safetyCheck || { mainSelection: [], concerns: [] };
   const { mainSelection, concerns } = safetyCheck;
@@ -378,24 +398,9 @@ export default function StepHealth({ onNext, onPrev }) {
     );
   };
 
-  return (
-    <>
-      <div className="onboarding-modal-body">
-        {/* Header Section */}
-        <div className="onboarding-fullwidth-header">
-          <img
-            src={ONBOARDING_STEP_ILLUSTRATIONS.safetyCheck}
-            alt="Lowrox safety check illustration"
-            onError={(e) => { e.target.style.display = 'none'; }}
-          />
-          <div className="onboarding-text-align">
-            <h2 className="heading-2 mb-8 flex items-center">ก่อนเริ่ม มีอะไรที่เราควรรู้ไหม? <ShieldAlert size={28} className="ml-8 text-brand-500" /></h2>
-            <p className="body-md text-neutral-600">
-              บอกเฉพาะเรื่องที่เกี่ยวข้องกับการออกกำลังกาย เพื่อให้คำแนะนำเหมาะกับคุณมากขึ้น
-            </p>
-          </div>
-        </div>
 
+  const formContent = (
+    <>
         <div className="onboarding-privacy-notice">
           <span className="text-neutral-500 mr-12"><Lock size={24} /></span>
           <div>
@@ -471,6 +476,32 @@ export default function StepHealth({ onNext, onPrev }) {
             ⓘ Lowrox ใช้ข้อมูลนี้เพื่อปรับคำแนะนำเบื้องต้นเท่านั้น ไม่ใช่การวินิจฉัยหรือการรับรองความพร้อมทางการแพทย์
           </div>
         </div>
+    </>
+  );
+
+  if (isEditor) {
+    return <div className="onboarding-editor-section">{formContent}</div>;
+  }
+
+  return (
+    <>
+      <div className="onboarding-modal-body">
+        {/* Header Section */}
+        <div className="onboarding-fullwidth-header">
+          <img
+            src={ONBOARDING_STEP_ILLUSTRATIONS.safetyCheck}
+            alt="Lowrox safety check illustration"
+            onError={(e) => { e.target.style.display = 'none'; }}
+          />
+          <div className="onboarding-text-align">
+            <h2 className="heading-2 mb-8 flex items-center">ก่อนเริ่ม มีอะไรที่เราควรรู้ไหม? <ShieldAlert size={28} className="ml-8 text-brand-500" /></h2>
+            <p className="body-md text-neutral-600">
+              บอกเฉพาะเรื่องที่เกี่ยวข้องกับการออกกำลังกาย เพื่อให้คำแนะนำเหมาะกับคุณมากขึ้น
+            </p>
+          </div>
+        </div>
+
+        {formContent}
       </div>
 
       <div className="onboarding-modal-footer">
@@ -491,4 +522,6 @@ export default function StepHealth({ onNext, onPrev }) {
       </div>
     </>
   );
-}
+});
+
+export default StepHealth;

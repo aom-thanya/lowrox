@@ -2,9 +2,9 @@ import React, { createContext, useContext, useState } from 'react';
 
 const OnboardingContext = createContext(null);
 
-export function OnboardingProvider({ children, onComplete }) {
+export function OnboardingProvider({ children, onComplete, initialData }) {
   const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState(initialData || {
     demographics: { age: '', gender: '', birthDate: '' },
     fitnessLevel: { 
       runningDistance: '', 

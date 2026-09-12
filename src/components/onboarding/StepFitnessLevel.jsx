@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { useOnboarding } from '../../context/OnboardingContext';
 import step2Img from '../../assets/onboarding/step2.png';
 import ChoiceCard from '../common/ChoiceCard';
@@ -30,7 +30,7 @@ const DURATION_OPTIONS = [
   { value: 'unknown', label: 'จำไม่ได้' }
 ];
 
-export default function StepFitnessLevel({ onNext, onPrev }) {
+const StepFitnessLevel = forwardRef(({ onNext, onPrev, isEditor, externalShowValidation }, ref) => {
   const { formData, updateFormData } = useOnboarding();
 
   // Initialize local state from context
@@ -45,6 +45,12 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [showValidation, setShowValidation] = useState(false);
+
+  const displayValidation = showValidation || externalShowValidation;
+
+  useImperativeHandle(ref, () => ({
+    validate
+  }));
 
   // Sync state back to context whenever it changes
   useEffect(() => {
@@ -192,6 +198,8 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
           </div>
         </div>
 
+  const formContent = (
+    <>
         {submitError && (
           <div className="onboarding-error-area" role="alert">
             {submitError}
@@ -201,7 +209,7 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
         {/* Question 1: Distance */}
         <FormSection
           label="ครั้งล่าสุด คุณวิ่งได้ประมาณเท่าไร?"
-          error={showValidation && errors.distance}
+          error={displayValidation && errors.distance}
         >
           <div className="choice-cards-container flex-wrap mt-12">
             {DISTANCE_OPTIONS.map(opt => {
@@ -213,7 +221,7 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
                   onClick={() => {
                     setDistSelect(opt.value);
                     if (opt.value === 'not_tracked') setDurSelect('');
-                    if (showValidation) validate();
+                    if (displayValidation) validate();
                   }}
                   label={opt.label}
                   className="flex-1 min-w-[120px] p-[16px_32px]"
@@ -236,13 +244,13 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
                 value={customCustomDistHandler()}
                 onChange={(e) => {
                   setCustomDist(e.target.value);
-                  if (showValidation) validate();
+                  if (displayValidation) validate();
                 }}
                 placeholder="เช่น 6.5"
                 step="0.01"
                 min="0.01"
                 max="999.99"
-                className={`w-full pr-48 appearance-none ${showValidation && errors.distance ? 'input-error' : ''}`}
+                className={`w-full pr-48 appearance-none ${displayValidation && errors.distance ? 'input-error' : ''}`}
               />
             </InputWrapper>
           </FormSection>
@@ -253,7 +261,7 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
           <FormSection
             label="ใช้เวลาวิ่งไปเท่าไร? (โดยประมาณ)"
             helperText="ข้อมูลนี้ช่วยให้เรารู้ Pace คร่าวๆ ของคุณ"
-            error={showValidation && errors.duration}
+            error={displayValidation && errors.duration}
             className="onboarding-fade-in"
           >
             <div className="choice-cards-container flex-wrap mt-12">
@@ -265,7 +273,7 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
                     isSelected={isSelected}
                     onClick={() => {
                       setDurSelect(opt.value);
-                      if (showValidation) validate();
+                      if (displayValidation) validate();
                     }}
                     label={opt.label}
                     className="flex-[1_0_45%] min-w-[140px] p-[16px_32px]"
@@ -287,11 +295,11 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
                   value={customHrs}
                   onChange={(e) => {
                     setCustomHrs(e.target.value);
-                    if (showValidation) validate();
+                    if (displayValidation) validate();
                   }}
                   placeholder="00"
                   min="0"
-                  className={`w-full pr-64 appearance-none text-center ${showValidation && errors.duration ? 'input-error' : ''}`}
+                  className={`w-full pr-64 appearance-none text-center ${displayValidation && errors.duration ? 'input-error' : ''}`}
                 />
               </InputWrapper>
               <InputWrapper suffix="นาที" className="w-[140px]">
@@ -302,12 +310,12 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
                   value={customMins}
                   onChange={(e) => {
                     setCustomMins(e.target.value);
-                    if (showValidation) validate();
+                    if (displayValidation) validate();
                   }}
                   placeholder="00"
                   min="0"
                   max="59"
-                  className={`w-full pr-48 appearance-none text-center ${showValidation && errors.duration ? 'input-error' : ''}`}
+                  className={`w-full pr-48 appearance-none text-center ${displayValidation && errors.duration ? 'input-error' : ''}`}
                 />
               </InputWrapper>
             </div>
@@ -348,6 +356,32 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
             <p className="text-sm text-neutral-700">ดีเลย เราเริ่มเห็นจังหวะของคุณแล้ว</p>
           </FeedbackCard>
         )}
+    </>
+  );
+
+  if (isEditor) {
+    return <div className="onboarding-editor-section">{formContent}</div>;
+  }
+
+  return (
+    <>
+      <div className="onboarding-modal-body">
+        {/* Header Section */}
+        <div className="onboarding-fullwidth-header">
+          <img
+            src={ONBOARDING_STEP_ILLUSTRATIONS.currentPace}
+            alt="Lowrox current pace illustration"
+            onError={(e) => { e.target.style.display = 'none'; }}
+          />
+          <div className="onboarding-text-align">
+            <h2 className="heading-2 mb-8 flex items-center"><Activity size={28} className="mr-8 text-brand-500" />สถิติปัจจุบันของคุณ</h2>
+            <p className="body-md text-neutral-600">
+              ไม่ต้องเป็นสถิติที่ดีที่สุด เลือกครั้งที่ใกล้เคียงกับคุณที่สุดได้เลย
+            </p>
+          </div>
+        </div>
+
+        {formContent}
       </div>
 
       <div className="onboarding-modal-footer">
@@ -372,4 +406,6 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
   function customCustomDistHandler() {
     return customDist;
   }
-}
+});
+
+export default StepFitnessLevel;

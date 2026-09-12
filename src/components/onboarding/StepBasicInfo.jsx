@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { useOnboarding } from '../../context/OnboardingContext';
 import ChoiceCard from '../common/ChoiceCard';
 import FormSection from '../common/FormSection';
@@ -16,13 +16,19 @@ const GENDER_OPTIONS = [
   { value: 'unspecified', label: 'ไม่ระบุ', icon: <CircleUser size={24} /> }
 ];
 
-export default function StepBasicInfo({ onNext }) {
+const StepBasicInfo = forwardRef(({ onNext, isEditor, externalShowValidation }, ref) => {
   const { formData, updateFormData } = useOnboarding();
   const [errors, setErrors] = useState({});
   const [birthDate, setBirthDate] = useState(formData.demographics.birthDate || '');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [showValidation, setShowValidation] = useState(false);
+
+  const displayValidation = showValidation || externalShowValidation;
+
+  useImperativeHandle(ref, () => ({
+    validate
+  }));
 
   // Note: We use birthDate for frontend calculation, but send age to backend
   // In the future, the backend schema should support birth_date directly 
@@ -105,6 +111,8 @@ export default function StepBasicInfo({ onNext }) {
 
         <div className="onboarding-form-column">
 
+  const formContent = (
+    <>
           {submitError && (
             <div className="onboarding-error-area" role="alert">
               {submitError}
@@ -114,7 +122,7 @@ export default function StepBasicInfo({ onNext }) {
           <FormSection
             label="คุณเกิดวันไหน?"
             htmlFor="birthDate"
-            error={showValidation && errors.birthDate}
+            error={displayValidation && errors.birthDate}
             helperText={
               birthDate && !isNaN(new Date(birthDate).getTime()) && new Date(birthDate) <= new Date()
                 ? `ตอนนี้คุณอายุ ${calculateAge(birthDate)} ปี`
@@ -127,9 +135,9 @@ export default function StepBasicInfo({ onNext }) {
               value={birthDate}
               onChange={(e) => {
                 setBirthDate(e.target.value);
-                if (showValidation) validate();
+                if (displayValidation) validate();
               }}
-              className={showValidation && errors.birthDate ? 'input-error' : ''}
+              className={displayValidation && errors.birthDate ? 'input-error' : ''}
               max={new Date().toISOString().split("T")[0]}
             />
           </FormSection>
@@ -137,7 +145,7 @@ export default function StepBasicInfo({ onNext }) {
           <FormSection
             label="อยากให้เราใช้ข้อมูลใดในการเทียบผลของคุณ?"
             helperText="เลือกข้อมูลที่คุณสะดวกให้เราใช้"
-            error={showValidation && errors.gender}
+            error={displayValidation && errors.gender}
           >
             <div className="choice-cards-container">
               {GENDER_OPTIONS.map(opt => {
@@ -148,7 +156,7 @@ export default function StepBasicInfo({ onNext }) {
                     isSelected={isSelected}
                     onClick={() => {
                       updateFormData('demographics', { ...formData.demographics, gender: opt.value });
-                      if (showValidation) validate();
+                      if (displayValidation) validate();
                     }}
                     icon={opt.icon}
                     label={opt.label}
@@ -157,6 +165,35 @@ export default function StepBasicInfo({ onNext }) {
               })}
             </div>
           </FormSection>
+    </>
+  );
+
+  if (isEditor) {
+    return <div className="onboarding-editor-section">{formContent}</div>;
+  }
+
+  return (
+    <>
+      <div className="onboarding-modal-body onboarding-step-layout">
+        <div className="onboarding-illustration-column flex flex-col items-center text-center">
+          <div className="onboarding-illustration-container">
+            <img
+              src={ONBOARDING_STEP_ILLUSTRATIONS.aboutYou}
+              alt="Lowrox runner illustration"
+              className="onboarding-illustration"
+              onError={(e) => { e.target.style.display = 'none'; }}
+            />
+          </div>
+          <div className="onboarding-form-section mt-24">
+            <h2 className="display-sm mb-8">มาทำความรู้จักกันหน่อย 👋</h2>
+            <p className="body-md text-neutral-600">
+              ข้อมูลนี้จะช่วยให้ Lowrox ปรับแต่งประสบการณ์และเป้าหมายให้เหมาะกับคุณที่สุด
+            </p>
+          </div>
+        </div>
+
+        <div className="onboarding-form-column">
+          {formContent}
         </div>
       </div>
 
@@ -171,4 +208,6 @@ export default function StepBasicInfo({ onNext }) {
       </div>
     </>
   );
-}
+});
+
+export default StepBasicInfo;

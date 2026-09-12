@@ -97,3 +97,14 @@ test('missing/corrupt data raises a recoverable load error', () => {
   db.setItem('lowrox:user:1', JSON.stringify({ id: 1, username: 'test' }));
   assert.equal(readCurrentUser(1, db).username, 'test');
 });
+
+test('saving onboarding data persists correctly in user record', () => {
+  const db = storage();
+  startSession({ id: 1, username: 'test' }, db);
+  
+  const onboardingData = { goals: [{ goalType: 'increase_distance' }] };
+  updateCurrentUser(1, { onboardingData }, db);
+  
+  const current = readCurrentUser(1, db);
+  assert.deepEqual(current.onboardingData, onboardingData);
+});

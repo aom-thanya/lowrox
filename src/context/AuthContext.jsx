@@ -93,8 +93,21 @@ export function AuthProvider({ children }) {
     return profileFromUser(updated);
   }, [userId]);
 
+  const loadOnboardingData = useCallback(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    const current = readCurrentUser(userId);
+    return current.onboardingData || null;
+  }, [userId]);
+
+  const saveOnboardingData = useCallback(async (onboardingData) => {
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    const updated = updateCurrentUser(userId, { onboardingData });
+    setUser(updated);
+    return updated.onboardingData;
+  }, [userId]);
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, updateOnboardingStatus, loadProfile, saveProfile }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, updateOnboardingStatus, loadProfile, saveProfile, loadOnboardingData, saveOnboardingData }}>
       {children}
     </AuthContext.Provider>
   );

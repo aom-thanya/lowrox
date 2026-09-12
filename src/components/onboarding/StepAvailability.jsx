@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import { useOnboarding } from '../../context/OnboardingContext';
 import step4Img from '../../assets/onboarding/step4.png';
 import PillButton from '../common/PillButton';
@@ -54,12 +54,17 @@ const AVAILABILITY_TIME_MAPPING = {
   evening: { available_from: "20:00", available_to: "22:00" }
 };
 
-export default function StepAvailability({ onNext, onPrev }) {
+const StepAvailability = forwardRef(({ onNext, onPrev, isEditor, externalShowValidation }, ref) => {
   const { formData, updateFormData } = useOnboarding();
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
-  const [showValidation, setShowValidation] = useState(false);
+  const [internalShowValidation, setShowValidation] = useState(false);
+  const showValidation = internalShowValidation || externalShowValidation;
+
+  useImperativeHandle(ref, () => ({
+    validate
+  }));
   const [showNote, setShowNote] = useState({}); // { [index]: boolean }
 
   const windows = formData.availabilityWindows || [];
@@ -372,24 +377,9 @@ export default function StepAvailability({ onNext, onPrev }) {
     );
   };
 
-  return (
-    <>
-      <div className="onboarding-modal-body">
-        {/* Header Section */}
-        <div className="onboarding-fullwidth-header">
-          <img
-            src={ONBOARDING_STEP_ILLUSTRATIONS.yourRhythm}
-            alt="Lowrox training availability illustration"
-            onError={(e) => { e.target.style.display = 'none'; }}
-          />
-          <div className="onboarding-text-align">
-            <h2 className="heading-2 mb-8 flex items-center">จังหวะไหนเข้ากับชีวิตคุณ? <CalendarIcon size={28} className="ml-8" /></h2>
-            <p className="body-md text-neutral-600">
-              เลือกช่วงที่มักสะดวก เราจะช่วยหา Buddy และ Training Party ที่เข้ากับคุณ
-            </p>
-          </div>
-        </div>
 
+  const formContent = (
+    <>
         {submitError && (
           <div className="error-message-area mb-24" role="alert">
             {submitError}
@@ -595,6 +585,32 @@ export default function StepAvailability({ onNext, onPrev }) {
 
           {getPreviewText()}
         </div>
+    </>
+  );
+
+  if (isEditor) {
+    return <div className="onboarding-editor-section">{formContent}</div>;
+  }
+
+  return (
+    <>
+      <div className="onboarding-modal-body">
+        {/* Header Section */}
+        <div className="onboarding-fullwidth-header">
+          <img
+            src={ONBOARDING_STEP_ILLUSTRATIONS.yourRhythm}
+            alt="Lowrox training availability illustration"
+            onError={(e) => { e.target.style.display = 'none'; }}
+          />
+          <div className="onboarding-text-align">
+            <h2 className="heading-2 mb-8 flex items-center">จังหวะไหนเข้ากับชีวิตคุณ? <CalendarIcon size={28} className="ml-8" /></h2>
+            <p className="body-md text-neutral-600">
+              เลือกช่วงที่มักสะดวก เราจะช่วยหา Buddy และ Training Party ที่เข้ากับคุณ
+            </p>
+          </div>
+        </div>
+
+        {formContent}
       </div>
 
       <div className="onboarding-modal-footer">
@@ -614,4 +630,6 @@ export default function StepAvailability({ onNext, onPrev }) {
       </div>
     </>
   );
-}
+});
+
+export default StepAvailability;

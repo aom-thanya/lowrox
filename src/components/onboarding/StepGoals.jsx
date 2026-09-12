@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { useOnboarding } from '../../context/OnboardingContext';
 import step3Img from '../../assets/onboarding/step3.png';
 import ChoiceCard from '../common/ChoiceCard';
@@ -52,7 +52,7 @@ const BUDDY_OPTIONS = [
   { value: 'undecided', label: 'ยังไม่แน่ใจ' }
 ];
 
-export default function StepGoals({ onNext, onPrev }) {
+const StepGoals = forwardRef(({ onNext, onPrev, isEditor, externalShowValidation }, ref) => {
   const { formData, updateFormData } = useOnboarding();
 
   // Use goals[0] for the primary challenge
@@ -79,7 +79,12 @@ export default function StepGoals({ onNext, onPrev }) {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
-  const [showValidation, setShowValidation] = useState(false);
+  const [internalShowValidation, setShowValidation] = useState(false);
+  const showValidation = internalShowValidation || externalShowValidation;
+
+  useImperativeHandle(ref, () => ({
+    validate
+  }));
 
   // Sync state back to context
   useEffect(() => {
@@ -582,22 +587,8 @@ export default function StepGoals({ onNext, onPrev }) {
 
   return (
     <>
-      <div className="onboarding-modal-body">
-        {/* Header Section */}
-        <div className="onboarding-fullwidth-header">
-          <img
-            src={ONBOARDING_STEP_ILLUSTRATIONS.nextChallenge}
-            alt="Lowrox next challenge illustration"
-            onError={(e) => { e.target.style.display = 'none'; }}
-          />
-          <div className="onboarding-text-align">
-            <h2 className="heading-2 mb-8">Challenge ต่อไปคืออะไร? 🏁</h2>
-            <p className="body-md text-neutral-600">
-              เลือกสิ่งที่อยากพิชิตที่สุดก่อน เราจะช่วยวางก้าวต่อไปให้คุณ
-            </p>
-          </div>
-        </div>
-
+  const formContent = (
+    <>
         {submitError && (
           <div className="error-message-area mb-24" role="alert">
             {submitError}
@@ -637,6 +628,32 @@ export default function StepGoals({ onNext, onPrev }) {
 
         {/* Preview is full width outside the box, but inside the main container */}
         {goalType && renderFeedbackPreview()}
+    </>
+  );
+
+  if (isEditor) {
+    return <div className="onboarding-editor-section">{formContent}</div>;
+  }
+
+  return (
+    <>
+      <div className="onboarding-modal-body">
+        {/* Header Section */}
+        <div className="onboarding-fullwidth-header">
+          <img
+            src={ONBOARDING_STEP_ILLUSTRATIONS.nextChallenge}
+            alt="Lowrox next challenge illustration"
+            onError={(e) => { e.target.style.display = 'none'; }}
+          />
+          <div className="onboarding-text-align">
+            <h2 className="heading-2 mb-8">Challenge ต่อไปคืออะไร? 🏁</h2>
+            <p className="body-md text-neutral-600">
+              เลือกสิ่งที่อยากพิชิตที่สุดก่อน เราจะช่วยวางก้าวต่อไปให้คุณ
+            </p>
+          </div>
+        </div>
+
+        {formContent}
       </div>
 
       <div className="onboarding-modal-footer">
@@ -656,4 +673,6 @@ export default function StepGoals({ onNext, onPrev }) {
       </div>
     </>
   );
-}
+});
+
+export default StepGoals;
