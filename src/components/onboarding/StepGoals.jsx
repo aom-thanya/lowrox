@@ -293,16 +293,15 @@ export default function StepGoals({ onNext, onPrev }) {
       
       {distSelect === 'custom' && (
         <div className="onboarding-form-section">
-          <div className="onboarding-input-wrapper" style={{ maxWidth: '200px' }}>
+          <div className="onboarding-input-wrapper max-w-[200px]">
             <input 
               type="number" 
               value={customDist}
               onChange={(e) => { setCustomDist(e.target.value); if (showValidation) validate(); }}
-              className={showValidation && errors.distance ? 'input-error' : ''}
+              className={`w-full pr-48 bg-white ${showValidation && errors.distance ? 'input-error' : ''}`}
               placeholder="เช่น 12.5"
               step="0.01"
               min="0.01"
-              style={{ width: '100%', paddingRight: '48px', backgroundColor: '#fff' }}
             />
             <span className="onboarding-input-suffix">กม.</span>
           </div>
@@ -321,19 +320,18 @@ export default function StepGoals({ onNext, onPrev }) {
       </div>
 
       {distSelect === 'custom' && (
-        <div className="form-group" style={{ marginBottom: '24px' }}>
-          <div style={{ position: 'relative', maxWidth: '200px' }}>
+        <div className="form-group mb-24">
+          <div className="relative max-w-[200px]">
             <input 
               type="number" 
               value={customDist}
               onChange={(e) => { setCustomDist(e.target.value); if (showValidation) validate(); }}
-              className={showValidation && errors.distance ? 'input-error' : ''}
+              className={`w-full pr-48 bg-white ${errors.targetGoal ? 'input-error' : ''}`}
               placeholder="ระยะทาง"
               step="0.01"
               min="0.01"
-              style={{ width: '100%', paddingRight: '48px', backgroundColor: '#fff' }}
             />
-            <span style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-neutral-500)' }}>กม.</span>
+            <span className="absolute right-16 top-1/2 -translate-y-1/2 text-neutral-500">กม.</span>
           </div>
         </div>
       )}
@@ -342,7 +340,7 @@ export default function StepGoals({ onNext, onPrev }) {
         <>
           <label className="onboarding-label mb-8">อยากทำระยะนี้ให้ได้ภายในเท่าไร?</label>
           {distSelect === String(currentDist) && currentDur > 0 && (
-            <div className="onboarding-helper-text" style={{ marginBottom: '12px' }}>ปัจจุบัน {currentDur} นาที</div>
+            <div className="onboarding-helper-text mb-12">ปัจจุบัน {currentDur} นาที</div>
           )}
           
           <div className="onboarding-pill-container">
@@ -358,25 +356,24 @@ export default function StepGoals({ onNext, onPrev }) {
 
           {durSelect === 'custom' && (
             <div className="onboarding-form-section">
-              <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-                <div className="onboarding-input-wrapper" style={{ width: '140px' }}>
+              <div className="flex gap-16 items-center">
+                <div className="onboarding-input-wrapper w-[140px]">
                   <input 
                     type="number" 
                     value={customHrs}
                     onChange={(e) => { setCustomHrs(e.target.value); if (showValidation) validate(); }}
-                    className={showValidation && errors.duration ? 'input-error' : ''}
+                    className={`w-full pr-64 text-center bg-white ${showValidation && errors.duration ? 'input-error' : ''}`}
                     placeholder="00"
                     min="0"
-                    style={{ width: '100%', paddingRight: '64px', textAlign: 'center', backgroundColor: '#fff' }}
                   />
                   <span className="onboarding-input-suffix">ชั่วโมง</span>
                 </div>
-                <div className="onboarding-input-wrapper" style={{ width: '140px' }}>
+                <div className="onboarding-input-wrapper w-[140px]">
                   <input 
                     type="number" 
                     value={customMins}
                     onChange={(e) => { setCustomMins(e.target.value); if (showValidation) validate(); }}
-                    className={showValidation && errors.duration ? 'input-error' : ''}
+                    className={`w-full pr-48 text-center bg-white ${showValidation && errors.duration ? 'input-error' : ''}`}
                     placeholder="00"
                     min="0"
                     max="59"
@@ -396,30 +393,28 @@ export default function StepGoals({ onNext, onPrev }) {
   const renderPrepareEvent = () => (
     <div className="onboarding-fade-in">
       <label className="onboarding-label">มีสนามที่อยากไปพิชิตแล้วหรือยัง?</label>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '24px' }}>
+      <div className="flex flex-col gap-8 mb-24">
         {EVENT_OPTIONS.map(opt => (
           <button
             key={opt.value}
             type="button"
-            className={`choice-card ${eventSelect === opt.value ? 'choice-card-selected' : ''}`}
-            style={{ alignItems: 'flex-start' }}
+            className={`choice-card items-start ${eventSelect === opt.value ? 'choice-card-selected' : ''}`}
             onClick={() => { setEventSelect(opt.value); if (showValidation) validate(); }}
           >
-            <div className="choice-card-label" style={{ fontSize: '14px' }}>{opt.label}</div>
+            <div className="choice-card-label text-sm">{opt.label}</div>
           </button>
         ))}
       </div>
 
       {eventSelect === 'custom_event' && (
         <div className="onboarding-form-section">
-          <label className="onboarding-label" style={{ fontWeight: 400, marginBottom: '8px' }}>ชื่อรายการแข่งขัน</label>
+          <label className="onboarding-label font-normal mb-8">ชื่อรายการแข่งขัน</label>
           <input 
             type="text" 
             value={customEvent}
             onChange={(e) => { setCustomEvent(e.target.value); if (showValidation) validate(); }}
-            className={showValidation && errors.event ? 'input-error' : ''}
+            className={`w-full bg-white ${showValidation && errors.event ? 'input-error' : ''}`}
             placeholder="เช่น HYROX Bangkok"
-            style={{ width: '100%', backgroundColor: '#fff' }}
           />
           {showValidation && errors.event && <div className="validation-message onboarding-error-text" role="alert">{errors.event}</div>}
         </div>
@@ -434,7 +429,7 @@ export default function StepGoals({ onNext, onPrev }) {
       {eventSelect && (
         <>
           <label className="onboarding-label">ตอนนี้มี Buddy แล้วหรือยัง?</label>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '24px' }}>
+          <div className="flex flex-col gap-8 mb-24">
             {BUDDY_OPTIONS.map(opt => (
               <button
                 key={opt.value}
@@ -448,8 +443,8 @@ export default function StepGoals({ onNext, onPrev }) {
             ))}
           </div>
           {buddyStatus === 'looking_for_buddy' && (
-            <div className="onboarding-feedback-card" style={{ marginBottom: '24px', padding: '12px 16px', backgroundColor: '#fff' }}>
-              <p style={{ fontSize: '14px', color: 'var(--color-neutral-700)' }}>
+            <div className="onboarding-feedback-card mb-24 p-[12px_16px] bg-white">
+              <p className="text-sm text-neutral-700 m-0">
                 หลังจากรู้ Level แล้ว เราจะช่วยแนะนำ Buddy ที่มีจังหวะใกล้กับคุณ
               </p>
             </div>
@@ -478,7 +473,7 @@ export default function StepGoals({ onNext, onPrev }) {
     if (goalType === 'improve_endurance' && !enduranceFocus) return null;
 
     return (
-      <div className="onboarding-fade-in" style={{ marginTop: '32px' }}>
+      <div className="onboarding-fade-in mt-32">
         <label className="onboarding-label">อยากพิชิต Challenge นี้เมื่อไร? 📅</label>
         <div className="onboarding-pill-container">
           {TARGET_DATE_OPTIONS.map(opt => renderPillButton(opt.label, dateSelect === opt.value, () => { setDateSelect(opt.value); if (showValidation) validate(); }))}
@@ -490,9 +485,8 @@ export default function StepGoals({ onNext, onPrev }) {
               type="date" 
               value={customDate}
               onChange={(e) => { setCustomDate(e.target.value); if (showValidation) validate(); }}
-              className={showValidation && errors.date ? 'input-error' : ''}
+              className={`w-full max-w-[240px] bg-white ${showValidation && errors.date ? 'input-error' : ''}`}
               min={new Date().toISOString().split("T")[0]}
-              style={{ width: '100%', maxWidth: '240px', backgroundColor: '#fff' }}
             />
           </div>
         )}
@@ -514,8 +508,8 @@ export default function StepGoals({ onNext, onPrev }) {
     if (goalType === 'recommend_for_me') {
       return (
         <div className="onboarding-feedback-card onboarding-fade-in">
-          <h4 style={{ fontWeight: '700', marginBottom: '4px' }}>ได้เลย เดี๋ยวเราช่วยเลือกให้ ✨</h4>
-          <p style={{ fontSize: '14px', color: 'var(--color-neutral-700)' }}>
+          <h4 className="font-bold mb-4">ได้เลย เดี๋ยวเราช่วยเลือกให้ ✨</h4>
+          <p className="text-sm text-neutral-700">
             Lowrox จะใช้ Level จุดเริ่มต้น และเวลาที่คุณสะดวก เพื่อแนะนำ Challenge ที่เหมาะสม
           </p>
         </div>
@@ -531,10 +525,10 @@ export default function StepGoals({ onNext, onPrev }) {
       const targetVal = distSelect === 'custom' ? customDist : distSelect;
       previewContent = (
         <>
-          <div style={{ fontSize: '16px', fontWeight: '600', color: 'var(--color-brand-600)' }}>
+          <div className="text-[16px] font-semibold text-brand-600">
             วิ่ง {currentDist > 0 ? `จาก ${currentDist} กม. ` : ''}ให้ถึง {targetVal} กม.
           </div>
-          {pDate && <div style={{ fontSize: '14px', marginTop: '4px', fontWeight: '600', color: 'var(--color-brand-600)' }}>{pDate}</div>}
+          {pDate && <div className="text-sm mt-4 font-semibold text-brand-600">{pDate}</div>}
         </>
       );
     } else if (goalType === 'improve_time') {
@@ -542,51 +536,51 @@ export default function StepGoals({ onNext, onPrev }) {
       const dur = durSelect === 'custom' ? ((Number(customHrs)||0)*60 + (Number(customMins)||0)) : durSelect;
       previewContent = (
         <>
-          <div style={{ fontSize: '16px', fontWeight: '600', color: 'var(--color-brand-600)' }}>
+          <div className="text-[16px] font-semibold text-brand-600">
             วิ่ง {dist} กม. ให้ได้ภายใน {dur} นาที
           </div>
           {dist === String(currentDist) && currentDur > 0 && (
-            <div style={{ fontSize: '14px', color: 'var(--color-neutral-600)', marginTop: '4px' }}>
+            <div className="text-sm text-neutral-600 mt-4">
               ปัจจุบันประมาณ {currentDur} นาที
             </div>
           )}
-          {pDate && <div style={{ fontSize: '14px', marginTop: '4px', fontWeight: '600', color: 'var(--color-brand-600)' }}>{pDate}</div>}
+          {pDate && <div className="text-sm mt-4 font-semibold text-brand-600">{pDate}</div>}
         </>
       );
     } else if (goalType === 'prepare_event' || goalType === 'buddy_event') {
       const evName = eventSelect === 'custom_event' ? customEvent : (eventSelect === 'system_event' ? 'BKK Night Run' : '(ยังไม่ระบุ)');
       previewContent = (
         <>
-          <div style={{ fontSize: '16px', fontWeight: '600', color: 'var(--color-brand-600)' }}>
+          <div className="text-[16px] font-semibold text-brand-600">
             เตรียมลง {evName} {goalType === 'buddy_event' ? 'แบบ Buddy' : ''}
           </div>
           {goalType === 'buddy_event' && buddyStatus === 'looking_for_buddy' && (
-            <div style={{ fontSize: '14px', color: 'var(--color-neutral-600)', marginTop: '4px' }}>
+            <div className="text-sm text-neutral-600 mt-4">
               และหา Buddy ที่ Level ใกล้กัน
             </div>
           )}
-          {pDate && <div style={{ fontSize: '14px', marginTop: '4px', fontWeight: '600', color: 'var(--color-brand-600)' }}>{pDate}</div>}
+          {pDate && <div className="text-sm mt-4 font-semibold text-brand-600">{pDate}</div>}
         </>
       );
     } else if (goalType === 'improve_endurance') {
       const lbl = ENDURANCE_OPTIONS.find(o => o.value === enduranceFocus)?.label || '';
       previewContent = (
         <>
-          <div style={{ fontSize: '16px', fontWeight: '600', color: 'var(--color-brand-600)' }}>
+          <div className="text-[16px] font-semibold text-brand-600">
             โฟกัส: {lbl}
           </div>
-          {pDate && <div style={{ fontSize: '14px', marginTop: '4px', fontWeight: '600', color: 'var(--color-brand-600)' }}>{pDate}</div>}
+          {pDate && <div className="text-sm mt-4 font-semibold text-brand-600">{pDate}</div>}
         </>
       );
     }
 
     if (previewContent) {
       return (
-        <div className="onboarding-feedback-card" style={{ animation: 'fadeIn 0.3s ease-out', marginTop: '24px' }}>
-          <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-            <div style={{ fontSize: '28px' }}>🎯</div>
+        <div className="onboarding-feedback-card mt-24 onboarding-fade-in">
+          <div className="flex gap-16 items-center">
+            <div className="text-[28px]">🎯</div>
             <div>
-              <h4 style={{ fontSize: '13px', fontWeight: '700', color: 'var(--color-neutral-800)', marginBottom: '4px' }}>Challenge ของคุณ</h4>
+              <h4 className="text-[13px] font-bold text-neutral-800 mb-4">Challenge ของคุณ</h4>
               {previewContent}
             </div>
           </div>
@@ -621,7 +615,7 @@ export default function StepGoals({ onNext, onPrev }) {
         </div>
 
         {submitError && (
-          <div className="error-message-area" role="alert" style={{ marginBottom: '24px' }}>
+          <div className="error-message-area mb-24" role="alert">
             {submitError}
           </div>
         )}
@@ -634,25 +628,14 @@ export default function StepGoals({ onNext, onPrev }) {
               <button
                 key={opt.value}
                 type="button"
-                className={`choice-card ${isSelected ? 'choice-card-selected' : ''}`}
-                style={{ 
-                  alignItems: 'center', 
-                  flexDirection: 'row', 
-                  justifyContent: 'flex-start',
-                  minHeight: '64px'
-                }}
-                onClick={() => setGoalType(opt.value)}
+                className={`choice-card flex-col items-start p-16 border-2 transition-all duration-200 hover:border-brand-300 hover:shadow-sm ${goalType === opt.value ? 'choice-card-selected' : ''}`}
+                onClick={() => { setGoalType(opt.value); resetForm(); if (showValidation) validate(); }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                  <span style={{ fontSize: '24px', marginRight: '16px' }}>{opt.icon}</span>
-                  <span className="choice-card-label" style={{ flex: 1, textAlign: 'left', fontSize: '15px', fontWeight: '600' }}>{opt.label}</span>
-                  {isSelected && (
-                    <div style={{ 
-                      width: '24px', height: '24px', borderRadius: '50%', 
-                      backgroundColor: 'var(--color-brand-500)', 
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      color: 'white', marginLeft: '12px'
-                    }}>
+                <div className="flex items-center w-full">
+                  <span className="text-[24px] mr-16">{opt.icon}</span>
+                  <span className="choice-card-label flex-1 text-left text-[15px] font-semibold">{opt.label}</span>
+                  {goalType === opt.value && (
+                    <div className="w-[24px] h-[24px] rounded-full bg-brand-500 text-white flex items-center justify-center shrink-0">
                       <svg width="14" height="10" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M1 5L5 9L13 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
@@ -666,11 +649,7 @@ export default function StepGoals({ onNext, onPrev }) {
 
         {/* Conditional Questions Box */}
         {goalType && (
-          <div className="onboarding-fade-in" style={{ 
-            backgroundColor: 'var(--color-brand-50)', 
-            borderRadius: '16px', 
-            padding: '24px'
-          }}>
+          <div className="onboarding-fade-in mt-16 p-16 rounded-xl border border-brand-200 bg-brand-50">
             {goalType === 'increase_distance' && renderIncreaseDistance()}
             {goalType === 'improve_time' && renderImproveTime()}
             {goalType === 'prepare_event' && renderPrepareEvent()}
@@ -687,9 +666,8 @@ export default function StepGoals({ onNext, onPrev }) {
       
       <div className="onboarding-modal-footer">
         <button 
-          className="btn btn-secondary btn-md" 
+          className="btn btn-secondary btn-sm w-auto mr-16" 
           onClick={onPrev}
-          style={{ width: 'auto', marginRight: '16px' }}
         >
           ← ย้อนกลับ
         </button>

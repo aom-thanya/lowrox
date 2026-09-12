@@ -133,3 +133,18 @@
 .leading-none { line-height: 1; }
 .text-\[28px\] { font-size: 28px; }
 .gap-24 { gap: 24px; }
+.max-w-\[200px\] { max-width: 200px; }
+.absolute { position: absolute; }
+.right-16 { right: 16px; }
+.top-1\/2 { top: 50%; }
+.-translate-y-1\/2 { transform: translateY(-50%); }
+.mb-12 { margin-bottom: 12px; }
+.items-start { align-items: flex-start; }
+.p-\[12px_16px\] { padding: 12px 16px; }
+.mt-32 { margin-top: 32px; }
+.max-w-\[240px\] { max-width: 240px; }
+.border-2 { border-width: 2px; }
+.transition-all { transition: all 0.2s ease; }
+.duration-200 { transition-duration: 200ms; }
+.hover\:border-brand-300:hover { border-color: var(--color-brand-300); }
+.hover\:shadow-sm:hover { box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
