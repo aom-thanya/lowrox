@@ -49,12 +49,12 @@ function OnboardingContent({ onClose, onComplete }) {
         <div className="onboarding-modal-header">
           <div className="onboarding-header-top">
             <img src={logoImg} alt="LOWROX" className="onboarding-logo" />
-            <div className="onboarding-step-text" style={{ marginRight: '32px' }}>{currentStep} / 5</div>
+            <div className="onboarding-step-text mr-32">{currentStep} / 5</div>
           </div>
           <div className="onboarding-progress-bar">
             <div className="onboarding-progress-fill" style={{ width: `${progressPercentage}%` }}></div>
           </div>
-          <button className="modal-close-btn" onClick={handleCloseAttempt} aria-label="Close onboarding" style={{ top: '24px', right: '24px' }}>
+          <button className="modal-close-btn top-[24px] right-[24px]" onClick={handleCloseAttempt} aria-label="Close onboarding">
             &times;
           </button>
         </div>

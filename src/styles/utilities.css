@@ -116,3 +116,6 @@
 
 /* Interactive */
 .cursor-pointer { cursor: pointer; }
+.mr-32 { margin-right: 32px; }
+.top-\[24px\] { top: 24px; }
+.right-\[24px\] { right: 24px; }
