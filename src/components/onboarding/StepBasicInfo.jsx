@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useOnboarding } from '../../context/OnboardingContext';
+import ChoiceCard from '../common/ChoiceCard';
+import FormSection from '../common/FormSection';
 import step1Img from '../../assets/onboarding/step1.png';
 
 const ONBOARDING_STEP_ILLUSTRATIONS = {
@@ -117,8 +119,16 @@ export default function StepBasicInfo({ onNext }) {
             </div>
           )}
 
-          <div className="onboarding-form-section">
-            <label className="onboarding-label" htmlFor="birthDate">คุณเกิดวันไหน?</label>
+          <FormSection 
+            label="คุณเกิดวันไหน?" 
+            htmlFor="birthDate"
+            error={showValidation && errors.birthDate}
+            helperText={
+              birthDate && !isNaN(new Date(birthDate).getTime()) && new Date(birthDate) <= new Date()
+                ? `ตอนนี้คุณอายุ ${calculateAge(birthDate)} ปี`
+                : 'เราจะคำนวณอายุให้โดยอัตโนมัติ'
+            }
+          >
             <input
               type="date"
               id="birthDate"
@@ -130,55 +140,31 @@ export default function StepBasicInfo({ onNext }) {
               className={showValidation && errors.birthDate ? 'input-error' : ''}
               max={new Date().toISOString().split("T")[0]}
             />
-            {showValidation && errors.birthDate ? (
-              <span className="validation-message" role="alert">{errors.birthDate}</span>
-            ) : (
-              <span className="onboarding-helper-text">
-                {birthDate && !isNaN(new Date(birthDate).getTime()) && new Date(birthDate) <= new Date()
-                  ? `ตอนนี้คุณอายุ ${calculateAge(birthDate)} ปี`
-                  : 'เราจะคำนวณอายุให้โดยอัตโนมัติ'}
-              </span>
-            )}
-          </div>
+          </FormSection>
 
-          <div className="onboarding-form-section">
-            <label className="onboarding-label">อยากให้เราใช้ข้อมูลใดในการเทียบผลของคุณ?</label>
-            <span className="onboarding-helper-text">
-              เลือกข้อมูลที่คุณสะดวกให้เราใช้
-            </span>
-
+          <FormSection
+            label="อยากให้เราใช้ข้อมูลใดในการเทียบผลของคุณ?"
+            helperText="เลือกข้อมูลที่คุณสะดวกให้เราใช้"
+            error={showValidation && errors.gender}
+          >
             <div className="choice-cards-container">
               {GENDER_OPTIONS.map(opt => {
                 const isSelected = formData.demographics.gender === opt.value;
                 return (
-                  <button
+                  <ChoiceCard
                     key={opt.value}
-                    type="button"
-                    className={`choice-card ${isSelected ? 'choice-card-selected' : ''}`}
+                    isSelected={isSelected}
                     onClick={() => {
                       updateFormData('demographics', { ...formData.demographics, gender: opt.value });
                       if (showValidation) validate();
                     }}
-                    aria-pressed={isSelected}
-                  >
-                    <div className="choice-card-icon">{opt.icon}</div>
-                    <div className="choice-card-label">{opt.label}</div>
-                    {isSelected && (
-                      <div className="choice-card-check">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="currentColor" />
-                          <path d="M7.5 12L10.5 15L16.5 9" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      </div>
-                    )}
-                  </button>
+                    icon={opt.icon}
+                    label={opt.label}
+                  />
                 );
               })}
             </div>
-            {showValidation && errors.gender && (
-              <span className="validation-message onboarding-error-text" role="alert">{errors.gender}</span>
-            )}
-          </div>
+          </FormSection>
         </div>
       </div>
 

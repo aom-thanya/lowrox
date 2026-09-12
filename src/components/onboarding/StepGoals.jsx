@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useOnboarding } from '../../context/OnboardingContext';
 import step3Img from '../../assets/onboarding/step3.png';
+import ChoiceCard from '../common/ChoiceCard';
+import PillButton from '../common/PillButton';
+import FormSection from '../common/FormSection';
+import InputWrapper from '../common/InputWrapper';
+import FeedbackCard from '../common/FeedbackCard';
 
 const ONBOARDING_STEP_ILLUSTRATIONS = {
   nextChallenge: step3Img,
@@ -272,28 +277,20 @@ export default function StepGoals({ onNext, onPrev }) {
     }
   };
 
-  const renderPillButton = (label, isSelected, onClick) => (
-    <button 
-      type="button" 
-      className={`onboarding-pill-button solid ${isSelected ? 'selected' : ''}`}
-      onClick={onClick}
-    >
-      {label}
-    </button>
-  );
+
 
   const renderIncreaseDistance = () => (
     <div className="onboarding-fade-in">
       <label className="onboarding-label">ครั้งต่อไปอยากวิ่งให้ถึงกี่กิโลเมตร?</label>
       <div className="onboarding-pill-container">
-        {recDistances.map(val => renderPillButton(`${val} กม.`, distSelect === val, () => { setDistSelect(val); if (showValidation) validate(); }))}
-        {renderPillButton('ระบุเอง', distSelect === 'custom', () => { setDistSelect('custom'); if (showValidation) validate(); })}
-        {renderPillButton('ยังไม่แน่ใจ', distSelect === 'not_sure', () => { setDistSelect('not_sure'); if (showValidation) validate(); })}
+        {recDistances.map(val => <PillButton key={val} label={`${val} กม.`} isSelected={distSelect === val} onClick={() => { setDistSelect(val); if (showValidation) validate(); }} />)}
+        <PillButton label="ระบุเอง" isSelected={distSelect === 'custom'} onClick={() => { setDistSelect('custom'); if (showValidation) validate(); }} />
+        <PillButton label="ยังไม่แน่ใจ" isSelected={distSelect === 'not_sure'} onClick={() => { setDistSelect('not_sure'); if (showValidation) validate(); }} />
       </div>
       
       {distSelect === 'custom' && (
-        <div className="onboarding-form-section">
-          <div className="onboarding-input-wrapper max-w-[200px]">
+        <FormSection error={showValidation && errors.distance}>
+          <InputWrapper suffix="กม." className="max-w-[200px]">
             <input 
               type="number" 
               value={customDist}
@@ -303,11 +300,9 @@ export default function StepGoals({ onNext, onPrev }) {
               step="0.01"
               min="0.01"
             />
-            <span className="onboarding-input-suffix">กม.</span>
-          </div>
-        </div>
+          </InputWrapper>
+        </FormSection>
       )}
-      {showValidation && errors.distance && <div className="validation-message onboarding-error-text" role="alert">{errors.distance}</div>}
     </div>
   );
 
@@ -315,13 +310,13 @@ export default function StepGoals({ onNext, onPrev }) {
     <div className="onboarding-fade-in">
       <label className="onboarding-label">อยากทำเวลาให้ดีขึ้นในระยะไหน?</label>
       <div className="onboarding-pill-container">
-        {['3', '5', '10'].map(val => renderPillButton(`${val} กม.`, distSelect === val, () => { setDistSelect(val); if (showValidation) validate(); }))}
-        {renderPillButton('ระบุเอง', distSelect === 'custom', () => { setDistSelect('custom'); if (showValidation) validate(); })}
+        {['3', '5', '10'].map(val => <PillButton key={val} label={`${val} กม.`} isSelected={distSelect === val} onClick={() => { setDistSelect(val); if (showValidation) validate(); }} />)}
+        <PillButton label="ระบุเอง" isSelected={distSelect === 'custom'} onClick={() => { setDistSelect('custom'); if (showValidation) validate(); }} />
       </div>
 
       {distSelect === 'custom' && (
         <div className="form-group mb-24">
-          <div className="relative max-w-[200px]">
+          <InputWrapper suffix="กม." className="max-w-[200px]">
             <input 
               type="number" 
               value={customDist}
@@ -331,8 +326,7 @@ export default function StepGoals({ onNext, onPrev }) {
               step="0.01"
               min="0.01"
             />
-            <span className="absolute right-16 top-1/2 -translate-y-1/2 text-neutral-500">กม.</span>
-          </div>
+          </InputWrapper>
         </div>
       )}
 
@@ -346,18 +340,18 @@ export default function StepGoals({ onNext, onPrev }) {
           <div className="onboarding-pill-container">
             {distSelect === String(currentDist) && currentDur > 0 && (
               <>
-                {renderPillButton(`${Math.floor(currentDur * 0.95)} นาที`, durSelect === String(Math.floor(currentDur * 0.95)), () => { setDurSelect(String(Math.floor(currentDur * 0.95))); if (showValidation) validate(); })}
-                {renderPillButton(`${Math.floor(currentDur * 0.9)} นาที`, durSelect === String(Math.floor(currentDur * 0.9)), () => { setDurSelect(String(Math.floor(currentDur * 0.9))); if (showValidation) validate(); })}
+                <PillButton label={`${Math.floor(currentDur * 0.95)} นาที`} isSelected={durSelect === String(Math.floor(currentDur * 0.95))} onClick={() => { setDurSelect(String(Math.floor(currentDur * 0.95))); if (showValidation) validate(); }} />
+                <PillButton label={`${Math.floor(currentDur * 0.9)} นาที`} isSelected={durSelect === String(Math.floor(currentDur * 0.9))} onClick={() => { setDurSelect(String(Math.floor(currentDur * 0.9))); if (showValidation) validate(); }} />
               </>
             )}
-            {renderPillButton('30 นาที', durSelect === '30', () => { setDurSelect('30'); if (showValidation) validate(); })}
-            {renderPillButton('ระบุเอง', durSelect === 'custom', () => { setDurSelect('custom'); if (showValidation) validate(); })}
+            <PillButton label="30 นาที" isSelected={durSelect === '30'} onClick={() => { setDurSelect('30'); if (showValidation) validate(); }} />
+            <PillButton label="ระบุเอง" isSelected={durSelect === 'custom'} onClick={() => { setDurSelect('custom'); if (showValidation) validate(); }} />
           </div>
 
           {durSelect === 'custom' && (
-            <div className="onboarding-form-section">
+            <FormSection error={showValidation && errors.duration}>
               <div className="flex gap-16 items-center">
-                <div className="onboarding-input-wrapper w-[140px]">
+                <InputWrapper suffix="ชั่วโมง" className="w-[140px]">
                   <input 
                     type="number" 
                     value={customHrs}
@@ -366,9 +360,8 @@ export default function StepGoals({ onNext, onPrev }) {
                     placeholder="00"
                     min="0"
                   />
-                  <span className="onboarding-input-suffix">ชั่วโมง</span>
-                </div>
-                <div className="onboarding-input-wrapper w-[140px]">
+                </InputWrapper>
+                <InputWrapper suffix="นาที" className="w-[140px]">
                   <input 
                     type="number" 
                     value={customMins}
@@ -377,14 +370,11 @@ export default function StepGoals({ onNext, onPrev }) {
                     placeholder="00"
                     min="0"
                     max="59"
-                    style={{ width: '100%', paddingRight: '48px', textAlign: 'center', backgroundColor: '#fff' }}
                   />
-                  <span className="onboarding-input-suffix">นาที</span>
-                </div>
+                </InputWrapper>
               </div>
-            </div>
+            </FormSection>
           )}
-          {showValidation && errors.duration && <div className="validation-message onboarding-error-text" role="alert">{errors.duration}</div>}
         </>
       )}
     </div>
@@ -395,20 +385,22 @@ export default function StepGoals({ onNext, onPrev }) {
       <label className="onboarding-label">มีสนามที่อยากไปพิชิตแล้วหรือยัง?</label>
       <div className="flex flex-col gap-8 mb-24">
         {EVENT_OPTIONS.map(opt => (
-          <button
+          <ChoiceCard
             key={opt.value}
-            type="button"
-            className={`choice-card items-start ${eventSelect === opt.value ? 'choice-card-selected' : ''}`}
+            isSelected={eventSelect === opt.value}
             onClick={() => { setEventSelect(opt.value); if (showValidation) validate(); }}
-          >
-            <div className="choice-card-label text-sm">{opt.label}</div>
-          </button>
+            label={opt.label}
+            className="items-start"
+            hasCheckMark={false}
+          />
         ))}
       </div>
 
       {eventSelect === 'custom_event' && (
-        <div className="onboarding-form-section">
-          <label className="onboarding-label font-normal mb-8">ชื่อรายการแข่งขัน</label>
+        <FormSection
+          label="ชื่อรายการแข่งขัน"
+          error={showValidation && errors.event}
+        >
           <input 
             type="text" 
             value={customEvent}
@@ -416,8 +408,7 @@ export default function StepGoals({ onNext, onPrev }) {
             className={`w-full bg-white ${showValidation && errors.event ? 'input-error' : ''}`}
             placeholder="เช่น HYROX Bangkok"
           />
-          {showValidation && errors.event && <div className="validation-message onboarding-error-text" role="alert">{errors.event}</div>}
-        </div>
+        </FormSection>
       )}
     </div>
   );
@@ -431,23 +422,22 @@ export default function StepGoals({ onNext, onPrev }) {
           <label className="onboarding-label">ตอนนี้มี Buddy แล้วหรือยัง?</label>
           <div className="flex flex-col gap-8 mb-24">
             {BUDDY_OPTIONS.map(opt => (
-              <button
+              <ChoiceCard
                 key={opt.value}
-                type="button"
-                className={`choice-card ${buddyStatus === opt.value ? 'choice-card-selected' : ''}`}
-                style={{ alignItems: 'flex-start' }}
+                isSelected={buddyStatus === opt.value}
                 onClick={() => setBuddyStatus(opt.value)}
-              >
-                <div className="choice-card-label" style={{ fontSize: '14px' }}>{opt.label}</div>
-              </button>
+                label={opt.label}
+                className="items-start"
+                hasCheckMark={false}
+              />
             ))}
           </div>
           {buddyStatus === 'looking_for_buddy' && (
-            <div className="onboarding-feedback-card mb-24 p-[12px_16px] bg-white">
+            <FeedbackCard className="mb-24 p-[12px_16px] bg-white">
               <p className="text-sm text-neutral-700 m-0">
                 หลังจากรู้ Level แล้ว เราจะช่วยแนะนำ Buddy ที่มีจังหวะใกล้กับคุณ
               </p>
-            </div>
+            </FeedbackCard>
           )}
         </>
       )}
@@ -458,7 +448,7 @@ export default function StepGoals({ onNext, onPrev }) {
     <div className="onboarding-fade-in">
       <label className="onboarding-label">อยากพัฒนาด้านไหนมากที่สุด?</label>
       <div className="onboarding-pill-container">
-        {ENDURANCE_OPTIONS.map(opt => renderPillButton(opt.label, enduranceFocus === opt.value, () => setEnduranceFocus(opt.value)))}
+        {ENDURANCE_OPTIONS.map(opt => <PillButton key={opt.value} label={opt.label} isSelected={enduranceFocus === opt.value} onClick={() => setEnduranceFocus(opt.value)} />)}
       </div>
     </div>
   );
@@ -476,11 +466,11 @@ export default function StepGoals({ onNext, onPrev }) {
       <div className="onboarding-fade-in mt-32">
         <label className="onboarding-label">อยากพิชิต Challenge นี้เมื่อไร? 📅</label>
         <div className="onboarding-pill-container">
-          {TARGET_DATE_OPTIONS.map(opt => renderPillButton(opt.label, dateSelect === opt.value, () => { setDateSelect(opt.value); if (showValidation) validate(); }))}
+          {TARGET_DATE_OPTIONS.map(opt => <PillButton key={opt.value} label={opt.label} isSelected={dateSelect === opt.value} onClick={() => { setDateSelect(opt.value); if (showValidation) validate(); }} />)}
         </div>
 
         {dateSelect === 'custom_date' && (
-          <div className="onboarding-form-section">
+          <FormSection error={showValidation && errors.date}>
             <input 
               type="date" 
               value={customDate}
@@ -488,9 +478,8 @@ export default function StepGoals({ onNext, onPrev }) {
               className={`w-full max-w-[240px] bg-white ${showValidation && errors.date ? 'input-error' : ''}`}
               min={new Date().toISOString().split("T")[0]}
             />
-          </div>
+          </FormSection>
         )}
-        {showValidation && errors.date && <div className="validation-message onboarding-error-text" role="alert">{errors.date}</div>}
       </div>
     );
   };
@@ -507,12 +496,11 @@ export default function StepGoals({ onNext, onPrev }) {
   const renderFeedbackPreview = () => {
     if (goalType === 'recommend_for_me') {
       return (
-        <div className="onboarding-feedback-card onboarding-fade-in">
-          <h4 className="font-bold mb-4">ได้เลย เดี๋ยวเราช่วยเลือกให้ ✨</h4>
+        <FeedbackCard title="ได้เลย เดี๋ยวเราช่วยเลือกให้ ✨">
           <p className="text-sm text-neutral-700">
             Lowrox จะใช้ Level จุดเริ่มต้น และเวลาที่คุณสะดวก เพื่อแนะนำ Challenge ที่เหมาะสม
           </p>
-        </div>
+        </FeedbackCard>
       );
     }
 
@@ -576,15 +564,9 @@ export default function StepGoals({ onNext, onPrev }) {
 
     if (previewContent) {
       return (
-        <div className="onboarding-feedback-card mt-24 onboarding-fade-in">
-          <div className="flex gap-16 items-center">
-            <div className="text-[28px]">🎯</div>
-            <div>
-              <h4 className="text-[13px] font-bold text-neutral-800 mb-4">Challenge ของคุณ</h4>
-              {previewContent}
-            </div>
-          </div>
-        </div>
+        <FeedbackCard title="Challenge ของคุณ" icon="🎯" className="mt-24">
+          {previewContent}
+        </FeedbackCard>
       );
     }
     return null;
@@ -625,24 +607,15 @@ export default function StepGoals({ onNext, onPrev }) {
           {GOAL_TYPES.map(opt => {
             const isSelected = goalType === opt.value;
             return (
-              <button
+              <ChoiceCard
                 key={opt.value}
-                type="button"
-                className={`choice-card flex-col items-start p-16 border-2 transition-all duration-200 hover:border-brand-300 hover:shadow-sm ${goalType === opt.value ? 'choice-card-selected' : ''}`}
+                isSelected={goalType === opt.value}
                 onClick={() => { setGoalType(opt.value); resetForm(); if (showValidation) validate(); }}
-              >
-                <div className="flex items-center w-full">
-                  <span className="text-[24px] mr-16">{opt.icon}</span>
-                  <span className="choice-card-label flex-1 text-left text-[15px] font-semibold">{opt.label}</span>
-                  {goalType === opt.value && (
-                    <div className="w-[24px] h-[24px] rounded-full bg-brand-500 text-white flex items-center justify-center shrink-0">
-                      <svg width="14" height="10" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M1 5L5 9L13 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    </div>
-                  )}
-                </div>
-              </button>
+                icon={<span className="text-[24px] mr-16">{opt.icon}</span>}
+                label={<span className="text-[15px] font-semibold">{opt.label}</span>}
+                description=""
+                className="flex-col items-start p-16 border-2 transition-all duration-200 hover:border-brand-300 hover:shadow-sm"
+              />
             );
           })}
         </div>

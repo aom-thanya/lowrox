@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useOnboarding } from '../../context/OnboardingContext';
 import step2Img from '../../assets/onboarding/step2.png';
+import ChoiceCard from '../common/ChoiceCard';
+import FormSection from '../common/FormSection';
+import InputWrapper from '../common/InputWrapper';
+import FeedbackCard from '../common/FeedbackCard';
 
 const ONBOARDING_STEP_ILLUSTRATIONS = {
   currentPace: step2Img,
@@ -207,46 +211,37 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
           )}
 
           {/* Question 1: Distance */}
-          <div className="onboarding-form-section">
-            <label className="onboarding-label">ครั้งล่าสุด คุณวิ่งได้ประมาณเท่าไร?</label>
-
+          <FormSection
+            label="ครั้งล่าสุด คุณวิ่งได้ประมาณเท่าไร?"
+            error={showValidation && errors.distance}
+          >
             <div className="choice-cards-container flex-wrap mt-12">
               {DISTANCE_OPTIONS.map(opt => {
                 const isSelected = distSelect === opt.value;
                 return (
-                  <button
+                  <ChoiceCard
                     key={opt.value}
-                    type="button"
-                    className={`choice-card flex-1 min-w-[120px] p-[16px_32px] ${isSelected ? 'choice-card-selected' : ''}`}
+                    isSelected={isSelected}
                     onClick={() => {
                       setDistSelect(opt.value);
                       if (opt.value === 'not_tracked') setDurSelect('');
                       if (showValidation) validate();
                     }}
-                    aria-pressed={isSelected}
-                  >
-                    <div className="choice-card-label text-sm">{opt.label}</div>
-                    {isSelected && (
-                      <div className="choice-card-check">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="currentColor" />
-                          <path d="M7.5 12L10.5 15L16.5 9" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      </div>
-                    )}
-                  </button>
+                    label={opt.label}
+                    className="flex-1 min-w-[120px] p-[16px_32px]"
+                  />
                 );
               })}
             </div>
-            {showValidation && errors.distance && (
-              <span className="validation-message onboarding-error-text" role="alert">{errors.distance}</span>
-            )}
-          </div>
+          </FormSection>
 
           {distSelect === 'custom' && (
-            <div className="onboarding-form-section mt-[-16px]">
-              <label className="onboarding-label" htmlFor="customDist">ระยะทางโดยประมาณ</label>
-              <div className="relative max-w-[200px] mt-8">
+            <FormSection
+              label="ระยะทางโดยประมาณ"
+              htmlFor="customDist"
+              className="mt-[-16px]"
+            >
+              <InputWrapper suffix="กม." className="max-w-[200px] mt-8">
                 <input
                   type="number"
                   id="customDist"
@@ -255,63 +250,48 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
                     setCustomDist(e.target.value);
                     if (showValidation) validate();
                   }}
-                  className={showValidation && errors.distance ? 'input-error' : ''}
                   placeholder="เช่น 6.5"
                   step="0.01"
                   min="0.01"
                   max="999.99"
-                  className="w-full pr-48 appearance-none"
+                  className={`w-full pr-48 appearance-none ${showValidation && errors.distance ? 'input-error' : ''}`}
                 />
-                <span className="onboarding-input-suffix">กม.</span>
-              </div>
-            </div>
+              </InputWrapper>
+            </FormSection>
           )}
 
           {/* Question 2: Duration */}
           {distSelect && distSelect !== 'not_tracked' && (
-            <div className="onboarding-form-section onboarding-fade-in">
-              <label className="onboarding-label">ใช้เวลาวิ่งไปเท่าไร? (โดยประมาณ)</label>
-              <span className="onboarding-helper-text">
-                ข้อมูลนี้ช่วยให้เรารู้ Pace คร่าวๆ ของคุณ
-              </span>
-
+            <FormSection
+              label="ใช้เวลาวิ่งไปเท่าไร? (โดยประมาณ)"
+              helperText="ข้อมูลนี้ช่วยให้เรารู้ Pace คร่าวๆ ของคุณ"
+              error={showValidation && errors.duration}
+              className="onboarding-fade-in"
+            >
               <div className="choice-cards-container flex-wrap mt-12">
                 {DURATION_OPTIONS.map(opt => {
                   const isSelected = durSelect === opt.value;
                   return (
-                    <button
+                    <ChoiceCard
                       key={opt.value}
-                      type="button"
-                      className={`choice-card flex-[1_0_45%] min-w-[140px] p-[16px_32px] ${isSelected ? 'choice-card-selected' : ''}`}
+                      isSelected={isSelected}
                       onClick={() => {
                         setDurSelect(opt.value);
                         if (showValidation) validate();
                       }}
-                      aria-pressed={isSelected}
-                    >
-                      <div className="choice-card-label text-sm">{opt.label}</div>
-                      {isSelected && (
-                        <div className="choice-card-check">
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="currentColor" />
-                            <path d="M7.5 12L10.5 15L16.5 9" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                          </svg>
-                        </div>
-                      )}
-                    </button>
+                      label={opt.label}
+                      className="flex-[1_0_45%] min-w-[140px] p-[16px_32px]"
+                    />
                   );
                 })}
               </div>
-              {showValidation && errors.duration && (
-                <span className="validation-message onboarding-error-text" role="alert">{errors.duration}</span>
-              )}
-            </div>
+            </FormSection>
           )}
 
           {durSelect === 'custom' && (
             <div className="onboarding-form-section mt-[-16px]">
               <div className="flex gap-16 items-center">
-                <div className="onboarding-input-wrapper w-[140px]">
+                <InputWrapper suffix="ชั่วโมง" className="w-[140px]">
                   <input
                     type="number"
                     value={customHrs}
@@ -319,14 +299,12 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
                       setCustomHrs(e.target.value);
                       if (showValidation) validate();
                     }}
-                    className={showValidation && errors.duration ? 'input-error' : ''}
                     placeholder="00"
                     min="0"
-                    className="w-full pr-64 appearance-none text-center"
+                    className={`w-full pr-64 appearance-none text-center ${showValidation && errors.duration ? 'input-error' : ''}`}
                   />
-                  <span className="onboarding-input-suffix">ชั่วโมง</span>
-                </div>
-                <div className="onboarding-input-wrapper w-[140px]">
+                </InputWrapper>
+                <InputWrapper suffix="นาที" className="w-[140px]">
                   <input
                     type="number"
                     value={customMins}
@@ -334,34 +312,31 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
                       setCustomMins(e.target.value);
                       if (showValidation) validate();
                     }}
-                    className={showValidation && errors.duration ? 'input-error' : ''}
                     placeholder="00"
                     min="0"
                     max="59"
-                    className="w-full pr-48 appearance-none text-center"
+                    className={`w-full pr-48 appearance-none text-center ${showValidation && errors.duration ? 'input-error' : ''}`}
                   />
-                  <span className="onboarding-input-suffix">นาที</span>
-                </div>
+                </InputWrapper>
               </div>
             </div>
           )}
 
           {/* Feedback section */}
           {distSelect === 'not_tracked' && (
-            <div className="onboarding-feedback-card onboarding-fade-in">
-              <h4 className="font-bold mb-4">ไม่เป็นไร ทุกคนมีจุดเริ่มต้นของตัวเอง 🙌</h4>
+            <FeedbackCard title="ไม่เป็นไร ทุกคนมีจุดเริ่มต้นของตัวเอง 🙌">
               <p className="text-sm text-neutral-700">คุณสามารถทำ Quick Assessment เพื่อค้นหา Level ได้ภายหลัง</p>
-            </div>
+            </FeedbackCard>
           )}
 
           {distSelect && distSelect !== 'not_tracked' && durSelect === 'unknown' && (
-            <div className="onboarding-feedback-card onboarding-fade-in">
+            <FeedbackCard>
               <p className="text-sm text-neutral-700">เราบันทึกระยะทางไว้ให้แล้ว คุณสามารถเพิ่มเวลาเพื่อประเมิน Level ภายหลังได้</p>
-            </div>
+            </FeedbackCard>
           )}
 
           {exactDist > 0 && exactDur > 0 && paceStr && (
-            <div className="onboarding-feedback-card onboarding-fade-in">
+            <FeedbackCard>
               <h4 className="text-sm font-semibold text-neutral-600 mb-8 uppercase">จุดเริ่มต้นของคุณ</h4>
               <div className="flex gap-24 items-baseline mb-12">
                 <div>
@@ -379,7 +354,7 @@ export default function StepFitnessLevel({ onNext, onPrev }) {
                 Pace โดยประมาณ {paceStr} นาที/กม. (ความเร็ว {speedStr} กม./ชม.)
               </div>
               <p className="text-sm text-neutral-700">ดีเลย เราเริ่มเห็นจังหวะของคุณแล้ว</p>
-            </div>
+            </FeedbackCard>
           )}
         </div>
       </div>

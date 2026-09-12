@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useOnboarding } from '../../context/OnboardingContext';
 import step5Img from '../../assets/onboarding/step5.png';
+import ChoiceCard from '../common/ChoiceCard';
+import PillButton from '../common/PillButton';
+import FormSection from '../common/FormSection';
+import FeedbackCard from '../common/FeedbackCard';
 
 const ONBOARDING_STEP_ILLUSTRATIONS = {
   safetyCheck: step5Img
@@ -209,29 +213,13 @@ export default function StepHealth({ onNext, onPrev }) {
   };
 
   // ---------------- UI Helpers ----------------
-  const renderPillButton = (label, isSelected, onClick) => (
-    <button
-      type="button"
-      className={`onboarding-pill-button ${isSelected ? 'selected' : ''}`}
-      style={{ flex: '0 0 auto' }}
-      onClick={onClick}
-    >
-      {isSelected && (
-        <div style={{ width: '18px', height: '18px', borderRadius: '50%', backgroundColor: 'var(--color-brand-500)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
-          <svg width="10" height="8" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1 5L5 9L13 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </div>
-      )}
-      {label}
-    </button>
-  );
+
 
   const renderMultiSelectPills = (options, currentSelections, field) => (
     <div className="onboarding-pill-container gap-8">
       {options.map(opt => {
         const isSelected = currentSelections.includes(opt);
-        return renderPillButton(opt, isSelected, () => {
+        return <PillButton key={opt} label={opt} isSelected={isSelected} onClick={() => {
           let current = [...currentSelections];
           if (isSelected) {
             current = current.filter(val => val !== opt);
@@ -239,7 +227,7 @@ export default function StepHealth({ onNext, onPrev }) {
             current.push(opt);
           }
           handleTempChange(field, current);
-        });
+        }} />;
       })}
     </div>
   );
@@ -257,91 +245,75 @@ export default function StepHealth({ onNext, onPrev }) {
 
         {activeFormType === 'injury' && (
           <>
-            <div className="onboarding-form-section">
-              <label className="onboarding-label">มีอาการบริเวณไหน?</label>
+            <FormSection label="มีอาการบริเวณไหน?" error={errors.concern_name}>
               {renderMultiSelectPills(INJURY_PARTS, tempConcern.concern_name || [], 'concern_name')}
               {tempConcern.concern_name?.includes('อื่น ๆ') && (
-                <input type="text" value={tempConcern.custom_concern_name} onChange={e => handleTempChange('custom_concern_name', e.target.value)} placeholder="ระบุบริเวณ" className={`w-full mb-16 bg-white ${errors.custom_concern_name ? 'input-error' : ''}`} />
+                <input type="text" value={tempConcern.custom_concern_name} onChange={e => handleTempChange('custom_concern_name', e.target.value)} placeholder="ระบุบริเวณ" className={`w-full mt-16 bg-white ${errors.custom_concern_name ? 'input-error' : ''}`} />
               )}
-              {errors.concern_name && <div className="validation-message onboarding-error-text" role="alert">{errors.concern_name}</div>}
-            </div>
+            </FormSection>
 
-            <div className="onboarding-form-section">
-              <label className="onboarding-label">ตอนนี้อาการกระทบการออกกำลังกายแค่ไหน?</label>
+            <FormSection label="ตอนนี้อาการกระทบการออกกำลังกายแค่ไหน?" error={errors.restriction_level}>
               <div className="onboarding-pill-container gap-8">
-                {RESTRICTION_LEVELS.map(lvl => renderPillButton(lvl.label, tempConcern.restriction_level === lvl.value, () => handleTempChange('restriction_level', lvl.value)))}
+                {RESTRICTION_LEVELS.map(lvl => <PillButton key={lvl.value} label={lvl.label} isSelected={tempConcern.restriction_level === lvl.value} onClick={() => handleTempChange('restriction_level', lvl.value)} />)}
               </div>
-              {errors.restriction_level && <div className="validation-message onboarding-error-text" role="alert">{errors.restriction_level}</div>}
-            </div>
+            </FormSection>
 
-            <div className="onboarding-form-section">
-              <label className="onboarding-label font-normal">มีอะไรที่อยากให้เราระวังเป็นพิเศษไหม? (Optional)</label>
+            <FormSection label="มีอะไรที่อยากให้เราระวังเป็นพิเศษไหม? (Optional)">
               <textarea value={tempConcern.restriction_note} onChange={e => handleTempChange('restriction_note', e.target.value)} placeholder="เช่น หลีกเลี่ยงการกระโดดหรือใช้แรงกดเข่า" rows="2" className="w-full p-[12px] border border-neutral-300 rounded-xl" />
-            </div>
+            </FormSection>
           </>
         )}
 
         {activeFormType === 'health_condition' && (
           <>
-            <div className="onboarding-form-section">
-              <label className="onboarding-label">มีภาวะสุขภาพอะไรที่เกี่ยวข้อง?</label>
+            <FormSection label="มีภาวะสุขภาพอะไรที่เกี่ยวข้อง?" error={errors.concern_name}>
               <input type="text" value={tempConcern.concern_name} onChange={e => handleTempChange('concern_name', e.target.value)} placeholder="ระบุเฉพาะข้อมูลที่เกี่ยวข้องกับการออกกำลังกาย" className={`w-full bg-white ${errors.concern_name ? 'input-error' : ''}`} />
-              {errors.concern_name && <div className="validation-message onboarding-error-text" role="alert">{errors.concern_name}</div>}
-            </div>
+            </FormSection>
 
-            <div className="onboarding-form-section">
-              <label className="onboarding-label font-normal">มีข้อแนะนำหรือสิ่งที่ควรหลีกเลี่ยงไหม? (Optional)</label>
+            <FormSection label="มีข้อแนะนำหรือสิ่งที่ควรหลีกเลี่ยงไหม? (Optional)">
               <textarea value={tempConcern.restriction_note} onChange={e => handleTempChange('restriction_note', e.target.value)} placeholder="เช่น ควรพักเมื่อมีอาการ หรือหลีกเลี่ยงกิจกรรมบางประเภท" rows="2" className="w-full p-[12px] border border-neutral-300 rounded-xl" />
-            </div>
+            </FormSection>
 
-            <div className="onboarding-form-section">
-              <label className="onboarding-label">เรื่องนี้กระทบการออกกำลังกายแค่ไหน?</label>
+            <FormSection label="เรื่องนี้กระทบการออกกำลังกายแค่ไหน?" error={errors.restriction_level}>
               <div className="onboarding-pill-container gap-8">
-                {RESTRICTION_LEVELS.map(lvl => renderPillButton(lvl.label, tempConcern.restriction_level === lvl.value, () => handleTempChange('restriction_level', lvl.value)))}
+                {RESTRICTION_LEVELS.map(lvl => <PillButton key={lvl.value} label={lvl.label} isSelected={tempConcern.restriction_level === lvl.value} onClick={() => handleTempChange('restriction_level', lvl.value)} />)}
               </div>
-              {errors.restriction_level && <div className="validation-message onboarding-error-text" role="alert">{errors.restriction_level}</div>}
-            </div>
+            </FormSection>
           </>
         )}
 
         {activeFormType === 'medication' && (
           <>
-            <div className="onboarding-form-section">
-              <label className="onboarding-label">มียาอะไรที่เกี่ยวข้อง?</label>
+            <FormSection label="มียาอะไรที่เกี่ยวข้อง?" error={errors.medication_name}>
               <input type="text" value={tempConcern.medication_name} onChange={e => handleTempChange('medication_name', e.target.value)} placeholder="ระบุชื่อยา หากทราบ" className={`w-full bg-white ${errors.medication_name ? 'input-error' : ''}`} />
-              {errors.medication_name && <div className="validation-message onboarding-error-text" role="alert">{errors.medication_name}</div>}
-            </div>
+            </FormSection>
 
-            <div className="onboarding-form-section">
-              <label className="onboarding-label font-normal">มีสิ่งที่ต้องระวังจากยานี้ไหม? (Optional)</label>
+            <FormSection label="มีสิ่งที่ต้องระวังจากยานี้ไหม? (Optional)">
               <textarea value={tempConcern.restriction_note} onChange={e => handleTempChange('restriction_note', e.target.value)} placeholder="ระบุเฉพาะข้อมูลที่เกี่ยวข้องกับการออกกำลังกาย" rows="2" className="w-full p-[12px] border border-neutral-300 rounded-xl" />
-            </div>
+            </FormSection>
           </>
         )}
 
         {activeFormType === 'other_restriction' && (
-          <div className="onboarding-form-section">
-            <label className="onboarding-label">มีอะไรที่ควรหลีกเลี่ยงหรือปรับให้คุณบ้าง?</label>
+          <FormSection label="มีอะไรที่ควรหลีกเลี่ยงหรือปรับให้คุณบ้าง?" error={errors.concern_name}>
             {renderMultiSelectPills(OTHER_RESTRICTIONS, tempConcern.concern_name || [], 'concern_name')}
             {tempConcern.concern_name?.includes('อื่น ๆ') && (
-              <input type="text" value={tempConcern.custom_concern_name} onChange={e => handleTempChange('custom_concern_name', e.target.value)} placeholder="ระบุสิ่งที่ควรระวัง" style={{ width: '100%', backgroundColor: '#fff' }} className={errors.custom_concern_name ? 'input-error' : ''} />
+              <input type="text" value={tempConcern.custom_concern_name} onChange={e => handleTempChange('custom_concern_name', e.target.value)} placeholder="ระบุสิ่งที่ควรระวัง" className={`w-full mt-16 bg-white ${errors.custom_concern_name ? 'input-error' : ''}`} />
             )}
-            {errors.concern_name && <div className="validation-message onboarding-error-text" role="alert">{errors.concern_name}</div>}
-          </div>
+          </FormSection>
         )}
 
         <hr className="border-none border-t border-brand-200 my-24" />
 
         {/* Active Status */}
-        <div className="onboarding-form-section">
-          <label className="onboarding-label">เรื่องนี้ยังมีผลอยู่ตอนนี้ไหม?</label>
+        <FormSection label="เรื่องนี้ยังมีผลอยู่ตอนนี้ไหม?">
           <div className="onboarding-pill-container gap-8">
-            {['active', 'intermittent', 'resolved'].map(status => renderPillButton(STATUS_MAPPING[status].label, tempConcern.status === status, () => handleTempChange('status', status)))}
+            {['active', 'intermittent', 'resolved'].map(status => <PillButton key={status} label={STATUS_MAPPING[status].label} isSelected={tempConcern.status === status} onClick={() => handleTempChange('status', status)} />)}
           </div>
-        </div>
+        </FormSection>
 
         {/* Dates */}
-        <div className="onboarding-form-section">
+        <FormSection error={errors.dates}>
           {!showDateFields ? (
             <button type="button" onClick={() => setShowDateFields(true)} className="bg-transparent border-none text-brand-600 font-semibold cursor-pointer text-sm underline block">
               + เพิ่มช่วงเวลาของอาการ (Optional)
@@ -358,8 +330,7 @@ export default function StepHealth({ onNext, onPrev }) {
               </div>
             </div>
           )}
-          {errors.dates && <div className="validation-message onboarding-error-text" role="alert">{errors.dates}</div>}
-        </div>
+        </FormSection>
 
         <div className="flex justify-end gap-12">
           <button type="button" className="btn btn-secondary btn-sm" onClick={closeForm}>ยกเลิก</button>
@@ -372,7 +343,7 @@ export default function StepHealth({ onNext, onPrev }) {
   const getSummaryCard = () => {
     if (concerns.length === 0) return null;
     return (
-      <div className="onboarding-feedback-card onboarding-fade-in mt-24">
+      <FeedbackCard className="mt-24">
         <h4 className="text-[13px] font-bold text-brand-600 mb-16 flex items-center">
           <span className="text-[18px] mr-8">🛡️</span>สิ่งที่เราจะคำนึงถึง
         </h4>
@@ -385,15 +356,15 @@ export default function StepHealth({ onNext, onPrev }) {
             const levelLabel = RESTRICTION_LEVELS.find(l => l.value === c.restriction_level)?.label;
 
             return (
-              <div key={i} style={{ borderBottom: i < concerns.length - 1 ? '1px solid var(--color-neutral-200)' : 'none', paddingBottom: i < concerns.length - 1 ? '16px' : '0' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div key={i} className={i < concerns.length - 1 ? 'border-b border-neutral-200 pb-16' : ''}>
+                <div className="flex justify-between items-start">
                   <div>
-                    <div style={{ fontWeight: 600, fontSize: '14px', color: 'var(--color-neutral-800)' }}>
+                    <div className="font-semibold text-[14px] text-neutral-800">
                       {typeLabel} {nameStr ? ` — ${nameStr}` : ''}
                     </div>
-                    {levelLabel && <div style={{ fontSize: '13px', color: 'var(--color-neutral-600)', marginTop: '4px' }}>• {levelLabel}</div>}
-                    {c.restriction_note && <div style={{ fontSize: '13px', color: 'var(--color-neutral-600)', marginTop: '4px' }}>• {c.restriction_note}</div>}
-                    <div style={{ fontSize: '13px', color: 'var(--color-brand-500)', marginTop: '4px' }}>• {STATUS_MAPPING[c.status].label}</div>
+                    {levelLabel && <div className="text-[13px] text-neutral-600 mt-4">• {levelLabel}</div>}
+                    {c.restriction_note && <div className="text-[13px] text-neutral-600 mt-4">• {c.restriction_note}</div>}
+                    <div className="text-[13px] text-brand-500 mt-4">• {STATUS_MAPPING[c.status].label}</div>
                   </div>
                   <button type="button" onClick={() => openForm(c.concern_type, i)} className="bg-transparent border-none text-neutral-500 text-[13px] underline cursor-pointer">แก้ไข</button>
                 </div>
@@ -401,7 +372,7 @@ export default function StepHealth({ onNext, onPrev }) {
             );
           })}
         </div>
-      </div>
+      </FeedbackCard>
     );
   };
 
@@ -448,28 +419,15 @@ export default function StepHealth({ onNext, onPrev }) {
             {MAIN_OPTIONS.map(opt => {
               const isSelected = mainSelection.includes(opt.value);
               return (
-                <button
+                <ChoiceCard
                   key={opt.value}
-                  type="button"
-                  className={`choice-card ${isSelected ? 'choice-card-selected' : ''}`}
-                  style={{ padding: '16px', alignItems: 'center', flexDirection: 'row', justifyContent: 'flex-start', backgroundColor: isSelected ? 'var(--color-brand-50)' : 'var(--color-white)', minHeight: '80px' }}
+                  isSelected={isSelected}
                   onClick={() => handleMainSelection(opt.value)}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                    <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: 'var(--color-neutral-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', marginRight: '16px', flexShrink: 0 }}>
-                      {opt.icon}
-                    </div>
-                    <div style={{ flex: 1, textAlign: 'left' }}>
-                      <div className="choice-card-label" style={{ fontSize: '15px', fontWeight: '600', marginBottom: '4px' }}>{opt.label}</div>
-                      <div style={{ fontSize: '13px', color: 'var(--color-neutral-500)' }}>{opt.desc}</div>
-                    </div>
-                    {isSelected && (
-                      <div style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: 'var(--color-brand-500)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', marginLeft: '12px', flexShrink: 0 }}>
-                        <svg width="14" height="10" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 5L5 9L13 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-                      </div>
-                    )}
-                  </div>
-                </button>
+                  icon={<span className="text-[20px]">{opt.icon}</span>}
+                  label={<span className="text-[15px] font-semibold">{opt.label}</span>}
+                  description={<span className="text-[13px] text-neutral-500">{opt.desc}</span>}
+                  className="p-16 items-center flex-row justify-start min-h-[80px]"
+                />
               );
             })}
           </div>
@@ -479,18 +437,18 @@ export default function StepHealth({ onNext, onPrev }) {
 
           {/* Special states feedbacks */}
           {mainSelection.includes('none') && (
-            <div className="onboarding-feedback-card onboarding-fade-in mt-24 bg-success-soft border border-success">
+            <FeedbackCard className="mt-24 bg-success-soft border border-success">
               <p className="m-0 text-success font-semibold flex items-center gap-8">
                 <span className="text-[18px]">✅</span> พร้อมแล้ว เราจะใช้ข้อมูลที่มีเพื่อแนะนำจุดเริ่มต้นให้คุณ
               </p>
-            </div>
+            </FeedbackCard>
           )}
           {mainSelection.includes('unsure') && (
-            <div className="onboarding-feedback-card onboarding-fade-in mt-24">
+            <FeedbackCard className="mt-24">
               <p className="m-0 text-neutral-700 flex items-center gap-8">
                 <span className="text-[18px]">ℹ️</span> ไม่เป็นไร คุณกลับมาเพิ่มหรือแก้ไขข้อมูลนี้ใน Profile ได้ภายหลัง
               </p>
-            </div>
+            </FeedbackCard>
           )}
 
           {/* Summary Card */}

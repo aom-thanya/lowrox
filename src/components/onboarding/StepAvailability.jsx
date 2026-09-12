@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { useOnboarding } from '../../context/OnboardingContext';
 import step4Img from '../../assets/onboarding/step4.png';
+import PillButton from '../common/PillButton';
+import FormSection from '../common/FormSection';
+import InputWrapper from '../common/InputWrapper';
+import FeedbackCard from '../common/FeedbackCard';
 
 const ONBOARDING_STEP_ILLUSTRATIONS = {
   yourRhythm: step4Img
@@ -293,22 +297,7 @@ export default function StepAvailability({ onNext, onPrev }) {
     }
   };
 
-  const renderPillButton = (label, isSelected, onClick, hasCheck = false) => (
-    <button
-      type="button"
-      className={`onboarding-pill-button ${isSelected ? 'selected' : ''} flex-none`}
-      onClick={onClick}
-    >
-      {hasCheck && isSelected && (
-        <div className="w-[18px] h-[18px] rounded-full bg-brand-500 flex items-center justify-center text-white">
-          <svg width="10" height="8" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1 5L5 9L13 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </div>
-      )}
-      {label}
-    </button>
-  );
+
 
   const renderDayChip = (day, isSelected, onClick) => (
     <button
@@ -368,7 +357,7 @@ export default function StepAvailability({ onNext, onPrev }) {
     }
 
     return (
-      <div className="onboarding-feedback-card onboarding-fade-in mt-24">
+      <FeedbackCard className="mt-24">
         <h4 className="text-[13px] font-bold text-brand-600 mb-12">
           <span className="text-[16px] mr-8">✨</span>จังหวะที่เหมาะกับคุณ
         </h4>
@@ -378,7 +367,7 @@ export default function StepAvailability({ onNext, onPrev }) {
           {timeText && <div className="text-sm text-neutral-800"><strong className="text-brand-500 mr-8">🕒</strong> {timeText}</div>}
         </div>
         {freqText && <div className="text-sm text-neutral-500 mt-12 border-t border-neutral-200 pt-12">{freqText}</div>}
-      </div>
+      </FeedbackCard>
     );
   };
 
@@ -444,17 +433,28 @@ export default function StepAvailability({ onNext, onPrev }) {
               </div>
 
               {/* Area Type */}
-              <div className="onboarding-form-section">
-                <label className="onboarding-label">คุณโอเคกับพื้นที่แบบไหนบ้าง?</label>
+              <FormSection
+                label="คุณโอเคกับพื้นที่แบบไหนบ้าง?"
+                error={errors[index]?.areaTypes}
+              >
                 <div className="onboarding-pill-container gap-10">
-                  {AREA_OPTIONS.map(opt => renderPillButton(opt.label, win.areaTypes.includes(opt.value), () => handleAreaTypeSelect(index, opt.value), true))}
+                  {AREA_OPTIONS.map(opt => (
+                    <PillButton
+                      key={opt.value}
+                      label={opt.label}
+                      isSelected={win.areaTypes.includes(opt.value)}
+                      onClick={() => handleAreaTypeSelect(index, opt.value)}
+                      className="flex-none"
+                    />
+                  ))}
                 </div>
-                {errors[index]?.areaTypes && <div className="validation-message onboarding-error-text" role="alert">{errors[index].areaTypes}</div>}
-              </div>
+              </FormSection>
 
               {/* Day Selection */}
-              <div className="onboarding-form-section">
-                <label className="onboarding-label">วันไหนที่คุณมักสะดวกซ้อม?</label>
+              <FormSection
+                label="วันไหนที่คุณมักสะดวกซ้อม?"
+                error={errors[index]?.days}
+              >
                 <div className="onboarding-pill-container gap-[10px] mb-16">
                   {DAY_PRESETS.map(opt => (
                     <button
@@ -472,7 +472,6 @@ export default function StepAvailability({ onNext, onPrev }) {
                     </button>
                   ))}
                 </div>
-                {errors[index]?.days && <div className="validation-message onboarding-error-text" role="alert">{errors[index].days}</div>}
 
                 {win.dayPreset === 'custom' && (
                   <div className="onboarding-fade-in mb-16">
@@ -486,12 +485,20 @@ export default function StepAvailability({ onNext, onPrev }) {
                   <div className="onboarding-fade-in mt-16 bg-neutral-50 p-16 rounded-xl">
                     <label className="onboarding-label text-sm mb-12">อยากซ้อมประมาณกี่วันต่อสัปดาห์?</label>
                     <div className="onboarding-pill-container gap-8">
-                      {['1', '2', '3', '4', '5', '6', '7'].slice(0, win.dayPreset === 'weekends' ? 2 : (win.dayPreset === 'weekdays' ? 5 : 7)).map(num => renderPillButton(`${num} วัน`, win.weeklyFrequency === String(num), () => {
-                        updateWindow(index, 'weeklyFrequency', String(num));
-                        if (errors[index]?.frequency) {
-                          const ne = { ...errors }; ne[index] = { ...ne[index] }; delete ne[index].frequency; setErrors(ne);
-                        }
-                      }))}
+                      {['1', '2', '3', '4', '5', '6', '7'].slice(0, win.dayPreset === 'weekends' ? 2 : (win.dayPreset === 'weekdays' ? 5 : 7)).map(num => (
+                        <PillButton
+                          key={num}
+                          label={`${num} วัน`}
+                          isSelected={win.weeklyFrequency === String(num)}
+                          onClick={() => {
+                            updateWindow(index, 'weeklyFrequency', String(num));
+                            if (errors[index]?.frequency) {
+                              const ne = { ...errors }; ne[index] = { ...ne[index] }; delete ne[index].frequency; setErrors(ne);
+                            }
+                          }}
+                          className="flex-none"
+                        />
+                      ))}
                     </div>
                     {errors[index]?.frequency && <div className="validation-message onboarding-error-text" role="alert">{errors[index].frequency}</div>}
                     <div className="onboarding-helper-text mt-8">(ระบบจะช่วยกระจายวันซ้อมให้เหมาะสม)</div>
@@ -503,16 +510,30 @@ export default function StepAvailability({ onNext, onPrev }) {
                     คุณมีเวลาซ้อมประมาณ {win.selectedDays.length} วันต่อสัปดาห์
                   </div>
                 )}
-              </div>
+              </FormSection>
 
               {/* Time Selection */}
-              <div className="onboarding-form-section">
-                <label className="onboarding-label">ช่วงไหนที่มักสะดวก?</label>
+              <FormSection
+                label="ช่วงไหนที่มักสะดวก?"
+                error={errors[index]?.times}
+              >
                 <div className="onboarding-pill-container gap-[10px] mb-16">
-                  {TIME_PRESETS.map(opt => renderPillButton(opt.label, win.timePresets.includes(opt.value), () => handleTimeSelect(index, opt.value), true))}
-                  {renderPillButton('กำหนดเวลาเอง', win.timePresets.includes('custom'), () => handleTimeSelect(index, 'custom'), true)}
+                  {TIME_PRESETS.map(opt => (
+                    <PillButton
+                      key={opt.value}
+                      label={opt.label}
+                      isSelected={win.timePresets.includes(opt.value)}
+                      onClick={() => handleTimeSelect(index, opt.value)}
+                      className="flex-none"
+                    />
+                  ))}
+                  <PillButton
+                    label="กำหนดเวลาเอง"
+                    isSelected={win.timePresets.includes('custom')}
+                    onClick={() => handleTimeSelect(index, 'custom')}
+                    className="flex-none"
+                  />
                 </div>
-                {errors[index]?.times && <div className="validation-message onboarding-error-text" role="alert">{errors[index].times}</div>}
 
                 {win.timePresets.includes('custom') && (
                   <div className="onboarding-fade-in bg-brand-50 p-16 rounded-xl">
@@ -532,7 +553,7 @@ export default function StepAvailability({ onNext, onPrev }) {
                     <div className="onboarding-helper-text mt-8">หากเวลาข้ามเที่ยงคืน คุณสามารถเพิ่มภายหลังได้ใน Profile</div>
                   </div>
                 )}
-              </div>
+              </FormSection>
 
               {/* Note */}
               <div className="onboarding-form-section mb-16">
