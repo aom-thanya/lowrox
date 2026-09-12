@@ -80,7 +80,24 @@ This document outlines the requirements for each key page in the Lowrox applicat
 
 ---
 
-## 5. Automated Testing Coverage (Node:Test)
+## 5. Settings Page (`/profile/settings`)
+**Description:** A settings page for managing account configuration and logging out.
+
+* **Input:**
+  * User's authentication information (e.g., username, email).
+  * Profile Visibility Toggle ("แสดงโปรไฟล์ในการหา Buddy").
+  * Logout action (button click).
+* **Process:**
+  * **Visibility Management:** Deep compare current toggle state vs saved state (`showProfile`). Block navigation if unsaved changes exist. Update `userRepository` when "Save Changes" is pressed.
+  * **Logout:** Confirm intent via a Dialog. If confirmed, call the logout flow to clear the session and redirect to the home page.
+  * **Unsaved Changes:** Warn users if they attempt to leave or log out without saving their settings.
+* **Output:**
+  * **Success:** Settings are updated with a Toast notification "บันทึกการตั้งค่าแล้ว". Logged out users are sent to `/` as unauthenticated visitors.
+  * **Error:** Show error message if saving or logging out fails.
+
+---
+
+## 6. Automated Testing Coverage (Node:Test)
 The backend logic, validations, and data processing that support the above IPO models are tested via automated unit tests:
 
 1. **Authentication (`tests/auth.test.js`)**

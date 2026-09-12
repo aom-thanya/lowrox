@@ -10,6 +10,12 @@ export function profileFromUser(user) {
   };
 }
 
+export function settingsFromUser(user) {
+  return {
+    showProfile: user.showProfile ?? true,
+  };
+}
+
 export function validateProfile(profile, areas) {
   const errors = {};
   const nameLength = characterCount((profile.displayName || '').trim());
@@ -28,5 +34,10 @@ export function validateProfile(profile, areas) {
 }
 
 export function hasProfileChanges(draft, saved) {
-  return Boolean(draft && saved && Object.keys(saved).some((key) => draft[key] !== saved[key]));
+  return Boolean(draft && saved && Object.keys(draft).some((key) => draft[key] !== saved[key]));
+}
+
+export function hasSettingsChanges(draft, saved) {
+  if (!draft || !saved) return false;
+  return draft.showProfile !== saved.showProfile;
 }

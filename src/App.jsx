@@ -8,6 +8,7 @@ import Onboarding from './pages/Onboarding';
 import Profile from './pages/Profile';
 import ProfileEditor from './pages/ProfileEditor';
 import ProfileOnboardingEditor from './pages/ProfileOnboardingEditor';
+import Settings from './pages/Settings';
 import { UnsavedChangesProvider } from './context/UnsavedChangesContext';
 import AccountLayout from './components/AccountLayout';
 import { profileNavigation } from './config/profileNavigation';
@@ -30,6 +31,7 @@ const router = createBrowserRouter(createRoutesFromElements(
               {profileNavigation.map((page) => {
                 if (page.to === '/profile') return <Route key={page.to} index element={<ProfileEditor />} />;
                 if (page.to === '/profile/onboarding') return <Route key={page.to} path="onboarding" element={<ProfileOnboardingEditor />} />;
+                if (page.to === '/profile/settings') return <Route key={page.to} path="settings" element={<Settings />} />;
                 return <Route key={page.to} path={page.to.slice('/profile/'.length)} element={<Profile page={page} />} />;
               })}
               <Route path="*" element={<Navigate to="/profile" replace />} />
