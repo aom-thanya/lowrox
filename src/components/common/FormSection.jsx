@@ -11,16 +11,16 @@ export default function FormSection({
   return (
     <div className={`onboarding-form-section ${className}`}>
       {label && (
-        <label className="onboarding-label" htmlFor={htmlFor}>
+        <label id={htmlFor ? `${htmlFor}-label` : undefined} className="onboarding-label" htmlFor={htmlFor}>
           {label}
         </label>
       )}
-      {helperText && !error && (
-        <span className="onboarding-helper-text mb-8">{helperText}</span>
+      {helperText && (
+        <span id={htmlFor ? `${htmlFor}-help` : undefined} className="onboarding-helper-text mb-8">{helperText}</span>
       )}
       {children}
       {error && (
-        <span className="validation-message onboarding-error-text mt-8" role="alert">
+        <span id={htmlFor ? `${htmlFor}-error` : undefined} className="validation-message onboarding-error-text mt-8" role="alert">
           {error}
         </span>
       )}

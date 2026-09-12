@@ -10,9 +10,9 @@ export default function Footer() {
       <div className="container">
         <div className="footer-top">
           <div className="footer-brand">
-            <a href="/" className="logo" aria-label="Lowrox homepage">
+            <Link to="/" className="logo" aria-label="Lowrox homepage">
               <img src={logoImg} alt="LOWROX" className="h-8" />
-            </a>
+            </Link>
             <p className="body-sm footer-desc">ประเมินระดับ วางแผนฝึก และหาเพื่อนซ้อมที่เหมาะกับคุณ</p>
           </div>
           <nav className="footer-nav" aria-label="Footer navigation">

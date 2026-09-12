@@ -3,16 +3,19 @@ import { useNavigate, Link, NavLink } from 'react-router-dom';
 import { Menu } from 'lucide-react';
 import logoImg from '../assets/logo.png';
 import { useAuth } from '../context/AuthContext';
+import Avatar from './common/Avatar';
+import { useUnsavedChanges } from '../context/UnsavedChangesContext';
 import LoginModal from './LoginModal';
 
 export default function Header() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  const handleLogout = () => {
+  const { requestAction } = useUnsavedChanges();
+  const handleLogout = () => requestAction(() => {
     setIsMenuOpen(false);
     logout();
     navigate('/login');
-  };
+  });
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -59,7 +62,7 @@ export default function Header() {
             <a href="#" className="nav-link">การประเมินระดับ</a>
             <a href="#" className="nav-link">แผนการซ้อม</a>
             <a href="#" className="nav-link">หาเพื่อนซ้อม</a>
-            {user && <NavLink to="/profile" className="nav-link">My Profile</NavLink>}
+            {user && <NavLink to="/profile" className="nav-link nav-profile"><Avatar src={user.avatarUrl} size="small" /><span><span className="nav-profile-name">{user.displayName || user.username}</span><span className="body-sm">My Profile</span></span></NavLink>}
           </nav>
           
           <div className="header-actions">
@@ -89,7 +92,7 @@ export default function Header() {
           <a href="#" className="nav-link" onClick={() => setIsMenuOpen(false)}>การประเมินระดับ</a>
           <a href="#" className="nav-link" onClick={() => setIsMenuOpen(false)}>แผนการซ้อม</a>
           <a href="#" className="nav-link" onClick={() => setIsMenuOpen(false)}>หาเพื่อนซ้อม</a>
-          {user && <NavLink to="/profile" className="nav-link" onClick={() => setIsMenuOpen(false)}>My Profile</NavLink>}
+          {user && <NavLink to="/profile" className="nav-link nav-profile" onClick={() => setIsMenuOpen(false)}><Avatar src={user.avatarUrl} size="small" /><span><span className="nav-profile-name">{user.displayName || user.username}</span><span className="body-sm">My Profile</span></span></NavLink>}
         </nav>
         <div className="mobile-drawer-actions">
           {user ? <button className="btn btn-secondary btn-md w-full" onClick={handleLogout}>ออกจากระบบ</button> : <button className="btn btn-primary btn-md btn-cta w-full" onClick={() => { setIsMenuOpen(false); setIsLoginModalOpen(true); }}>เข้าสู่ระบบ</button>}
