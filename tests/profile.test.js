@@ -102,9 +102,19 @@ test('saving onboarding data persists correctly in user record', () => {
   const db = storage();
   startSession({ id: 1, username: 'test' }, db);
   
+  // Initially no onboardingData
+  const initialUser = readCurrentUser(1, db);
+  assert.equal(initialUser.onboardingData, undefined);
+
   const onboardingData = { goals: [{ goalType: 'increase_distance' }] };
   updateCurrentUser(1, { onboardingData }, db);
   
   const current = readCurrentUser(1, db);
   assert.deepEqual(current.onboardingData, onboardingData);
+  
+  // Updating other fields doesn't wipe onboarding data
+  updateCurrentUser(1, { displayName: 'John' }, db);
+  const updated = readCurrentUser(1, db);
+  assert.equal(updated.displayName, 'John');
+  assert.deepEqual(updated.onboardingData, onboardingData);
 });

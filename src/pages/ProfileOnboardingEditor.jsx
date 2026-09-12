@@ -88,6 +88,7 @@ function ProfileOnboardingEditorForm({ onCancel, initialData }) {
         <ContentCard>
           <section>
             <h2 className="heading-4 mb-4">ข้อมูลพื้นฐาน</h2>
+            <p className="field-helper section-description mb-16">ข้อมูลนี้จะช่วยให้ Lowrox ปรับแต่งประสบการณ์และเป้าหมายให้เหมาะกับคุณที่สุด</p>
             <StepBasicInfo ref={step1Ref} isEditor={true} externalShowValidation={showValidation} />
           </section>
         </ContentCard>
@@ -95,6 +96,7 @@ function ProfileOnboardingEditorForm({ onCancel, initialData }) {
         <ContentCard>
           <section>
             <h2 className="heading-4 mb-4">สถิติปัจจุบัน</h2>
+            <p className="field-helper section-description mb-16">ไม่ต้องเป็นสถิติที่ดีที่สุด เลือกครั้งที่ใกล้เคียงกับคุณที่สุดได้เลย</p>
             <StepFitnessLevel ref={step2Ref} isEditor={true} externalShowValidation={showValidation} />
           </section>
         </ContentCard>
@@ -102,6 +104,7 @@ function ProfileOnboardingEditorForm({ onCancel, initialData }) {
         <ContentCard>
           <section>
             <h2 className="heading-4 mb-4">เป้าหมาย & Challenge</h2>
+            <p className="field-helper section-description mb-16">กำหนดเป้าหมายเพื่อเป็นแรงบันดาลใจในการออกกำลังกายของคุณ</p>
             <StepGoals ref={step3Ref} isEditor={true} externalShowValidation={showValidation} />
           </section>
         </ContentCard>
@@ -109,6 +112,7 @@ function ProfileOnboardingEditorForm({ onCancel, initialData }) {
         <ContentCard>
           <section>
             <h2 className="heading-4 mb-4">ช่วงเวลาที่สะดวก</h2>
+            <p className="field-helper section-description mb-16">เลือกช่วงที่มักสะดวก เราจะช่วยหา Buddy และ Training Party ที่เข้ากับคุณ</p>
             <StepAvailability ref={step4Ref} isEditor={true} externalShowValidation={showValidation} />
           </section>
         </ContentCard>
@@ -116,6 +120,7 @@ function ProfileOnboardingEditorForm({ onCancel, initialData }) {
         <ContentCard>
           <section>
             <h2 className="heading-4 mb-4">สุขภาพและข้อควรระวัง</h2>
+            <p className="field-helper section-description mb-16">บอกเฉพาะเรื่องที่เกี่ยวข้องกับการออกกำลังกาย เพื่อให้คำแนะนำเหมาะกับคุณมากขึ้น</p>
             <StepHealth ref={step5Ref} isEditor={true} externalShowValidation={showValidation} />
           </section>
         </ContentCard>

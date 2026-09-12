@@ -180,23 +180,6 @@ const StepFitnessLevel = forwardRef(({ onNext, onPrev, isEditor, externalShowVal
     return 'บันทึกจุดเริ่มต้น →';
   };
 
-  return (
-    <>
-      <div className="onboarding-modal-body">
-        {/* Header Section */}
-        <div className="onboarding-fullwidth-header">
-          <img
-            src={ONBOARDING_STEP_ILLUSTRATIONS.currentPace}
-            alt="Lowrox current pace illustration"
-            onError={(e) => { e.target.style.display = 'none'; }}
-          />
-          <div className="onboarding-text-align">
-            <h2 className="heading-2 mb-8 flex items-center"><Activity size={28} className="mr-8 text-brand-500" />สถิติปัจจุบันของคุณ</h2>
-            <p className="body-md text-neutral-600">
-              ไม่ต้องเป็นสถิติที่ดีที่สุด เลือกครั้งที่ใกล้เคียงกับคุณที่สุดได้เลย
-            </p>
-          </div>
-        </div>
 
   const formContent = (
     <>

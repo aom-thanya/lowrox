@@ -585,8 +585,7 @@ const StepGoals = forwardRef(({ onNext, onPrev, isEditor, externalShowValidation
     return 'ตั้ง Challenge นี้ →';
   };
 
-  return (
-    <>
+
   const formContent = (
     <>
         {submitError && (

@@ -89,27 +89,7 @@ const StepBasicInfo = forwardRef(({ onNext, isEditor, externalShowValidation }, 
     }
   };
 
-  return (
-    <>
-      <div className="onboarding-modal-body onboarding-step-layout">
-        <div className="onboarding-illustration-column flex flex-col items-center text-center">
-          <div className="onboarding-illustration-container">
-            <img
-              src={ONBOARDING_STEP_ILLUSTRATIONS.aboutYou}
-              alt="Lowrox runner illustration"
-              className="onboarding-illustration"
-              onError={(e) => { e.target.style.display = 'none'; }}
-            />
-          </div>
-          <div className="onboarding-form-section mt-24">
-            <h2 className="display-sm mb-8">มาทำความรู้จักกันหน่อย 👋</h2>
-            <p className="body-md text-neutral-600">
-              ข้อมูลนี้จะช่วยให้ Lowrox ปรับแต่งประสบการณ์และเป้าหมายให้เหมาะกับคุณที่สุด
-            </p>
-          </div>
-        </div>
 
-        <div className="onboarding-form-column">
 
   const formContent = (
     <>
