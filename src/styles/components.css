@@ -393,3 +393,102 @@ textarea.form-control { display: block; padding: var(--space-3) var(--space-4); 
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* Event Specific Components */
+.event-badge {
+  padding: 4px 10px;
+  border-radius: 9999px;
+}
+
+.event-overlay-badge-error {
+  background-color: var(--color-error-500);
+  color: var(--color-white);
+  padding: 8px 16px;
+  border-radius: 9999px;
+  font-weight: 700;
+}
+
+.event-overlay-badge-neutral {
+  background-color: var(--color-neutral-800);
+  color: var(--color-white);
+  padding: 8px 16px;
+  border-radius: 9999px;
+  font-weight: 700;
+}
+
+.event-overlay-bg {
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(4px);
+}
+
+.event-back-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.event-header-image {
+  height: 320px;
+}
+
+.event-card-image {
+  height: 192px;
+}
+
+.event-skeleton-card {
+  height: 400px;
+}
+
+.event-icon-box {
+  width: 48px;
+  height: 48px;
+}
+
+.event-spinner {
+  width: 48px;
+  height: 48px;
+}
+
+.event-box-p24 {
+  padding: 24px;
+}
+
+.event-box-p40 {
+  padding: 40px;
+}
+
+.event-join-section {
+  border-top: 1px solid var(--color-neutral-200);
+  padding-top: 32px;
+}
+
+.event-join-status {
+  padding: 12px 24px;
+}
+
+.event-join-btn {
+  min-width: 200px;
+}
+
+.event-comment-textarea {
+  padding: 16px;
+  min-height: 100px;
+  resize: vertical;
+  outline: none;
+}
+
+/* Typography Clamps */
+.text-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.text-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

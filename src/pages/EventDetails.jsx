@@ -117,7 +117,7 @@ export default function EventDetails() {
       <div className="flex flex-col min-h-screen">
         <Header />
         <main className="main-content flex-grow pt-24 pb-16 bg-neutral-50 flex items-center justify-center">
-          <div className="border-4 border-brand-200 border-t-brand-500 rounded-full animate-spin" style={{ width: '48px', height: '48px' }}></div>
+          <div className="border-4 border-brand-200 border-t-brand-500 rounded-full animate-spin event-spinner"></div>
         </main>
         <Footer />
       </div>
@@ -154,23 +154,23 @@ export default function EventDetails() {
           {/* Back Button */}
           <button 
             onClick={handleBack} 
-            className="flex items-center gap-2 text-neutral-600 hover:text-brand-600 font-medium mb-6 transition-colors"
+            className="flex items-center gap-2 text-neutral-600 font-medium mb-6 transition-all event-back-btn"
           >
             <ArrowLeft size={20} /> กลับหน้ากิจกรรม
           </button>
           
           <div className="bg-white rounded-2xl shadow-sm overflow-hidden mb-8">
             {/* Event Header Image */}
-            <div className="relative w-full bg-neutral-200 flex items-center justify-center text-neutral-400" style={{ height: '320px' }}>
+            <div className="relative w-full bg-neutral-200 flex items-center justify-center text-neutral-400 event-header-image">
               <Activity size={80} opacity={0.5} />
               {isCancelled && (
-                <div className="absolute inset-0 bg-white/50 backdrop-blur-sm flex items-center justify-center">
-                  <Badge variant="error" className="text-lg px-4 py-2">กิจกรรมนี้ถูกยกเลิกแล้ว</Badge>
+                <div className="absolute inset-0 flex items-center justify-center event-overlay-bg">
+                  <div className="event-overlay-badge-error">กิจกรรมนี้ถูกยกเลิกแล้ว</div>
                 </div>
               )}
               {isEnded && !isCancelled && (
-                <div className="absolute inset-0 bg-white/50 backdrop-blur-sm flex items-center justify-center">
-                  <Badge variant="neutral" className="text-lg px-4 py-2 bg-neutral-800 text-white border-transparent">กิจกรรมจบลงแล้ว</Badge>
+                <div className="absolute inset-0 flex items-center justify-center event-overlay-bg">
+                  <div className="event-overlay-badge-neutral">กิจกรรมจบลงแล้ว</div>
                 </div>
               )}
             </div>
@@ -188,7 +188,7 @@ export default function EventDetails() {
               <div className="event-details-grid">
                 <div className="space-y-6">
                   <div className="flex gap-4">
-                    <div className="rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center flex-shrink-0" style={{ width: '48px', height: '48px' }}>
+                    <div className="rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center flex-shrink-0 event-icon-box">
                       <Calendar size={24} />
                     </div>
                     <div>
@@ -201,7 +201,7 @@ export default function EventDetails() {
                   </div>
                   
                   <div className="flex gap-4">
-                    <div className="rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center flex-shrink-0" style={{ width: '48px', height: '48px' }}>
+                    <div className="rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center flex-shrink-0 event-icon-box">
                       <MapPin size={24} />
                     </div>
                     <div>
@@ -211,7 +211,7 @@ export default function EventDetails() {
                   </div>
                 </div>
                 
-                <div className="bg-neutral-50 rounded-xl p-6 flex flex-col items-center justify-center text-center">
+                <div className="bg-neutral-100 rounded-xl flex flex-col items-center justify-center text-center event-box-p24">
                   <h3 className="font-semibold text-neutral-900 mb-2 w-full text-left">ผู้จัดกิจกรรม</h3>
                   <div className="flex items-center gap-4 w-full mt-2">
                     <Avatar src={event.organizer?.avatarUrl} size="medium" />
@@ -228,17 +228,17 @@ export default function EventDetails() {
               </div>
               
               {/* Join Group Section */}
-              <div className="border-t border-neutral-200 pt-8 text-center flex flex-col items-center">
+              <div className="text-center flex flex-col items-center event-join-section">
                 {!isActive ? (
                   <p className="text-neutral-500 font-medium">ไม่สามารถเข้าร่วมได้ (กิจกรรมจบหรือถูกยกเลิกแล้ว)</p>
                 ) : !event.joinUrl ? (
-                  <p className="text-neutral-500 font-medium bg-neutral-100 px-6 py-3 rounded-xl inline-block">ยังไม่เปิดให้เข้าร่วมกลุ่ม</p>
+                  <p className="text-neutral-500 font-medium bg-neutral-100 inline-block rounded-xl event-join-status">ยังไม่เปิดให้เข้าร่วมกลุ่ม</p>
                 ) : (
                   <>
                     <button 
                       onClick={handleJoinGroup}
                       disabled={isJoining}
-                      className="btn btn-primary btn-lg min-w-[200px] flex items-center justify-center gap-2"
+                      className="btn btn-primary btn-md flex items-center justify-center gap-2 event-join-btn"
                     >
                       {isJoining ? 'กำลังตรวจสอบ...' : (
                         <>Join Group <ExternalLink size={20} /></>
@@ -253,7 +253,7 @@ export default function EventDetails() {
           </div>
           
           {/* Comments Section */}
-          <div className="bg-white rounded-2xl shadow-sm p-6 md:p-10" id="comments">
+          <div className="bg-white rounded-2xl shadow-sm event-box-p40" id="comments">
             <h3 className="heading-4 mb-2">ความคิดเห็น</h3>
             <p className="text-neutral-500 text-sm mb-6">ทุกคนสามารถอ่านคอมเมนต์ที่เผยแพร่ได้ แต่ต้องเข้าสู่ระบบก่อนส่ง</p>
             
@@ -264,7 +264,7 @@ export default function EventDetails() {
                 isSubmitting={isSubmittingComment} 
               />
             ) : (
-              <div className="bg-brand-50 border border-brand-100 rounded-xl p-6 flex flex-col md:flex-row items-center justify-between gap-4 mt-6">
+              <div className="bg-brand-50 border border-brand-100 rounded-xl flex flex-col md:flex-row items-center justify-between gap-4 mt-6 event-box-p24">
                 <p className="text-brand-800 font-medium">เข้าสู่ระบบเพื่อแสดงความคิดเห็น</p>
                 <button 
                   onClick={() => setIsLoginModalOpen(true)} 

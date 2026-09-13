@@ -18,7 +18,7 @@ function formatEventDate(dateString) {
 export default function EventCard({ event }) {
   return (
     <ContentCard className="h-full flex flex-col">
-      <div className="relative w-full bg-neutral-100 rounded-t-xl overflow-hidden" style={{ height: '192px' }}>
+      <div className="relative w-full bg-neutral-100 rounded-t-xl overflow-hidden event-card-image">
         {/* Placeholder image for events */}
         <div className="absolute inset-0 flex items-center justify-center text-neutral-300">
           <Activity size={48} />
@@ -35,7 +35,7 @@ export default function EventCard({ event }) {
           <Badge variant="neutral">{event.type}</Badge>
         </div>
         
-        <h3 className="heading-5 mb-3" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{event.title}</h3>
+        <h3 className="heading-5 mb-3 text-clamp-2">{event.title}</h3>
         
         <div className="mb-4 text-sm text-neutral-600 flex flex-col gap-2">
           <div className="flex items-center gap-2">
@@ -44,11 +44,11 @@ export default function EventCard({ event }) {
           </div>
           <div className="flex items-start gap-2">
             <MapPin size={16} className="text-neutral-400 flex-shrink-0 mt-0.5" />
-            <span style={{ display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{event.location}</span>
+            <span className="text-clamp-1">{event.location}</span>
           </div>
         </div>
         
-        <p className="body-sm text-neutral-600 mb-6 flex-grow" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+        <p className="body-sm text-neutral-600 mb-6 flex-grow text-clamp-2">
           {event.description}
         </p>
         

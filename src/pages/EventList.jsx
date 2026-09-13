@@ -124,10 +124,10 @@ export default function EventList() {
               </div>
               
               <div className="event-filter-field col-auto event-filter-actions gap-2">
-                <button type="submit" className="btn btn-primary btn-md" style={{ flex: 1 }}>
+                <button type="submit" className="btn btn-primary btn-md flex-1">
                   ค้นหา
                 </button>
-                <button type="button" onClick={handleClear} className="btn btn-secondary btn-md" style={{ flex: 1 }}>
+                <button type="button" onClick={handleClear} className="btn btn-secondary btn-md flex-1">
                   ล้างตัวกรอง
                 </button>
               </div>
@@ -145,7 +145,7 @@ export default function EventList() {
           {isLoading ? (
             <div className="event-grid">
               {[1, 2, 3].map(i => (
-                <div key={i} className="bg-white rounded-2xl animate-pulse" style={{ height: '400px' }}></div>
+                <div key={i} className="bg-white rounded-2xl animate-pulse event-skeleton-card"></div>
               ))}
             </div>
           ) : events.length > 0 ? (

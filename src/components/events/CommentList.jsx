@@ -15,11 +15,11 @@ function formatCommentDate(dateString) {
 export default function CommentList({ comments, isLoading }) {
   if (isLoading) {
     return (
-      <div className="space-y-4 mt-6">
+      <div className="flex flex-col gap-16 mt-6">
         {[1, 2].map(i => (
           <div key={i} className="flex gap-4 animate-pulse">
             <div className="w-10 h-10 rounded-full bg-neutral-200 flex-shrink-0"></div>
-            <div className="flex-grow space-y-2">
+            <div className="flex-grow flex flex-col gap-8">
               <div className="h-4 bg-neutral-200 rounded w-1/4"></div>
               <div className="h-4 bg-neutral-200 rounded w-3/4"></div>
             </div>
@@ -38,7 +38,7 @@ export default function CommentList({ comments, isLoading }) {
   }
 
   return (
-    <div className="space-y-6 mt-6">
+    <div className="flex flex-col gap-24 mt-6">
       {comments.map(comment => (
         <div key={comment.id} className="flex gap-4">
           <Avatar src={comment.userAvatarUrl} size="small" className="flex-shrink-0" />

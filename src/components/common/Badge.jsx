@@ -12,8 +12,7 @@ export default function Badge({ children, variant = 'neutral', className = '' })
 
   return (
     <span 
-      className={`${baseClasses} ${variantClasses[variant] || variantClasses.neutral} ${className}`}
-      style={{ padding: '4px 10px', borderRadius: '9999px' }}
+      className={`${baseClasses} ${variantClasses[variant] || variantClasses.neutral} event-badge ${className}`}
     >
       {children}
     </span>
