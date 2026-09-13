@@ -81,8 +81,8 @@ export default function EventList() {
           
           {/* Filters */}
           <div className="bg-white p-6 rounded-2xl shadow-sm mb-8">
-            <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-4 items-end">
-              <div className="w-full md:w-1/3">
+            <form onSubmit={handleSearch} className="event-filter-form">
+              <div className="event-filter-field col-4">
                 <label className="block text-sm font-medium text-neutral-700 mb-1">ค้นหากิจกรรม</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-neutral-400">
@@ -98,7 +98,7 @@ export default function EventList() {
                 </div>
               </div>
               
-              <div className="w-full md:w-1/4">
+              <div className="event-filter-field col-3">
                 <label className="block text-sm font-medium text-neutral-700 mb-1">ประเภทกีฬา</label>
                 <select 
                   className="w-full bg-neutral-100 border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500"
@@ -112,7 +112,7 @@ export default function EventList() {
                 </select>
               </div>
               
-              <div className="w-full md:w-1/4">
+              <div className="event-filter-field col-3">
                 <label className="block text-sm font-medium text-neutral-700 mb-1">พื้นที่</label>
                 <input
                   type="text"
@@ -123,11 +123,11 @@ export default function EventList() {
                 />
               </div>
               
-              <div className="w-full md:w-auto flex gap-2">
-                <button type="submit" className="btn btn-primary btn-md flex-grow md:flex-grow-0">
+              <div className="event-filter-field col-auto event-filter-actions gap-2">
+                <button type="submit" className="btn btn-primary btn-md" style={{ flex: 1 }}>
                   ค้นหา
                 </button>
-                <button type="button" onClick={handleClear} className="btn btn-secondary btn-md flex-grow md:flex-grow-0">
+                <button type="button" onClick={handleClear} className="btn btn-secondary btn-md" style={{ flex: 1 }}>
                   ล้างตัวกรอง
                 </button>
               </div>
@@ -143,13 +143,13 @@ export default function EventList() {
           
           {/* Event Grid */}
           {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="event-grid">
               {[1, 2, 3].map(i => (
-                <div key={i} className="h-[400px] bg-white rounded-2xl animate-pulse"></div>
+                <div key={i} className="bg-white rounded-2xl animate-pulse" style={{ height: '400px' }}></div>
               ))}
             </div>
           ) : events.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="event-grid">
               {events.map(event => (
                 <EventCard key={event.id} event={event} />
               ))}

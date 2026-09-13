@@ -18,7 +18,7 @@ function formatEventDate(dateString) {
 export default function EventCard({ event }) {
   return (
     <ContentCard className="h-full flex flex-col">
-      <div className="relative h-48 w-full bg-neutral-100 rounded-t-xl overflow-hidden">
+      <div className="relative w-full bg-neutral-100 rounded-t-xl overflow-hidden" style={{ height: '192px' }}>
         {/* Placeholder image for events */}
         <div className="absolute inset-0 flex items-center justify-center text-neutral-300">
           <Activity size={48} />

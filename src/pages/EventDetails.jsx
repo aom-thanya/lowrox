@@ -117,7 +117,7 @@ export default function EventDetails() {
       <div className="flex flex-col min-h-screen">
         <Header />
         <main className="main-content flex-grow pt-24 pb-16 bg-neutral-50 flex items-center justify-center">
-          <div className="w-12 h-12 border-4 border-brand-200 border-t-brand-500 rounded-full animate-spin"></div>
+          <div className="border-4 border-brand-200 border-t-brand-500 rounded-full animate-spin" style={{ width: '48px', height: '48px' }}></div>
         </main>
         <Footer />
       </div>
@@ -161,7 +161,7 @@ export default function EventDetails() {
           
           <div className="bg-white rounded-2xl shadow-sm overflow-hidden mb-8">
             {/* Event Header Image */}
-            <div className="relative h-64 md:h-80 w-full bg-neutral-200 flex items-center justify-center text-neutral-400">
+            <div className="relative w-full bg-neutral-200 flex items-center justify-center text-neutral-400" style={{ height: '320px' }}>
               <Activity size={80} opacity={0.5} />
               {isCancelled && (
                 <div className="absolute inset-0 bg-white/50 backdrop-blur-sm flex items-center justify-center">
@@ -185,10 +185,10 @@ export default function EventDetails() {
               
               <h1 className="heading-2 mb-8">{event.title}</h1>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+              <div className="event-details-grid">
                 <div className="space-y-6">
                   <div className="flex gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center flex-shrink-0">
+                    <div className="rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center flex-shrink-0" style={{ width: '48px', height: '48px' }}>
                       <Calendar size={24} />
                     </div>
                     <div>
@@ -201,7 +201,7 @@ export default function EventDetails() {
                   </div>
                   
                   <div className="flex gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center flex-shrink-0">
+                    <div className="rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center flex-shrink-0" style={{ width: '48px', height: '48px' }}>
                       <MapPin size={24} />
                     </div>
                     <div>
