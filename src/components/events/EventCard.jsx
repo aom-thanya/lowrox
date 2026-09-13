@@ -17,44 +17,44 @@ function formatEventDate(dateString) {
 
 export default function EventCard({ event }) {
   return (
-    <ContentCard className="h-full flex flex-col">
-      <div className="relative w-full bg-neutral-100 rounded-t-xl overflow-hidden event-card-image">
+    <ContentCard className="event-list-card">
+      <div className="event-list-card-cover">
         {/* Placeholder image for events */}
-        <div className="absolute inset-0 flex items-center justify-center text-neutral-300">
+        <div className="event-list-card-placeholder">
           <Activity size={48} />
         </div>
         {event.status === 'cancelled' && (
-          <div className="absolute top-2 right-2">
+          <div className="event-list-card-status">
             <Badge variant="error">ยกเลิก</Badge>
           </div>
         )}
       </div>
       
-      <div className="p-5 flex flex-col flex-grow">
-        <div className="mb-2">
+      <div className="event-list-card-body">
+        <div className="event-list-card-badge">
           <Badge variant="neutral">{event.type}</Badge>
         </div>
         
-        <h3 className="heading-5 mb-3 text-clamp-2">{event.title}</h3>
+        <h2 className="heading-4 event-list-card-title text-clamp-2">{event.title}</h2>
         
-        <div className="mb-4 text-sm text-neutral-600 flex flex-col gap-2">
-          <div className="flex items-center gap-2">
-            <Calendar size={16} className="text-neutral-400 flex-shrink-0" />
+        <div className="event-list-card-meta">
+          <div className="event-list-card-meta-row">
+            <Calendar size={16} className="event-list-card-icon" />
             <span>{formatEventDate(event.date)}</span>
           </div>
-          <div className="flex items-start gap-2">
-            <MapPin size={16} className="text-neutral-400 flex-shrink-0 mt-0.5" />
+          <div className="event-list-card-meta-row">
+            <MapPin size={16} className="event-list-card-icon" />
             <span className="text-clamp-1">{event.location}</span>
           </div>
         </div>
         
-        <p className="body-sm text-neutral-600 mb-6 flex-grow text-clamp-2">
+        <p className="body-sm event-list-card-description text-clamp-2">
           {event.description}
         </p>
         
         <Link 
           to={`/events/${event.id}`} 
-          className="btn btn-secondary btn-md w-full justify-center mt-auto"
+          className="btn btn-secondary btn-md event-list-card-action"
         >
           ดูรายละเอียด
         </Link>

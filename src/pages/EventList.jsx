@@ -72,25 +72,25 @@ export default function EventList() {
     <div className="flex flex-col min-h-screen">
       <Header />
       
-      <main className="main-content flex-grow pt-24 pb-16 bg-neutral-50">
-        <div className="container">
-          <div className="mb-8">
-            <h1 className="heading-2 mb-2">กิจกรรม</h1>
+      <main className="main-content event-list-page">
+        <div className="container event-list-container">
+          <div className="event-list-heading">
+            <h1 className="heading-2">กิจกรรม</h1>
             <p className="body-lg text-neutral-600">หากิจกรรมที่สนใจ แล้วไปออกกำลังกายด้วยกัน</p>
           </div>
           
           {/* Filters */}
-          <div className="bg-white p-6 rounded-2xl shadow-sm mb-8">
+          <div className="event-filter-panel">
             <form onSubmit={handleSearch} className="event-filter-form">
-              <div className="event-filter-field col-4">
-                <label className="block text-sm font-medium text-neutral-700 mb-1">ค้นหากิจกรรม</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-neutral-400">
-                    <Search size={18} />
+              <div className="event-filter-field">
+                <label htmlFor="event-query">ค้นหากิจกรรม</label>
+                <div className="event-search-input">
+                  <div className="event-search-icon">
+                    <Search size={20} aria-hidden="true" />
                   </div>
                   <input
                     type="text"
-                    className="w-full bg-neutral-100 border-none rounded-xl pl-10 pr-4 py-3 focus:ring-2 focus:ring-brand-500"
+                    id="event-query" className="form-control"
                     placeholder="ชื่อกิจกรรม, สถานที่..."
                     value={formQuery}
                     onChange={e => setFormQuery(e.target.value)}
@@ -98,10 +98,10 @@ export default function EventList() {
                 </div>
               </div>
               
-              <div className="event-filter-field col-3">
-                <label className="block text-sm font-medium text-neutral-700 mb-1">ประเภทกีฬา</label>
+              <div className="event-filter-field">
+                <label htmlFor="event-type">ประเภทกีฬา</label>
                 <select 
-                  className="w-full bg-neutral-100 border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500"
+                  id="event-type" className="form-control"
                   value={formType}
                   onChange={e => setFormType(e.target.value)}
                 >
@@ -112,22 +112,22 @@ export default function EventList() {
                 </select>
               </div>
               
-              <div className="event-filter-field col-3">
-                <label className="block text-sm font-medium text-neutral-700 mb-1">พื้นที่</label>
+              <div className="event-filter-field">
+                <label htmlFor="event-area">พื้นที่</label>
                 <input
                   type="text"
-                  className="w-full bg-neutral-100 border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-500"
+                  id="event-area" className="form-control"
                   placeholder="เช่น กรุงเทพ..."
                   value={formArea}
                   onChange={e => setFormArea(e.target.value)}
                 />
               </div>
               
-              <div className="event-filter-field col-auto event-filter-actions gap-2">
-                <button type="submit" className="btn btn-primary btn-md flex-1">
+              <div className="event-filter-actions">
+                <button type="submit" className="btn btn-primary btn-md">
                   ค้นหา
                 </button>
-                <button type="button" onClick={handleClear} className="btn btn-secondary btn-md flex-1">
+                <button type="button" onClick={handleClear} className="btn btn-secondary btn-md">
                   ล้างตัวกรอง
                 </button>
               </div>
@@ -135,7 +135,7 @@ export default function EventList() {
           </div>
           
           {/* Results Summary */}
-          <div className="mb-6">
+          <div className="event-results-summary" aria-live="polite">
             {!isLoading && (
               <p className="text-neutral-600">พบ {events.length} กิจกรรม</p>
             )}
@@ -145,7 +145,7 @@ export default function EventList() {
           {isLoading ? (
             <div className="event-grid">
               {[1, 2, 3].map(i => (
-                <div key={i} className="bg-white rounded-2xl animate-pulse event-skeleton-card"></div>
+                <div key={i} className="event-list-skeleton"></div>
               ))}
             </div>
           ) : events.length > 0 ? (
@@ -155,7 +155,7 @@ export default function EventList() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-20 bg-white rounded-2xl shadow-sm">
+            <div className="event-list-empty">
               <p className="text-neutral-500 text-lg mb-4">ไม่พบกิจกรรมที่ค้นหา</p>
               <button onClick={handleClear} className="btn btn-primary btn-md">ดูทั้งหมด</button>
             </div>
