@@ -585,3 +585,25 @@ textarea.form-control { display: block; padding: var(--space-3) var(--space-4); 
   .event-list-page .event-filter-form { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) auto; }
   .event-list-page .event-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
+
+/* Account settings: explicit spacing avoids unsupported utility classes. */
+.settings-page, .settings-form { min-width: 0; }
+.settings-sections { display: grid; gap: var(--space-6); min-width: 0; margin: 0; padding: 0; border: 0; }
+.settings-card { display: grid; justify-items: start; gap: var(--space-5); min-width: 0; box-shadow: none; }
+.settings-card > * { min-width: 0; max-width: 100%; }
+.settings-card h2 { margin: 0; }
+.settings-account-field { display: grid; gap: var(--space-1); overflow-wrap: anywhere; }
+.settings-field-label, .settings-helper { color: var(--color-neutral-600); font-size: 14px; line-height: 1.5; }
+.settings-helper { margin-top: var(--space-2); max-width: 65ch; }
+.settings-toggle-row { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-6); width: 100%; }
+.settings-toggle-row > div:first-child { min-width: 0; }
+.settings-toggle-control { flex: 0 0 44px; }
+.settings-toggle-control .switch { min-width: 44px; min-height: 44px; justify-content: center; }
+.settings-actions { border-top: var(--border-subtle); padding-top: var(--space-6); }
+.settings-dialog-actions { margin-top: var(--space-6); }
+.settings-dialog-warning { color: var(--color-error); margin-top: var(--space-2); }
+@media (max-width: 479px) {
+  .settings-card { padding: var(--space-4); }
+  .settings-toggle-row { gap: var(--space-4); }
+  .settings-actions { flex-direction: column-reverse; align-items: stretch; }
+}

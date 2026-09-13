@@ -106,49 +106,50 @@ export default function Settings() {
 
       {status === 'loading' && (
         <div className="profile-skeleton">
-          <ContentCard className="mb-6 p-6"><Skeleton /></ContentCard>
-          <ContentCard className="mb-6 p-6"><Skeleton /></ContentCard>
-          <ContentCard className="mb-6 p-6"><Skeleton /></ContentCard>
+          <ContentCard className="settings-card"><Skeleton /></ContentCard>
+          <ContentCard className="settings-card"><Skeleton /></ContentCard>
+          <ContentCard className="settings-card"><Skeleton /></ContentCard>
         </div>
       )}
 
       {status === 'error' && (
-        <ContentCard className="mb-6 p-6 load-error">
+        <ContentCard className="settings-card load-error">
           <p>โหลดข้อมูลไม่สำเร็จ</p>
           <Button variant="secondary" onClick={load}>ลองอีกครั้ง</Button>
         </ContentCard>
       )}
 
       {status === 'ready' && draft && (
-        <form onSubmit={submit} noValidate>
-          <fieldset disabled={saving} className="border-none p-0 m-0">
+        <form onSubmit={submit} noValidate className="settings-form">
+          <fieldset disabled={saving} className="settings-sections">
             
-            <ContentCard className="mb-6 p-6">
-              <h3 className="heading-5 mb-4">การเข้าสู่ระบบ</h3>
-              <div className="mb-4">
-                <p className="text-sm text-neutral-500 mb-1">วิธีเข้าสู่ระบบ</p>
+            <ContentCard className="settings-card">
+              <h2 className="heading-4">การเข้าสู่ระบบ</h2>
+              <div className="settings-account-field">
+                <p className="settings-field-label">วิธีเข้าสู่ระบบ</p>
                 <p className="font-medium">{user.username}</p>
               </div>
               {user.email && (
-                <div>
-                  <p className="text-sm text-neutral-500 mb-1">อีเมล</p>
+                <div className="settings-account-field">
+                  <p className="settings-field-label">อีเมล</p>
                   <p className="font-medium">{user.email}</p>
-                  <p className="text-xs text-neutral-400 mt-1">ข้อมูลนี้จะไม่แสดงในโปรไฟล์สาธารณะ</p>
+                  <p className="settings-helper">ข้อมูลนี้จะไม่แสดงในโปรไฟล์สาธารณะ</p>
                 </div>
               )}
             </ContentCard>
 
-            <ContentCard className="mb-6 p-6">
-              <h3 className="heading-5 mb-4">การแสดงโปรไฟล์</h3>
-              <div className="flex items-start justify-between gap-4">
+            <ContentCard className="settings-card">
+              <h2 className="heading-4">การแสดงโปรไฟล์</h2>
+              <div className="settings-toggle-row">
                 <div>
                   <p className="font-medium" id="showProfile-label">แสดงโปรไฟล์ในการหา Buddy</p>
-                  <p className="text-sm text-neutral-500 mt-1">เมื่อปิด สมาชิกคนอื่นจะไม่พบคุณในหน้า Find Buddy แต่ Buddy และแชทเดิมยังใช้งานได้</p>
+                  <p className="settings-helper">เมื่อปิด สมาชิกคนอื่นจะไม่พบคุณในหน้า Find Buddy แต่ Buddy และแชทเดิมยังใช้งานได้</p>
                 </div>
-                <div className="mt-1">
+                <div className="settings-toggle-control">
                   <Switch
                     id="showProfile"
                     aria-labelledby="showProfile-label"
+                    disabled={saving}
                     checked={draft.showProfile}
                     onChange={(checked) => update('showProfile', checked)}
                   />
@@ -162,14 +163,14 @@ export default function Settings() {
               )}
             </ContentCard>
 
-            <ContentCard className="mb-6 p-6">
-              <h3 className="heading-5 mb-4 text-error">ออกจากระบบ</h3>
+            <ContentCard className="settings-card">
+              <h2 className="heading-4">ออกจากระบบ</h2>
               <Button type="button" variant="secondary" onClick={handleLogoutClick}>
                 ออกจากระบบ
               </Button>
             </ContentCard>
 
-            <div className="form-actions profile-actions">
+            <div className="form-actions settings-actions">
               <Button type="button" variant="secondary" onClick={cancel} disabled={!changed || saving}>
                 ยกเลิก
               </Button>
@@ -187,8 +188,8 @@ export default function Settings() {
 
       <Dialog open={showLogoutConfirm} title="ออกจากระบบ?" onClose={() => setShowLogoutConfirm(false)}>
         <p>คุณสามารถเข้าสู่ระบบเพื่อกลับมาใช้งานได้ทุกเมื่อ</p>
-        {changed && <p className="text-error mt-2">การเปลี่ยนแปลงที่ยังไม่บันทึกจะถูกยกเลิก</p>}
-        <div className="form-actions mt-6">
+        {changed && <p className="settings-dialog-warning">การเปลี่ยนแปลงที่ยังไม่บันทึกจะถูกยกเลิก</p>}
+        <div className="form-actions settings-dialog-actions">
           <Button variant="secondary" onClick={() => setShowLogoutConfirm(false)} autoFocus>ยกเลิก</Button>
           <Button variant="primary" onClick={confirmLogout}>ออกจากระบบ</Button>
         </div>
