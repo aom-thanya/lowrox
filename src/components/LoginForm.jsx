@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import Image from './common/Image';
 import logoImg from '../assets/logo.png';
 
 export default function LoginForm({ onSuccess }) {
@@ -50,7 +51,7 @@ export default function LoginForm({ onSuccess }) {
   return (
     <div className="login-form-container">
       <div className="login-header">
-        <img src={logoImg} alt="LOWROX" className="login-logo" />
+        <Image src={logoImg} alt="LOWROX" className="login-logo" loading="eager" />
         <h1 className="login-title">เข้าสู่ระบบ</h1>
       </div>
 

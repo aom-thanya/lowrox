@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
+import Image from './common/Image';
 import { Menu } from 'lucide-react';
 import logoImg from '../assets/logo.png';
 import { useAuth } from '../context/AuthContext';
@@ -56,7 +57,7 @@ export default function Header() {
       <header className={`header ${user ? 'header-authenticated' : ''} ${isScrolled ? 'scrolled' : ''}`} id="site-header">
         <div className="container">
           <Link to="/" className="logo" aria-label="Lowrox homepage">
-            <img src={logoImg} alt="LOWROX" className="h-8" />
+            <Image src={logoImg} alt="LOWROX" className="h-8" loading="eager" />
           </Link>
           
           <nav className="desktop-nav" aria-label="Main Navigation">

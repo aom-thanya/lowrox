@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Image from './common/Image';
 import logoImg from '../assets/logo.png';
 
 export default function Footer() {
@@ -11,7 +12,7 @@ export default function Footer() {
         <div className="footer-top">
           <div className="footer-brand">
             <Link to="/" className="logo" aria-label="Lowrox homepage">
-              <img src={logoImg} alt="LOWROX" className="h-8" />
+              <Image src={logoImg} alt="LOWROX" className="h-8" loading="lazy" />
             </Link>
             <p className="body-sm footer-desc">ประเมินระดับ วางแผนฝึก และหาเพื่อนซ้อมที่เหมาะกับคุณ</p>
           </div>

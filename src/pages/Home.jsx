@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Image from '../components/common/Image';
 import { Target, Activity, Clock } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -42,11 +43,11 @@ export default function Home() {
                       <Activity size={120} aria-hidden="true" />
                     </div>
                   ) : (
-                    <img
+                    <Image
                       src={heroImg}
                       alt="People exercising together"
                       className="home-hero-art"
-                      onError={() => setHeroFailed(true)}
+                      loading="eager"
                     />
                   )}
                 </div>

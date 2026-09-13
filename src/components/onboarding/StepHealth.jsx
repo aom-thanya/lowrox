@@ -1,4 +1,4 @@
-import React, { useState, forwardRef, useImperativeHandle } from 'react';
+import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import Image from '../common/Image';
 import { useOnboarding } from '../../context/OnboardingContext';
 import step5Img from '../../assets/onboarding/step5.png';

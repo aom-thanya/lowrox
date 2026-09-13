@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Image from '../common/Image';
 import CommentGallery from './CommentGallery';
 import { Link } from 'react-router-dom';
 import Avatar from '../common/Avatar';
@@ -52,7 +53,7 @@ export default function CommentList({ comments, isLoading }) {
               <span className="text-xs text-neutral-500">{formatCommentDate(comment.createdAt)}</span>
             </div>
             {comment.message && <p className="event-detail-copy">{comment.message}</p>}
-            {!!comment.images?.length && <div className="comment-image-gallery">{comment.images.map((image, index) => <button key={image.id || index} type="button" className="comment-image-open" aria-label={`ดูรูป ${index + 1} จาก ${comment.userDisplayName}`} onClick={event => setGallery({ images: comment.images, index, trigger: event.currentTarget })}><img src={image.url} alt={`รูปแนบ ${index + 1} จาก ${comment.userDisplayName}`} width={image.width} height={image.height} loading="lazy" /></button>)}</div>}
+            {!!comment.images?.length && <div className="comment-image-gallery">{comment.images.map((image, index) => <button key={image.id || index} type="button" className="comment-image-open" aria-label={`ดูรูป ${index + 1} จาก ${comment.userDisplayName}`} onClick={event => setGallery({ images: comment.images, index, trigger: event.currentTarget })}><Image src={image.url} alt={`รูปแนบ ${index + 1} จาก ${comment.userDisplayName}`} width={image.width} height={image.height} /></button>)}</div>}
           </div>
         </div>
       ))}

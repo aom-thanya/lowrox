@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import Image from '../common/Image';
 import { ImagePlus, X } from 'lucide-react';
 import { prepareCommentImage, MAX_COMMENT_IMAGES, COMMENT_IMAGE_ACCEPT } from '../../utils/commentImages';
 import Avatar from '../common/Avatar';
@@ -68,7 +69,7 @@ export default function CommentComposer({ user, onSubmit, isSubmitting }) {
         <input ref={input} type="file" multiple accept={COMMENT_IMAGE_ACCEPT} onChange={addImages} hidden aria-label="เลือกรูปความคิดเห็น" disabled={preparing || isSubmitting} />
         <div className="comment-image-previews">
           {images.map(image => <div className="comment-image-preview" key={image.id}>
-            <img src={image.url} alt={image.name} />
+            <Image src={image.url} alt={image.name} />
             <button type="button" aria-label={`ลบรูป ${image.name}`} disabled={preparing || isSubmitting} onClick={() => setImages(current => current.filter(item => item.id !== image.id))}><X size={16} /></button>
           </div>)}
         </div>

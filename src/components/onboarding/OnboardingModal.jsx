@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import Image from '../common/Image';
 import { OnboardingProvider, useOnboarding } from '../../context/OnboardingContext';
 import StepBasicInfo from './StepBasicInfo';
 import StepFitnessLevel from './StepFitnessLevel';
@@ -55,7 +56,7 @@ function OnboardingContent({ onClose, onComplete, redirectDestination }) {
       <Modal isOpen={true} onClose={handleCloseAttempt} hideCloseButton={true} overlayClassName="onboarding-modal-backdrop" className="onboarding-modal-content">
         <div className="onboarding-modal-header">
           <div className="onboarding-header-top">
-            <img src={logoImg} alt="LOWROX" className="onboarding-logo" />
+            <Image src={logoImg} alt="LOWROX" className="onboarding-logo" loading="eager" />
             <div className="onboarding-step-text mr-32">{currentStep <= 5 ? `${currentStep} / 5` : 'ตรวจสอบข้อมูล'}</div>
           </div>
           <div className="onboarding-progress-bar">

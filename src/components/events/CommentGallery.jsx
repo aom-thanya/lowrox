@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import Image from '../common/Image';
 import { createPortal } from 'react-dom';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 
@@ -41,12 +42,12 @@ export default function CommentGallery({ images, initialIndex, onClose, returnFo
           touch.current = null;
         }}>
         {images.length > 1 && <button type="button" aria-label="รูปก่อนหน้า" onClick={() => move(-1)}><ChevronLeft size={24} /></button>}
-        <img src={images[index].url} alt={`รูปความคิดเห็น ${index + 1}`} />
+        <Image src={images[index].url} alt={`รูปความคิดเห็น ${index + 1}`} />
         {images.length > 1 && <button type="button" aria-label="รูปถัดไป" onClick={() => move(1)}><ChevronRight size={24} /></button>}
       </div>
       {images.length > 1 && <div className="comment-lightbox-thumbnails">{images.map((image, position) => (
         <button key={image.id || position} type="button" aria-label={`ดูรูป ${position + 1}`} aria-pressed={index === position} onClick={() => setIndex(position)}>
-          <img src={image.url} alt="" />
+          <Image src={image.url} alt="" />
         </button>
       ))}</div>}
     </dialog>, document.body
