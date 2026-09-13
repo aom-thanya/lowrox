@@ -1,3 +1,4 @@
+import { isPublicEvent, eventHasEnded, selectHostedEvents } from '../utils/eventVisibility';
 // Mock Event Repository
 
 const initialEvents = [
@@ -92,14 +93,11 @@ const initialEvents = [
     },
     joinUrl: null
   }
-];
+].map(event => ({ ...event, hostUserId: event.organizer.id, visibility: 'public' }));
 
 // Helper to check if event has ended
 export function isEventEnded(event) {
-  const now = new Date();
-  const eventEndTime = event.endDate ? new Date(event.endDate) : new Date(event.date);
-  // If only date is provided, assume it lasts a few hours, but strictly just use date
-  return eventEndTime < now;
+  return eventHasEnded(event);
 }
 
 /**
@@ -110,7 +108,7 @@ export async function getEvents({ query = '', type = '', area = '' } = {}) {
   // Simulate network delay
   await new Promise(resolve => setTimeout(resolve, 300));
   
-  let results = initialEvents.filter(e => e.status !== 'draft');
+  let results = initialEvents.filter(isPublicEvent);
 
   if (query) {
     const q = query.toLowerCase();
@@ -160,7 +158,7 @@ export async function getEvents({ query = '', type = '', area = '' } = {}) {
 export async function getEventById(id) {
   await new Promise(resolve => setTimeout(resolve, 200));
   const event = initialEvents.find(e => e.id === id);
-  if (!event || event.status === 'draft') {
+  if (!isPublicEvent(event)) {
     throw new Error('Event not found or not public');
   }
   return event;
@@ -179,13 +177,28 @@ export async function getJoinGroupUrl(eventId, user) {
   }
   
   const event = initialEvents.find(e => e.id === eventId);
-  if (!event || event.status === 'draft') {
+  if (!isPublicEvent(event)) {
     throw new Error('Event not found');
   }
   
-  if (isEventEnded(event) || event.status === 'cancelled') {
+  if (isEventEnded(event) || event.status === 'cancelled' || event.registrationClosed || (Number.isFinite(event.capacity) && Number.isFinite(event.participantCount) && event.participantCount >= event.capacity)) {
     throw new Error('Event is no longer active');
   }
   
   return event.joinUrl;
+}
+
+export async function getHostedEvents(userId, { tab = 'upcoming', limit = 6 } = {}) {
+  await new Promise(resolve => setTimeout(resolve, 200));
+  const groups = selectHostedEvents(initialEvents, userId);
+  const selected = groups[tab] || groups.upcoming;
+  const counts = Object.fromEntries(Object.entries(groups).map(([key, items]) => [key, items.length]));
+  const size = Math.max(6, Math.floor(Number(limit) || 6));
+  return { events: selected.slice(0, size), counts, total: selected.length, hasMore: selected.length > size };
+}
+
+// Existing mock members, sourced only from identities already present in events.
+export function getKnownEventMember(userId) {
+  const event = initialEvents.find(item => isPublicEvent(item) && String(item.hostUserId) === String(userId));
+  return event ? { id: event.hostUserId, displayName: event.organizer.name, avatarUrl: event.organizer.avatarUrl } : null;
 }

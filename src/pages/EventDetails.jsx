@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
 import { MapPin, Calendar, Activity, ArrowLeft, ExternalLink } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -28,6 +28,8 @@ function formatEventDateFull(dateString) {
 export default function EventDetails() {
   const { eventId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const fromProfile = /^\/users\/[^/?]+(?:\?.*)?$/.test(location.state?.fromProfile || '') ? location.state.fromProfile : null;
   const { user } = useAuth();
   
   const [event, setEvent] = useState(null);
@@ -61,7 +63,7 @@ export default function EventDetails() {
           console.error('Failed to fetch comments', commentErr);
         }
       } catch (err) {
-        if (isMounted) setError('ไม่พบกิจกรรมที่คุณต้องการ หรือกิจกรรมนี้ถูกซ่อนไว้');
+        if (isMounted) setError('ไม่สามารถเปิดดูกิจกรรมนี้ได้ หรือกิจกรรมนี้ไม่เผยแพร่แล้ว');
       } finally {
         if (isMounted) {
           setIsLoading(false);
@@ -77,7 +79,8 @@ export default function EventDetails() {
 
   const handleBack = () => {
     // Navigate back to preserve search params if we came from list
-    navigate(-1);
+    if (fromProfile) navigate(-1);
+    else navigate('/events');
   };
 
   const handleJoinGroup = async () => {
@@ -131,6 +134,7 @@ export default function EventDetails() {
         <main className="main-content event-detail-page">
           <div className="container max-w-3xl text-center py-20">
             <h2 className="heading-3 mb-4">{error}</h2>
+            {fromProfile && <Link to={fromProfile} state={{ restoreProfile: true }} className="btn btn-secondary btn-md">กลับโปรไฟล์</Link>}
             <button onClick={() => navigate('/events')} className="btn btn-primary btn-md mx-auto">
               ดูกิจกรรมทั้งหมด
             </button>
@@ -156,7 +160,7 @@ export default function EventDetails() {
             onClick={handleBack} 
             className="event-back-btn event-detail-back"
           >
-            <ArrowLeft size={20} /> กลับหน้ากิจกรรม
+            <ArrowLeft size={20} /> {fromProfile ? 'กลับโปรไฟล์' : 'กลับหน้ากิจกรรม'}
           </button>
           
           <div className="event-detail-card">
@@ -213,10 +217,10 @@ export default function EventDetails() {
                 
                 <div className="event-detail-organizer">
                   <h3 className="event-detail-label">ผู้จัดกิจกรรม</h3>
-                  <div className="event-detail-organizer-person">
+                  <Link to={`/users/${event.hostUserId ?? event.organizer?.id}`} className="event-detail-organizer-person public-member-link">
                     <Avatar src={event.organizer?.avatarUrl} size="medium" />
                     <span className="font-medium text-lg">{event.organizer?.name || 'ไม่ระบุชื่อ'}</span>
-                  </div>
+                  </Link>
                 </div>
               </div>
               

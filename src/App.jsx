@@ -14,12 +14,14 @@ import AccountLayout from './components/AccountLayout';
 import { profileNavigation } from './config/profileNavigation';
 import EventList from './pages/EventList';
 import EventDetails from './pages/EventDetails';
+import UserProfile from './pages/UserProfile';
 import './style.css';
 
 const router = createBrowserRouter(createRoutesFromElements(
   <Route element={<UnsavedChangesProvider />}>
           <Route path="/" element={<Home />} />
           <Route path="/events" element={<EventList />} />
+          <Route path="/users/:userId" element={<UserProfile />} />
           <Route path="/events/:eventId" element={<EventDetails />} />
           <Route path="/buddies" element={<Navigate to="/events" replace />} />
 

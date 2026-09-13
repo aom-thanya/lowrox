@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import CommentGallery from './CommentGallery';
+import { Link } from 'react-router-dom';
 import Avatar from '../common/Avatar';
 
 function formatCommentDate(dateString) {
@@ -44,10 +45,10 @@ export default function CommentList({ comments, isLoading }) {
       {gallery && <CommentGallery images={gallery.images} initialIndex={gallery.index} returnFocus={gallery.trigger} onClose={() => setGallery(null)} />}
       {comments.map(comment => (
         <div key={comment.id} className="event-comment-item">
-          <Avatar src={comment.userAvatarUrl} size="small" className="flex-shrink-0" />
+          <Link to={`/users/${comment.userId}`} className="public-member-avatar" aria-label={`ดูโปรไฟล์ ${comment.userDisplayName}`}><Avatar src={comment.userAvatarUrl} size="small" className="flex-shrink-0" /></Link>
           <div className="event-comment-content">
             <div className="event-comment-meta">
-              <span className="font-medium text-neutral-900">{comment.userDisplayName}</span>
+              <Link to={`/users/${comment.userId}`} className="public-member-link font-medium">{comment.userDisplayName}</Link>
               <span className="text-xs text-neutral-500">{formatCommentDate(comment.createdAt)}</span>
             </div>
             {comment.message && <p className="event-detail-copy">{comment.message}</p>}
