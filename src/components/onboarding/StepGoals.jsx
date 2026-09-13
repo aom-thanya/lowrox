@@ -642,6 +642,7 @@ const StepGoals = forwardRef(({ onNext, onPrev, isEditor, externalShowValidation
           <img
             src={ONBOARDING_STEP_ILLUSTRATIONS.nextChallenge}
             alt="Lowrox next challenge illustration"
+            loading="lazy"
             onError={(e) => { e.target.style.display = 'none'; }}
           />
           <div className="onboarding-text-align">

@@ -600,6 +600,7 @@ const StepAvailability = forwardRef(({ onNext, onPrev, isEditor, externalShowVal
           <img
             src={ONBOARDING_STEP_ILLUSTRATIONS.yourRhythm}
             alt="Lowrox training availability illustration"
+            loading="lazy"
             onError={(e) => { e.target.style.display = 'none'; }}
           />
           <div className="onboarding-text-align">

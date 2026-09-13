@@ -161,6 +161,7 @@ const StepBasicInfo = forwardRef(({ onNext, isEditor, externalShowValidation }, 
               src={ONBOARDING_STEP_ILLUSTRATIONS.aboutYou}
               alt="Lowrox runner illustration"
               className="onboarding-illustration"
+              loading="lazy"
               onError={(e) => { e.target.style.display = 'none'; }}
             />
           </div>

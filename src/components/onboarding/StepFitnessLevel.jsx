@@ -354,6 +354,7 @@ const StepFitnessLevel = forwardRef(({ onNext, onPrev, isEditor, externalShowVal
           <img
             src={ONBOARDING_STEP_ILLUSTRATIONS.currentPace}
             alt="Lowrox current pace illustration"
+            loading="lazy"
             onError={(e) => { e.target.style.display = 'none'; }}
           />
           <div className="onboarding-text-align">

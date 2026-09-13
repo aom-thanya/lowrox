@@ -21,7 +21,7 @@ export default function EventCard({ event, navigationState, onNavigate }) {
     <ContentCard className="event-list-card">
       <Link to={`/events/${event.id}`} state={navigationState} onClick={onNavigate} className="event-list-card-cover" aria-label={`ดูรายละเอียด ${event.title}`}>
         {/* Placeholder image for events */}
-        {event.coverUrl ? <img className="event-list-cover-image" src={event.coverUrl} alt="" /> : <div className="event-list-card-placeholder">
+        {event.coverUrl ? <img className="event-list-cover-image" src={event.coverUrl} alt="" loading="lazy" /> : <div className="event-list-card-placeholder">
           <Activity size={48} />
         </div>}
         <div className="event-list-card-status"><Badge variant={event.status === 'cancelled' ? 'error' : 'neutral'}>{eventStatusLabel(event)}</Badge></div>

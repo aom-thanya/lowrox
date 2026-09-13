@@ -491,6 +491,7 @@ const StepHealth = forwardRef(({ onNext, onPrev, isEditor, externalShowValidatio
           <img
             src={ONBOARDING_STEP_ILLUSTRATIONS.safetyCheck}
             alt="Lowrox safety check illustration"
+            loading="lazy"
             onError={(e) => { e.target.style.display = 'none'; }}
           />
           <div className="onboarding-text-align">
