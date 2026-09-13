@@ -1,20 +1,21 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { createBrowserRouter, createRoutesFromElements, RouterProvider, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute, PublicRoute } from './components/ProtectedRoute';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Onboarding from './pages/Onboarding';
-import Profile from './pages/Profile';
-import ProfileEditor from './pages/ProfileEditor';
-import ProfileOnboardingEditor from './pages/ProfileOnboardingEditor';
-import Settings from './pages/Settings';
 import { UnsavedChangesProvider } from './context/UnsavedChangesContext';
 import AccountLayout from './components/AccountLayout';
 import { profileNavigation } from './config/profileNavigation';
-import EventList from './pages/EventList';
-import EventDetails from './pages/EventDetails';
-import UserProfile from './pages/UserProfile';
+
+const Home = React.lazy(() => import('./pages/Home'));
+const Login = React.lazy(() => import('./pages/Login'));
+const Onboarding = React.lazy(() => import('./pages/Onboarding'));
+const Profile = React.lazy(() => import('./pages/Profile'));
+const ProfileEditor = React.lazy(() => import('./pages/ProfileEditor'));
+const ProfileOnboardingEditor = React.lazy(() => import('./pages/ProfileOnboardingEditor'));
+const Settings = React.lazy(() => import('./pages/Settings'));
+const EventList = React.lazy(() => import('./pages/EventList'));
+const EventDetails = React.lazy(() => import('./pages/EventDetails'));
+const UserProfile = React.lazy(() => import('./pages/UserProfile'));
 import './style.css';
 
 const router = createBrowserRouter(createRoutesFromElements(
@@ -50,5 +51,11 @@ const router = createBrowserRouter(createRoutesFromElements(
 ));
 
 export default function App() {
-  return <AuthProvider><RouterProvider router={router} /></AuthProvider>;
+  return (
+    <AuthProvider>
+      <Suspense fallback={<div style={{ display: 'flex', height: '100vh', alignItems: 'center', justifyContent: 'center' }}>Loading...</div>}>
+        <RouterProvider router={router} />
+      </Suspense>
+    </AuthProvider>
+  );
 }
