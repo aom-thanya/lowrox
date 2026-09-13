@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { MapPin, Calendar, Activity, ArrowLeft, ExternalLink, User } from 'lucide-react';
+import { MapPin, Calendar, Activity, ArrowLeft, ExternalLink } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Badge from '../components/common/Badge';
@@ -116,7 +116,7 @@ export default function EventDetails() {
     return (
       <div className="flex flex-col min-h-screen">
         <Header />
-        <main className="main-content flex-grow pt-24 pb-16 bg-neutral-50 flex items-center justify-center">
+        <main className="main-content event-detail-page flex items-center justify-center">
           <div className="border-4 border-brand-200 border-t-brand-500 rounded-full animate-spin event-spinner"></div>
         </main>
         <Footer />
@@ -128,7 +128,7 @@ export default function EventDetails() {
     return (
       <div className="flex flex-col min-h-screen">
         <Header />
-        <main className="main-content flex-grow pt-24 pb-16 bg-neutral-50">
+        <main className="main-content event-detail-page">
           <div className="container max-w-3xl text-center py-20">
             <h2 className="heading-3 mb-4">{error}</h2>
             <button onClick={() => navigate('/events')} className="btn btn-primary btn-md mx-auto">
@@ -149,50 +149,50 @@ export default function EventDetails() {
     <div className="flex flex-col min-h-screen">
       <Header />
       
-      <main className="main-content flex-grow pt-24 pb-16 bg-neutral-50">
-        <div className="container max-w-4xl">
+      <main className="main-content event-detail-page">
+        <div className="container event-detail-container">
           {/* Back Button */}
           <button 
             onClick={handleBack} 
-            className="flex items-center gap-2 text-neutral-600 font-medium mb-6 transition-all event-back-btn"
+            className="event-back-btn event-detail-back"
           >
             <ArrowLeft size={20} /> กลับหน้ากิจกรรม
           </button>
           
-          <div className="bg-white rounded-2xl shadow-sm overflow-hidden mb-8">
+          <div className="event-detail-card">
             {/* Event Header Image */}
-            <div className="relative w-full bg-neutral-200 flex items-center justify-center text-neutral-400 event-header-image">
-              <Activity size={80} opacity={0.5} />
+            <div className="event-detail-cover">
+              <Activity size={64} aria-hidden="true" />
               {isCancelled && (
-                <div className="absolute inset-0 flex items-center justify-center event-overlay-bg">
+                <div className="event-detail-overlay event-overlay-bg">
                   <div className="event-overlay-badge-error">กิจกรรมนี้ถูกยกเลิกแล้ว</div>
                 </div>
               )}
               {isEnded && !isCancelled && (
-                <div className="absolute inset-0 flex items-center justify-center event-overlay-bg">
+                <div className="event-detail-overlay event-overlay-bg">
                   <div className="event-overlay-badge-neutral">กิจกรรมจบลงแล้ว</div>
                 </div>
               )}
             </div>
             
             {/* Event Info */}
-            <div className="p-6 md:p-10">
-              <div className="flex flex-wrap gap-3 mb-4">
+            <div className="event-detail-body">
+              <div className="event-detail-badges">
                 <Badge variant="neutral">{event.type}</Badge>
                 {isCancelled && <Badge variant="error">ยกเลิก</Badge>}
                 {isEnded && !isCancelled && <Badge variant="neutral">จบแล้ว</Badge>}
               </div>
               
-              <h1 className="heading-2 mb-8">{event.title}</h1>
+              <h1 className="heading-2 event-detail-title">{event.title}</h1>
               
               <div className="event-details-grid">
-                <div className="space-y-6">
-                  <div className="flex gap-4">
-                    <div className="rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center flex-shrink-0 event-icon-box">
+                <div className="event-detail-facts">
+                  <div className="event-detail-fact">
+                    <div className="event-detail-icon">
                       <Calendar size={24} />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-neutral-900 mb-1">วันและเวลา</h3>
+                      <h3 className="event-detail-label">วันและเวลา</h3>
                       <p className="text-neutral-600">{formatEventDateFull(event.date)}</p>
                       {event.endDate && (
                         <p className="text-neutral-600 mt-1">ถึง {formatEventDateFull(event.endDate)}</p>
@@ -200,35 +200,35 @@ export default function EventDetails() {
                     </div>
                   </div>
                   
-                  <div className="flex gap-4">
-                    <div className="rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center flex-shrink-0 event-icon-box">
+                  <div className="event-detail-fact">
+                    <div className="event-detail-icon">
                       <MapPin size={24} />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-neutral-900 mb-1">สถานที่</h3>
+                      <h3 className="event-detail-label">สถานที่</h3>
                       <p className="text-neutral-600">{event.location}</p>
                     </div>
                   </div>
                 </div>
                 
-                <div className="bg-neutral-100 rounded-xl flex flex-col items-center justify-center text-center event-box-p24">
-                  <h3 className="font-semibold text-neutral-900 mb-2 w-full text-left">ผู้จัดกิจกรรม</h3>
-                  <div className="flex items-center gap-4 w-full mt-2">
+                <div className="event-detail-organizer">
+                  <h3 className="event-detail-label">ผู้จัดกิจกรรม</h3>
+                  <div className="event-detail-organizer-person">
                     <Avatar src={event.organizer?.avatarUrl} size="medium" />
                     <span className="font-medium text-lg">{event.organizer?.name || 'ไม่ระบุชื่อ'}</span>
                   </div>
                 </div>
               </div>
               
-              <div className="border-t border-neutral-200 pt-8 mb-10">
-                <h3 className="heading-4 mb-4">รายละเอียด</h3>
-                <p className="body-lg text-neutral-700 whitespace-pre-wrap">
+              <div className="event-detail-description">
+                <h3 className="heading-4">รายละเอียด</h3>
+                <p className="body-lg event-detail-copy">
                   {event.description}
                 </p>
               </div>
               
               {/* Join Group Section */}
-              <div className="text-center flex flex-col items-center event-join-section">
+              <div className="event-detail-join">
                 {!isActive ? (
                   <p className="text-neutral-500 font-medium">ไม่สามารถเข้าร่วมได้ (กิจกรรมจบหรือถูกยกเลิกแล้ว)</p>
                 ) : !event.joinUrl ? (
@@ -238,7 +238,7 @@ export default function EventDetails() {
                     <button 
                       onClick={handleJoinGroup}
                       disabled={isJoining}
-                      className="btn btn-primary btn-md flex items-center justify-center gap-2 event-join-btn"
+                      className="btn btn-primary btn-md event-join-btn"
                     >
                       {isJoining ? 'กำลังตรวจสอบ...' : (
                         <>Join Group <ExternalLink size={20} /></>
@@ -253,9 +253,9 @@ export default function EventDetails() {
           </div>
           
           {/* Comments Section */}
-          <div className="bg-white rounded-2xl shadow-sm event-box-p40" id="comments">
-            <h3 className="heading-4 mb-2">ความคิดเห็น</h3>
-            <p className="text-neutral-500 text-sm mb-6">ทุกคนสามารถอ่านคอมเมนต์ที่เผยแพร่ได้ แต่ต้องเข้าสู่ระบบก่อนส่ง</p>
+          <div className="event-detail-comments" id="comments">
+            <h3 className="heading-4">ความคิดเห็น</h3>
+            <p className="event-detail-helper">ทุกคนสามารถอ่านคอมเมนต์ที่เผยแพร่ได้ แต่ต้องเข้าสู่ระบบก่อนส่ง</p>
             
             {user ? (
               <CommentComposer 
@@ -264,11 +264,11 @@ export default function EventDetails() {
                 isSubmitting={isSubmittingComment} 
               />
             ) : (
-              <div className="bg-brand-50 border border-brand-100 rounded-xl flex flex-col md:flex-row items-center justify-between gap-4 mt-6 event-box-p24">
+              <div className="event-comment-login">
                 <p className="text-brand-800 font-medium">เข้าสู่ระบบเพื่อแสดงความคิดเห็น</p>
                 <button 
                   onClick={() => setIsLoginModalOpen(true)} 
-                  className="btn btn-primary btn-sm flex-shrink-0"
+                  className="btn btn-primary btn-md"
                 >
                   เข้าสู่ระบบ
                 </button>

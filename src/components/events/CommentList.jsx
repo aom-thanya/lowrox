@@ -15,7 +15,7 @@ function formatCommentDate(dateString) {
 export default function CommentList({ comments, isLoading }) {
   if (isLoading) {
     return (
-      <div className="flex flex-col gap-16 mt-6">
+      <div className="event-comment-list">
         {[1, 2].map(i => (
           <div key={i} className="flex gap-4 animate-pulse">
             <div className="w-10 h-10 rounded-full bg-neutral-200 flex-shrink-0"></div>
@@ -31,23 +31,23 @@ export default function CommentList({ comments, isLoading }) {
 
   if (!comments || comments.length === 0) {
     return (
-      <div className="text-center py-8 text-neutral-500 mt-4">
+      <div className="event-comment-empty">
         ยังไม่มีความคิดเห็น เป็นคนแรกที่เริ่มพูดคุยสิ
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col gap-24 mt-6">
+    <div className="event-comment-list">
       {comments.map(comment => (
-        <div key={comment.id} className="flex gap-4">
+        <div key={comment.id} className="event-comment-item">
           <Avatar src={comment.userAvatarUrl} size="small" className="flex-shrink-0" />
-          <div className="flex-grow">
-            <div className="flex items-baseline gap-2 mb-1">
+          <div className="event-comment-content">
+            <div className="event-comment-meta">
               <span className="font-medium text-neutral-900">{comment.userDisplayName}</span>
               <span className="text-xs text-neutral-500">{formatCommentDate(comment.createdAt)}</span>
             </div>
-            <p className="text-neutral-700 whitespace-pre-wrap">{comment.message}</p>
+            <p className="event-detail-copy">{comment.message}</p>
           </div>
         </div>
       ))}

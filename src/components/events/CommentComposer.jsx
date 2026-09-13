@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Avatar from '../common/Avatar';
+import Textarea from '../common/Textarea';
 
 export default function CommentComposer({ user, onSubmit, isSubmitting }) {
   const [message, setMessage] = useState('');
@@ -22,10 +23,12 @@ export default function CommentComposer({ user, onSubmit, isSubmitting }) {
   };
 
   return (
-    <div className="flex gap-4 mt-6">
-      <Avatar src={user.avatarUrl} size="small" className="flex-shrink-0 hidden md:block" />
-      <form onSubmit={handleSubmit} className="flex-grow flex flex-col items-end gap-3">
-        <textarea
+    <div className="event-comment-composer">
+      <Avatar src={user.avatarUrl} size="small" className="event-comment-avatar" />
+      <form onSubmit={handleSubmit} className="event-comment-form">
+        <label htmlFor="event-comment" className="event-detail-label">เพิ่มความคิดเห็น</label>
+        <Textarea
+          id="event-comment"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="เพิ่มความคิดเห็น..."
@@ -34,11 +37,11 @@ export default function CommentComposer({ user, onSubmit, isSubmitting }) {
           maxLength={1000}
         />
         {error && (
-          <div className="w-full text-sm text-error text-left">{error}</div>
+          <div role="alert" className="event-comment-error">{error}</div>
         )}
         <button 
           type="submit" 
-          className="btn btn-primary btn-sm"
+          className="btn btn-primary btn-md"
           disabled={!message.trim() || isSubmitting}
         >
           {isSubmitting ? 'กำลังส่ง...' : 'ส่งความคิดเห็น'}
