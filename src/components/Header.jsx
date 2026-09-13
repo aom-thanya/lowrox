@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link, NavLink } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Menu } from 'lucide-react';
 import logoImg from '../assets/logo.png';
 import { useAuth } from '../context/AuthContext';
-import Avatar from './common/Avatar';
+import ProfileMenu from './ProfileMenu';
+import FloatingChatButton from './FloatingChatButton';
 import { useUnsavedChanges } from '../context/UnsavedChangesContext';
 import LoginModal from './LoginModal';
 
@@ -53,7 +54,7 @@ export default function Header() {
 
   return (
     <>
-      <header className={`header ${isScrolled ? 'scrolled' : ''}`} id="site-header">
+      <header className={`header ${user ? 'header-authenticated' : ''} ${isScrolled ? 'scrolled' : ''}`} id="site-header">
         <div className="container">
           <Link to="/" className="logo" aria-label="Lowrox homepage">
             <img src={logoImg} alt="LOWROX" className="h-8" />
@@ -69,26 +70,17 @@ export default function Header() {
             ) : (
               <>
                 <Link to="/events" className="nav-link">กิจกรรม</Link>
-                <Link to="/my-buddies" className="nav-link">My Buddies</Link>
-                <Link to="/messages" className="nav-link">Messages</Link>
-                <NavLink to="/profile" className="nav-link nav-profile">
-                  <Avatar src={user.avatarUrl} size="small" />
-                  <span>
-                    <span className="nav-profile-name">{user.displayName || user.username}</span>
-                    <span className="body-sm">My Profile</span>
-                  </span>
-                </NavLink>
               </>
             )}
           </nav>
           
-          <div className="header-actions">
-            {user ? (
-              <button className="btn btn-secondary btn-md" onClick={handleLogout}>ออกจากระบบ</button>
-            ) : (
+          {user && <ProfileMenu user={user} onLogout={handleLogout} />}
+
+          {!user && (
+            <div className="header-actions">
               <Link to="/events" className="btn btn-primary btn-md btn-cta">ดูกิจกรรม</Link>
-            )}
-          </div>
+            </div>
+          )}
 
           <button 
             className="mobile-menu-btn" 
@@ -119,27 +111,17 @@ export default function Header() {
             ) : (
               <>
                 <Link to="/events" className="nav-link" onClick={() => setIsMenuOpen(false)}>กิจกรรม</Link>
-                <Link to="/my-buddies" className="nav-link" onClick={() => setIsMenuOpen(false)}>My Buddies</Link>
-                <Link to="/messages" className="nav-link" onClick={() => setIsMenuOpen(false)}>Messages</Link>
-                <NavLink to="/profile" className="nav-link nav-profile" onClick={() => setIsMenuOpen(false)}>
-                  <Avatar src={user.avatarUrl} size="small" />
-                  <span>
-                    <span className="nav-profile-name">{user.displayName || user.username}</span>
-                    <span className="body-sm">My Profile</span>
-                  </span>
-                </NavLink>
               </>
             )}
         </nav>
-        <div className="mobile-drawer-actions">
-          {user ? (
-            <button className="btn btn-secondary btn-md w-full" onClick={handleLogout}>ออกจากระบบ</button>
-          ) : (
+        {!user && (
+          <div className="mobile-drawer-actions">
             <Link to="/events" className="btn btn-primary btn-md btn-cta w-full" onClick={() => setIsMenuOpen(false)}>ดูกิจกรรม</Link>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
+      <FloatingChatButton />
       <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
     </>
   );

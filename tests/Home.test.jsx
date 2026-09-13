@@ -72,8 +72,8 @@ describe('Homepage', () => {
     const buddyLinks = screen.getAllByRole('link', { name: 'กิจกรรม' });
     expect(buddyLinks.length).toBeGreaterThan(0);
     
-    const profileLinks = screen.getAllByRole('link', { name: /My Profile/i });
-    expect(profileLinks.length).toBeGreaterThan(0);
+    fireEvent.click(screen.getByRole('button', { name: /เมนูโปรไฟล์/ }));
+    expect(screen.getByRole('link', { name: 'My Profile' })).toBeInTheDocument();
     
     // Verify login button is NOT there
     expect(screen.queryByRole('button', { name: 'เข้าสู่ระบบ' })).not.toBeInTheDocument();

@@ -749,3 +749,37 @@ textarea.form-control { display: block; padding: var(--space-3) var(--space-4); 
   .onboarding-modal-content .onboarding-choice-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (prefers-reduced-motion: reduce) { .onboarding-modal-content .onboarding-progress-fill { transition: none; } }
+
+/* Account navigation disclosure shared by desktop and mobile. */
+.header-authenticated .container { gap: var(--space-3); }
+.header-authenticated .desktop-nav { margin-left: auto; }
+.header-profile-menu { position: relative; min-width: 0; margin-left: auto; }
+.header-profile-trigger { display: flex; align-items: center; gap: var(--space-2); min-height: 48px; max-width: 100%; padding: var(--space-1) var(--space-2); border: 1px solid transparent; border-radius: var(--radius-md); background: transparent; color: var(--color-white); cursor: pointer; }
+.header-profile-trigger:hover, .header-profile-trigger[aria-expanded="true"] { background: var(--color-neutral-800); }
+.header-profile-trigger:focus-visible { outline: 2px solid var(--color-brand-300); outline-offset: 2px; }
+.header-profile-name { max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+.header-profile-trigger > svg { flex-shrink: 0; transition: transform var(--duration-fast); }
+.header-profile-trigger > svg.is-open { transform: rotate(180deg); }
+.header-profile-dropdown { position: absolute; right: 0; top: calc(100% + var(--space-3)); width: 220px; max-width: calc(100vw - 32px); display: grid; gap: var(--space-1); padding: var(--space-2); border: var(--border-subtle); border-radius: var(--radius-lg); background: var(--color-white); box-shadow: var(--shadow-md); }
+.header-profile-dropdown a { display: flex; align-items: center; gap: var(--space-3); min-height: 44px; padding: var(--space-3); border-radius: var(--radius-sm); color: var(--color-neutral-800); text-decoration: none; font-weight: 500; }
+.header-profile-dropdown a:hover { background: var(--color-neutral-100); }
+.header-profile-dropdown a.active { background: var(--color-brand-50); color: var(--color-brand-700); }
+.header-profile-dropdown a:focus-visible { outline: 2px solid var(--color-brand-600); outline-offset: -2px; }
+@media (min-width: 1024px) { .header-profile-menu { margin-left: var(--space-4); } }
+@media (max-width: 479px) {
+  .header-authenticated .logo img { width: 104px; height: auto; }
+  .header-authenticated .mobile-menu-btn { flex: 0 0 44px; }
+  .header-profile-name { max-width: 72px; font-size: 14px; }
+  .header-profile-trigger { padding-inline: 0; gap: var(--space-1); }
+}
+.header-profile-divider { border-top: var(--border-subtle); margin-block: var(--space-1); }
+.header-profile-logout { display: flex; align-items: center; gap: var(--space-3); width: 100%; min-height: 44px; padding: var(--space-3); border: 0; border-radius: var(--radius-sm); background: transparent; color: var(--color-error); font: inherit; font-weight: 500; text-align: left; cursor: pointer; }
+.header-profile-logout:hover { background: var(--color-error-soft); }
+.header-profile-logout:focus-visible { outline: 2px solid var(--color-brand-600); outline-offset: -2px; }
+
+.floating-chat-button { position: fixed; right: max(var(--space-4), env(safe-area-inset-right)); bottom: calc(var(--space-4) + env(safe-area-inset-bottom)); z-index: 40; display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); min-width: 56px; min-height: 56px; padding: var(--space-4) var(--space-5); background: var(--color-brand-500); color: var(--color-black); border: 1px solid var(--color-brand-600); border-radius: var(--radius-pill); box-shadow: var(--shadow-md); font-weight: 600; text-decoration: none; transition: background-color var(--duration-fast), box-shadow var(--duration-fast); }
+.floating-chat-button:hover { background: var(--color-brand-400); box-shadow: var(--shadow-lg); }
+.floating-chat-button:focus-visible { outline: 2px solid var(--color-brand-700); outline-offset: 4px; }
+.menu-open .floating-chat-button { visibility: hidden; }
+@media (min-width: 768px) { .floating-chat-button { right: max(var(--space-6), env(safe-area-inset-right)); bottom: calc(var(--space-6) + env(safe-area-inset-bottom)); } }
+@media (max-width: 479px) { .floating-chat-button { padding: var(--space-4); } .floating-chat-button span { display: none; } }
