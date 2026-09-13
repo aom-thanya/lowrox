@@ -1,4 +1,4 @@
-import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
+import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import { useOnboarding } from '../../context/OnboardingContext';
 import step2Img from '../../assets/onboarding/step2.png';
 import ChoiceCard from '../common/ChoiceCard';
@@ -351,11 +351,9 @@ const StepFitnessLevel = forwardRef(({ onNext, onPrev, isEditor, externalShowVal
       <div className="onboarding-modal-body">
         {/* Header Section */}
         <div className="onboarding-fullwidth-header">
-          <img
+          <Image
             src={ONBOARDING_STEP_ILLUSTRATIONS.currentPace}
             alt="Lowrox current pace illustration"
-            loading="lazy"
-            onError={(e) => { e.target.style.display = 'none'; }}
           />
           <div className="onboarding-text-align">
             <h2 className="heading-2 mb-8 flex items-center"><Activity size={28} className="mr-8 text-brand-500" />สถิติปัจจุบันของคุณ</h2>

@@ -1,4 +1,5 @@
 import React, { useState, forwardRef, useImperativeHandle } from 'react';
+import Image from '../common/Image';
 import { useOnboarding } from '../../context/OnboardingContext';
 import step4Img from '../../assets/onboarding/step4.png';
 import PillButton from '../common/PillButton';
@@ -597,11 +598,9 @@ const StepAvailability = forwardRef(({ onNext, onPrev, isEditor, externalShowVal
       <div className="onboarding-modal-body">
         {/* Header Section */}
         <div className="onboarding-fullwidth-header">
-          <img
+          <Image
             src={ONBOARDING_STEP_ILLUSTRATIONS.yourRhythm}
             alt="Lowrox training availability illustration"
-            loading="lazy"
-            onError={(e) => { e.target.style.display = 'none'; }}
           />
           <div className="onboarding-text-align">
             <h2 className="heading-2 mb-8 flex items-center">จังหวะไหนเข้ากับชีวิตคุณ? <CalendarIcon size={28} className="ml-8" /></h2>

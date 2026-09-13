@@ -1,4 +1,5 @@
-import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
+import React, { useState, forwardRef, useImperativeHandle } from 'react';
+import Image from '../common/Image';
 import { useOnboarding } from '../../context/OnboardingContext';
 import step5Img from '../../assets/onboarding/step5.png';
 import ChoiceCard from '../common/ChoiceCard';
@@ -488,11 +489,9 @@ const StepHealth = forwardRef(({ onNext, onPrev, isEditor, externalShowValidatio
       <div className="onboarding-modal-body">
         {/* Header Section */}
         <div className="onboarding-fullwidth-header">
-          <img
+          <Image
             src={ONBOARDING_STEP_ILLUSTRATIONS.safetyCheck}
             alt="Lowrox safety check illustration"
-            loading="lazy"
-            onError={(e) => { e.target.style.display = 'none'; }}
           />
           <div className="onboarding-text-align">
             <h2 className="heading-2 mb-8 flex items-center">ก่อนเริ่ม มีอะไรที่เราควรรู้ไหม? <ShieldAlert size={28} className="ml-8 text-brand-500" /></h2>
