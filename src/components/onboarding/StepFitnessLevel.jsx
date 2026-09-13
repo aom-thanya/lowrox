@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
+import Image from '../common/Image';
 import { useOnboarding } from '../../context/OnboardingContext';
 import step2Img from '../../assets/onboarding/step2.png';
 import ChoiceCard from '../common/ChoiceCard';
