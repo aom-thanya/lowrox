@@ -35,26 +35,26 @@ export default function EventCard({ event }) {
           <Badge variant="neutral">{event.type}</Badge>
         </div>
         
-        <h3 className="heading-5 mb-2 line-clamp-2">{event.title}</h3>
+        <h3 className="heading-5 mb-3" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{event.title}</h3>
         
-        <div className="space-y-2 mb-4 text-sm text-neutral-600">
+        <div className="mb-4 text-sm text-neutral-600 flex flex-col gap-2">
           <div className="flex items-center gap-2">
             <Calendar size={16} className="text-neutral-400 flex-shrink-0" />
             <span>{formatEventDate(event.date)}</span>
           </div>
           <div className="flex items-start gap-2">
             <MapPin size={16} className="text-neutral-400 flex-shrink-0 mt-0.5" />
-            <span className="line-clamp-1">{event.location}</span>
+            <span style={{ display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{event.location}</span>
           </div>
         </div>
         
-        <p className="body-sm text-neutral-600 line-clamp-2 mb-4 flex-grow">
+        <p className="body-sm text-neutral-600 mb-6 flex-grow" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
           {event.description}
         </p>
         
         <Link 
           to={`/events/${event.id}`} 
-          className="btn btn-secondary w-full justify-center mt-auto"
+          className="btn btn-secondary btn-md w-full justify-center mt-auto"
         >
           ดูรายละเอียด
         </Link>

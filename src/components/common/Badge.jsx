@@ -1,7 +1,7 @@
 import React from 'react';
 
 export default function Badge({ children, variant = 'neutral', className = '' }) {
-  const baseClasses = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium';
+  const baseClasses = 'inline-flex items-center text-xs font-medium';
   
   const variantClasses = {
     neutral: 'bg-neutral-100 text-neutral-800',
@@ -11,7 +11,10 @@ export default function Badge({ children, variant = 'neutral', className = '' })
   };
 
   return (
-    <span className={`${baseClasses} ${variantClasses[variant] || variantClasses.neutral} ${className}`}>
+    <span 
+      className={`${baseClasses} ${variantClasses[variant] || variantClasses.neutral} ${className}`}
+      style={{ padding: '4px 10px', borderRadius: '9999px' }}
+    >
       {children}
     </span>
   );
