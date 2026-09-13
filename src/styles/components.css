@@ -607,3 +607,79 @@ textarea.form-control { display: block; padding: var(--space-3) var(--space-4); 
   .settings-toggle-row { gap: var(--space-4); }
   .settings-actions { flex-direction: column-reverse; align-items: stretch; }
 }
+
+/* Homepage sections use the same container, borders, and spacing tokens. */
+.home-main { flex: 1; width: 100%; }
+.home-hero, .home-section { width: 100%; padding-block: var(--space-12); }
+.home-hero-grid { display: grid; grid-template-columns: minmax(0, 1fr); align-items: center; gap: var(--space-8); }
+.home-hero-copy { display: grid; justify-items: start; gap: var(--space-6); min-width: 0; }
+.home-hero-copy h1 { max-width: 20ch; margin: 0; }
+.home-hero-copy > p { max-width: 48ch; }
+.home-hero-actions { display: flex; flex-wrap: wrap; gap: var(--space-3); width: 100%; }
+.home-hero-actions .btn { flex: 1; }
+.home-hero-visual { width: 100%; min-width: 0; display: flex; justify-content: center; }
+.home-hero-image { display: grid; place-items: center; width: 100%; max-width: 500px; aspect-ratio: 1; overflow: hidden; background: var(--color-brand-50); border: 1px solid var(--color-brand-100); border-radius: var(--radius-xl); }
+.home-hero-art { display: block; width: 100%; height: 100%; object-fit: contain; padding: var(--space-6); }
+.home-hero-fallback { display: grid; place-items: center; width: 100%; height: 100%; color: var(--color-brand-300); }
+.home-highlights { background: var(--color-neutral-50); border-block: var(--border-subtle); }
+.home-section-heading { text-align: center; margin-bottom: var(--space-8); }
+.home-feature-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-6); }
+.home-feature-card { height: 100%; min-width: 0; box-shadow: none; }
+.home-feature-content { display: flex; align-items: start; gap: var(--space-4); }
+.home-feature-copy { display: grid; gap: var(--space-3); min-width: 0; }
+.home-feature-step, .home-feature-icon { display: grid; place-items: center; flex: 0 0 48px; height: 48px; background: var(--color-brand-50); color: var(--color-brand-700); border-radius: var(--radius-md); }
+.home-feature-step { border-radius: var(--radius-pill); background: var(--color-brand-100); font-size: 18px; font-weight: 700; }
+#how-it-works { scroll-margin-top: var(--space-24); }
+.home-cta { background: var(--color-brand-50); border-top: 1px solid var(--color-brand-100); text-align: center; }
+.home-cta-content { display: grid; justify-items: center; gap: var(--space-6); max-width: 768px; }
+.home-cta-content .btn { width: 100%; }
+@media (min-width: 768px) {
+  .home-hero, .home-section { padding-block: var(--space-20); }
+  .home-hero-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-8); }
+  .home-hero-actions .btn { flex: none; }
+  .home-feature-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .home-feature-content { flex-direction: column; gap: var(--space-5); }
+  .home-feature-step, .home-feature-icon { width: 48px; }
+  .home-section-heading { margin-bottom: var(--space-12); }
+  .home-cta-content .btn { width: auto; }
+}
+@media (min-width: 1024px) {
+  .home-hero-grid { gap: var(--space-12); }
+  .home-hero-art { padding: var(--space-8); }
+}
+
+/* Inline onboarding adapts to the account content width, not modal/viewport width. */
+.onboarding-profile-form { min-width: 0; container-type: inline-size; }
+.onboarding-profile-form > fieldset { margin: 0; padding: 0; gap: var(--space-6); }
+.onboarding-profile-card { min-width: 0; box-shadow: none; }
+.onboarding-profile-card > section { min-width: 0; }
+.onboarding-profile-description { margin-top: var(--space-2); margin-bottom: var(--space-6); padding-bottom: var(--space-6); border-bottom: var(--border-subtle); max-width: none; }
+.onboarding-profile-form .onboarding-editor-section { min-width: 0; }
+.onboarding-profile-form .onboarding-editor-section > .onboarding-form-section:last-child { margin-bottom: 0; }
+.onboarding-profile-form .choice-cards-container { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-3); }
+.onboarding-profile-form .choice-card { min-width: 0; padding: var(--space-4); gap: var(--space-2); overflow-wrap: anywhere; }
+.onboarding-profile-form .choice-card-has-check { padding-right: var(--space-8); }
+.onboarding-profile-form .choice-card-label, .onboarding-profile-form .choice-card-description { min-width: 0; }
+.onboarding-profile-form .onboarding-choice-grid { grid-template-columns: minmax(0, 1fr); gap: var(--space-3); }
+.onboarding-profile-form .onboarding-pill-container { gap: var(--space-2); }
+.onboarding-profile-form .onboarding-pill-button { flex: 1 1 120px; min-height: 44px; border-radius: var(--radius-pill); }
+.onboarding-profile-form input, .onboarding-profile-form select, .onboarding-profile-form textarea { min-width: 0; max-width: 100%; }
+.onboarding-profile-form textarea { min-height: 120px; padding: var(--space-3) var(--space-4); resize: vertical; }
+.onboarding-profile-form input:focus-visible, .onboarding-profile-form select:focus-visible, .onboarding-profile-form textarea:focus-visible { outline: 2px solid var(--color-brand-300); outline-offset: 2px; border-color: var(--color-brand-600); box-shadow: none; }
+.onboarding-profile-form .onboarding-editor-section .flex { flex-wrap: wrap; }
+.onboarding-profile-form .onboarding-editor-section .flex > .relative { min-width: 0; max-width: 100%; flex: 1 1 120px; }
+.onboarding-profile-form .onboarding-privacy-notice { gap: var(--space-3); padding: var(--space-4); margin-bottom: var(--space-6); border: var(--border-subtle); border-radius: var(--radius-md); }
+.onboarding-profile-form .onboarding-privacy-notice > span { flex-shrink: 0; margin: 0; }
+.onboarding-profile-form .onboarding-feedback-card { padding: var(--space-4); border-radius: var(--radius-md); }
+.onboarding-profile-form .border-t { border-top: var(--border-subtle); padding-top: var(--space-3); }
+.onboarding-profile-form .border-b { border-bottom: var(--border-subtle); }
+.onboarding-profile-actions { margin: 0; padding-top: var(--space-6); border-top: var(--border-subtle); }
+@container (min-width: 480px) {
+  .onboarding-profile-form .choice-cards-container { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .onboarding-profile-form .onboarding-choice-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 479px) {
+  .onboarding-profile-card { padding: var(--space-4); }
+  .onboarding-profile-form .onboarding-feedback-card { padding: var(--space-3); }
+  .onboarding-profile-actions { flex-direction: column-reverse; align-items: stretch; }
+}
