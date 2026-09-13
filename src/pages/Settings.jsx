@@ -143,7 +143,7 @@ export default function Settings() {
               <div className="settings-toggle-row">
                 <div>
                   <p className="font-medium" id="showProfile-label">แสดงโปรไฟล์ในการหา Buddy</p>
-                  <p className="settings-helper">เมื่อปิด สมาชิกคนอื่นจะไม่พบคุณในหน้า Find Buddy แต่ Buddy และแชทเดิมยังใช้งานได้</p>
+                  <p className="settings-helper">เมื่อปิด สมาชิกคนอื่นจะไม่พบคุณในหน้า Find Buddy แต่ยังคงเชื่อมต่อกับ Buddy เดิม</p>
                 </div>
                 <div className="settings-toggle-control">
                   <Switch

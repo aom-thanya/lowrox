@@ -103,7 +103,7 @@ export default function Home() {
               <FeatureCard 
                 step="3"
                 title="คุยแล้วนัดกัน"
-                description="เมื่ออีกฝ่ายยอมรับ เริ่มแชทเพื่อตกลงวัน เวลา และสถานที่"
+                description="เมื่ออีกฝ่ายยอมรับ ตกลงวัน เวลา และสถานที่ออกกำลังกายด้วยกัน"
               />
             </div>
           </div>

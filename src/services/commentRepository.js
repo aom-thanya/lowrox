@@ -41,7 +41,7 @@ export async function getCommentsByEventId(eventId, { limit = 20, offset = 0 } =
 /**
  * Post a new comment
  */
-export async function postComment(eventId, user, message) {
+export async function postComment(eventId, user, message, images = []) {
   // Simulate network delay
   await new Promise(resolve => setTimeout(resolve, 500));
   
@@ -50,10 +50,12 @@ export async function postComment(eventId, user, message) {
   }
   
   const trimmedMessage = message.trim();
-  if (!trimmedMessage || trimmedMessage.length > 1000) {
+  if ((!trimmedMessage && !images.length) || trimmedMessage.length > 1000) {
     throw new Error('Invalid message length');
   }
   
+  if (!Array.isArray(images) || images.length > 8 || images.some(image => !/^data:image\/jpeg;base64,/.test(image.url) || image.url.length > 8 * 1024 * 1024)) throw new Error('Invalid images');
+
   const newComment = {
     id: `c${nextId++}`,
     eventId,
@@ -61,6 +63,7 @@ export async function postComment(eventId, user, message) {
     userDisplayName: user.displayName || user.username,
     userAvatarUrl: user.avatarUrl,
     message: trimmedMessage,
+    images: images.map(image => ({ ...image })),
     createdAt: new Date().toISOString()
   };
   

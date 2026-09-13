@@ -14,7 +14,6 @@ import AccountLayout from './components/AccountLayout';
 import { profileNavigation } from './config/profileNavigation';
 import EventList from './pages/EventList';
 import EventDetails from './pages/EventDetails';
-import Messages from './pages/Messages';
 import './style.css';
 
 const router = createBrowserRouter(createRoutesFromElements(
@@ -33,8 +32,6 @@ const router = createBrowserRouter(createRoutesFromElements(
           </Route>
 
           <Route element={<ProtectedRoute />}>
-            <Route path="/messages" element={<Messages />} />
-            <Route path="/messages/:groupId" element={<Messages />} />
             <Route path="/profile" element={<AccountLayout items={profileNavigation} label="My Profile" />}>
               {profileNavigation.map((page) => {
                 if (page.to === '/profile') return <Route key={page.to} index element={<ProfileEditor />} />;

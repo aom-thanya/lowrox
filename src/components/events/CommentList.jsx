@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import CommentGallery from './CommentGallery';
 import Avatar from '../common/Avatar';
 
 function formatCommentDate(dateString) {
@@ -13,6 +14,7 @@ function formatCommentDate(dateString) {
 }
 
 export default function CommentList({ comments, isLoading }) {
+  const [gallery, setGallery] = useState(null);
   if (isLoading) {
     return (
       <div className="event-comment-list">
@@ -39,6 +41,7 @@ export default function CommentList({ comments, isLoading }) {
 
   return (
     <div className="event-comment-list">
+      {gallery && <CommentGallery images={gallery.images} initialIndex={gallery.index} returnFocus={gallery.trigger} onClose={() => setGallery(null)} />}
       {comments.map(comment => (
         <div key={comment.id} className="event-comment-item">
           <Avatar src={comment.userAvatarUrl} size="small" className="flex-shrink-0" />
@@ -47,7 +50,8 @@ export default function CommentList({ comments, isLoading }) {
               <span className="font-medium text-neutral-900">{comment.userDisplayName}</span>
               <span className="text-xs text-neutral-500">{formatCommentDate(comment.createdAt)}</span>
             </div>
-            <p className="event-detail-copy">{comment.message}</p>
+            {comment.message && <p className="event-detail-copy">{comment.message}</p>}
+            {!!comment.images?.length && <div className="comment-image-gallery">{comment.images.map((image, index) => <button key={image.id || index} type="button" className="comment-image-open" aria-label={`ดูรูป ${index + 1} จาก ${comment.userDisplayName}`} onClick={event => setGallery({ images: comment.images, index, trigger: event.currentTarget })}><img src={image.url} alt={`รูปแนบ ${index + 1} จาก ${comment.userDisplayName}`} width={image.width} height={image.height} loading="lazy" /></button>)}</div>}
           </div>
         </div>
       ))}

@@ -102,11 +102,11 @@ export default function EventDetails() {
     }
   };
 
-  const handlePostComment = async (message) => {
+  const handlePostComment = async (message, images = []) => {
     setIsSubmittingComment(true);
     try {
-      const newComment = await postComment(event.id, user, message);
-      setComments([...comments, newComment]);
+      const newComment = await postComment(event.id, user, message, images);
+      setComments(current => [...current, newComment]);
     } finally {
       setIsSubmittingComment(false);
     }

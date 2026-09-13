@@ -4,7 +4,6 @@ import { Menu } from 'lucide-react';
 import logoImg from '../assets/logo.png';
 import { useAuth } from '../context/AuthContext';
 import ProfileMenu from './ProfileMenu';
-import FloatingChatButton from './FloatingChatButton';
 import { useUnsavedChanges } from '../context/UnsavedChangesContext';
 import LoginModal from './LoginModal';
 
@@ -121,7 +120,6 @@ export default function Header() {
         )}
       </div>
 
-      <FloatingChatButton />
       <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
     </>
   );

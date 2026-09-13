@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { ChevronDown, UserRound, Users, MessageCircle, LogOut } from 'lucide-react';
+import { ChevronDown, UserRound, Users, LogOut } from 'lucide-react';
 import Avatar from './common/Avatar';
 
 export default function ProfileMenu({ user, onLogout }) {
@@ -37,7 +37,6 @@ export default function ProfileMenu({ user, onLogout }) {
         <nav id="header-profile-links" className="header-profile-dropdown" aria-label="เมนูโปรไฟล์">
           <NavLink to="/profile" onClick={() => setOpen(false)}><UserRound size={20} aria-hidden="true" />My Profile</NavLink>
           <NavLink to="/my-buddies" onClick={() => setOpen(false)}><Users size={20} aria-hidden="true" />My Buddy</NavLink>
-          <NavLink to="/messages" onClick={() => setOpen(false)}><MessageCircle size={20} aria-hidden="true" />Message</NavLink>
           <div className="header-profile-divider" />
           <button type="button" className="header-profile-logout" onClick={() => {
             setOpen(false);

@@ -134,7 +134,7 @@ describe('EventDetails Page', () => {
     fireEvent.click(submitBtn);
     
     await waitFor(() => {
-      expect(commentRepository.postComment).toHaveBeenCalledWith(mockEvent.id, expect.any(Object), 'New comment');
+      expect(commentRepository.postComment).toHaveBeenCalledWith(mockEvent.id, expect.any(Object), 'New comment', []);
       expect(screen.getByText('New comment')).toBeInTheDocument();
     });
   });
