@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { OnboardingProvider, useOnboarding } from '../../context/OnboardingContext';
 import StepBasicInfo from './StepBasicInfo';
 import StepFitnessLevel from './StepFitnessLevel';
@@ -13,6 +13,12 @@ import Modal from '../common/Modal';
 function OnboardingContent({ onClose, onComplete, redirectDestination }) {
   const { currentStep, nextStep, prevStep, submitForm } = useOnboarding();
   const [showExitConfirm, setShowExitConfirm] = useState(false);
+  const stepRegion = useRef(null);
+
+  useEffect(() => {
+    const body = stepRegion.current?.querySelector('.onboarding-modal-body');
+    if (body) body.scrollTop = 0;
+  }, [currentStep]);
 
   const handleCloseAttempt = () => {
     setShowExitConfirm(true);
@@ -46,11 +52,11 @@ function OnboardingContent({ onClose, onComplete, redirectDestination }) {
 
   return (
     <>
-      <Modal isOpen={true} onClose={handleCloseAttempt} hideCloseButton={true} className="onboarding-modal-content max-w-[500px] h-[90vh] md:h-[80vh] min-h-[500px] p-0 flex flex-col">
+      <Modal isOpen={true} onClose={handleCloseAttempt} hideCloseButton={true} overlayClassName="onboarding-modal-backdrop" className="onboarding-modal-content">
         <div className="onboarding-modal-header">
           <div className="onboarding-header-top">
             <img src={logoImg} alt="LOWROX" className="onboarding-logo" />
-            <div className="onboarding-step-text mr-32">{currentStep} / 5</div>
+            <div className="onboarding-step-text mr-32">{currentStep <= 5 ? `${currentStep} / 5` : 'ตรวจสอบข้อมูล'}</div>
           </div>
           <div className="onboarding-progress-bar">
             <div className="onboarding-progress-fill" style={{ width: `${progressPercentage}%` }}></div>
@@ -60,13 +66,15 @@ function OnboardingContent({ onClose, onComplete, redirectDestination }) {
           </button>
         </div>
 
-        {/* Steps should render their own body and footer to support sticky footers */}
+        <div className="onboarding-step-region" ref={stepRegion}>
+        {/* Each step shares a scrollable body and a fixed footer. */}
         {currentStep === 1 && <StepBasicInfo onNext={nextStep} />}
         {currentStep === 2 && <StepFitnessLevel onNext={nextStep} onPrev={prevStep} />}
         {currentStep === 3 && <StepGoals onNext={nextStep} onPrev={prevStep} />}
         {currentStep === 4 && <StepAvailability onNext={nextStep} onPrev={prevStep} />}
         {currentStep === 5 && <StepHealth onNext={nextStep} onPrev={prevStep} />}
         {currentStep === 6 && <StepReview onPrev={prevStep} onSubmit={handleSubmit} redirectDestination={redirectDestination} />}
+        </div>
       </Modal>
 
       {showExitConfirm && (

@@ -683,3 +683,69 @@ textarea.form-control { display: block; padding: var(--space-3) var(--space-4); 
   .onboarding-profile-form .onboarding-feedback-card { padding: var(--space-3); }
   .onboarding-profile-actions { flex-direction: column-reverse; align-items: stretch; }
 }
+
+.onboarding-profile-form .onboarding-area-input > span { left: var(--space-4); display: flex; pointer-events: none; }
+.onboarding-profile-form .onboarding-area-input input { padding-left: var(--space-12); }
+.onboarding-profile-form .choice-card-icon { display: flex; margin-bottom: 0; }
+.onboarding-profile-form .btn { min-height: 44px; }
+
+/* All onboarding modal steps share one bounded shell and scroll region. */
+.modal-backdrop.onboarding-modal-backdrop { padding: 0; }
+.modal-content.onboarding-modal-content { width: 100%; max-width: none; height: 100dvh; max-height: 100dvh; border-radius: 0; }
+.onboarding-step-region { display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden; container-type: inline-size; }
+.onboarding-step-region > .onboarding-modal-body { flex: 1; min-height: 0; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; padding: var(--space-6); }
+.onboarding-modal-content .onboarding-modal-header { padding: var(--space-4) var(--space-6); border-bottom: var(--border-subtle); }
+.onboarding-modal-content .onboarding-header-top { min-height: 44px; margin-bottom: var(--space-3); gap: var(--space-4); padding-right: var(--space-10); }
+.onboarding-modal-content .onboarding-step-text { margin: 0; font-size: 14px; }
+.onboarding-modal-content .modal-close-btn { top: var(--space-4); right: var(--space-4); display: grid; place-items: center; width: 44px; height: 44px; }
+.onboarding-modal-content .onboarding-modal-footer { display: flex; gap: var(--space-3); padding: var(--space-4) var(--space-6); padding-bottom: max(var(--space-4), env(safe-area-inset-bottom)); border-top: var(--border-subtle); }
+.onboarding-modal-content .onboarding-modal-footer .btn { width: auto; min-width: 0; min-height: 48px; height: auto; margin: 0; padding: var(--space-3) var(--space-4); gap: var(--space-2); white-space: normal; }
+.onboarding-modal-content .onboarding-modal-footer .btn-secondary { flex: 0 1 auto; }
+.onboarding-modal-content .onboarding-modal-footer .btn-primary { flex: 1; }
+.onboarding-modal-content .onboarding-fullwidth-header { align-items: center; gap: var(--space-5); margin-bottom: var(--space-6); padding-bottom: var(--space-6); border-bottom: var(--border-subtle); }
+.onboarding-modal-content .onboarding-fullwidth-header img { width: 100px; height: 100px; flex-shrink: 0; }
+.onboarding-modal-content .onboarding-fullwidth-header h2 { display: block; font-size: clamp(22px, 3vw, 28px); line-height: 1.35; }
+.onboarding-modal-content .onboarding-fullwidth-header h2 svg { display: inline-block; vertical-align: middle; }
+.onboarding-modal-content .onboarding-step-layout { display: grid; grid-template-columns: minmax(0, 1fr); align-content: start; gap: var(--space-6); }
+.onboarding-modal-content .onboarding-illustration-column { gap: var(--space-4); }
+.onboarding-modal-content .onboarding-illustration-container { margin: 0; }
+.onboarding-modal-content .onboarding-illustration { width: 120px; height: 120px; }
+.onboarding-modal-content .onboarding-illustration-column .onboarding-form-section { margin: 0; }
+.onboarding-modal-content .onboarding-illustration-column h2 { font-size: 28px; line-height: 1.35; }
+.onboarding-modal-content .onboarding-form-column { min-width: 0; }
+.onboarding-modal-content .choice-cards-container { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-3); }
+.onboarding-modal-content .choice-card { min-width: 0; padding: var(--space-4); gap: var(--space-2); overflow-wrap: anywhere; }
+.onboarding-modal-content .choice-card-has-check { padding-right: var(--space-8); }
+.onboarding-modal-content .choice-card-icon { display: flex; margin: 0; }
+.onboarding-modal-content .onboarding-choice-grid { grid-template-columns: minmax(0, 1fr); gap: var(--space-3); }
+.onboarding-modal-content .onboarding-pill-button { min-height: 44px; flex: 1 1 120px; border-radius: var(--radius-pill); }
+.onboarding-modal-content .onboarding-pill-container { gap: var(--space-2); }
+.onboarding-modal-content .onboarding-modal-body .flex { flex-wrap: wrap; }
+.onboarding-modal-content .onboarding-modal-body .flex > .relative { flex: 1 1 120px; min-width: 0; max-width: 100%; }
+.onboarding-modal-content input, .onboarding-modal-content select, .onboarding-modal-content textarea { min-width: 0; max-width: 100%; }
+.onboarding-modal-content textarea { padding: var(--space-4); min-height: 120px; resize: vertical; }
+.onboarding-modal-content .onboarding-area-input > span { left: var(--space-4); display: flex; pointer-events: none; }
+.onboarding-modal-content .onboarding-area-input input { padding-left: var(--space-12); }
+.onboarding-modal-content .onboarding-card { padding: var(--space-5); border: var(--border-subtle); border-radius: var(--radius-lg); overflow-wrap: anywhere; }
+.onboarding-modal-content .onboarding-card-header { gap: var(--space-3); }
+.onboarding-modal-content .onboarding-card-header button, .onboarding-modal-content .btn { min-height: 44px; }
+.onboarding-modal-content .border-t { border-top: var(--border-subtle); padding-top: var(--space-3); }
+.onboarding-modal-content .border-b { border-bottom: var(--border-subtle); }
+.onboarding-modal-content :is(input, select, textarea):focus-visible { outline: 2px solid var(--color-brand-300); outline-offset: 2px; border-color: var(--color-brand-600); box-shadow: none; }
+.modal-backdrop.onboarding-exit-backdrop { padding: var(--space-4); background: rgba(11, 11, 12, 0.5); }
+.modal-content.onboarding-exit-dialog { width: 100%; max-width: 440px; height: auto; max-height: calc(100dvh - 32px); overflow-y: auto; background: var(--color-white); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); }
+.onboarding-exit-actions { display: grid; gap: var(--space-3); padding: 0 var(--space-6) var(--space-6); border: 0; }
+@media (min-width: 768px) {
+  .modal-backdrop.onboarding-modal-backdrop { padding: var(--space-6); }
+  .modal-content.onboarding-modal-content { max-width: 1000px; height: min(880px, calc(100dvh - 48px)); max-height: calc(100dvh - 48px); border-radius: var(--radius-xl); }
+  .onboarding-step-region > .onboarding-modal-body { padding: var(--space-8); }
+  .onboarding-modal-content .onboarding-modal-header, .onboarding-modal-content .onboarding-modal-footer { padding-inline: var(--space-8); }
+  .onboarding-modal-content .onboarding-modal-footer .btn-primary { flex: 0 1 auto; min-width: 240px; }
+  .onboarding-modal-content .onboarding-modal-footer { justify-content: flex-end; }
+  .onboarding-modal-content .onboarding-step-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); align-items: center; gap: var(--space-8); }
+  .onboarding-modal-content .onboarding-illustration { width: 200px; height: 200px; }
+  .onboarding-modal-content .choice-cards-container { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .onboarding-modal-content .onboarding-form-column .choice-cards-container { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .onboarding-modal-content .onboarding-choice-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (prefers-reduced-motion: reduce) { .onboarding-modal-content .onboarding-progress-fill { transition: none; } }

@@ -508,7 +508,6 @@ const StepHealth = forwardRef(({ onNext, onPrev, isEditor, externalShowValidatio
         <button
           className="btn btn-secondary btn-md"
           onClick={onPrev}
-          style={{ width: 'auto', marginRight: '16px' }}
         >
           ← ย้อนกลับ
         </button>

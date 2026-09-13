@@ -409,7 +409,7 @@ const StepAvailability = forwardRef(({ onNext, onPrev, isEditor, externalShowVal
               {/* Area Input */}
               <div className="mb-24">
                 <label className="flex items-center font-semibold mb-12">ปกติคุณสะดวกซ้อมแถวไหน? <MapPin size={20} className="ml-8" /></label>
-                <div className="relative">
+                <div className="relative onboarding-area-input">
                   <span className="absolute left-16 top-1/2 -translate-y-1/2 text-neutral-400"><MapPin size={18} /></span>
                   <input
                     type="text"
