@@ -4,7 +4,8 @@ Lowrox แพลตฟอร์มหาคู่ซ้อมและคอม�
 
 ## 🛠 Tech Stack
 
-- **Frontend Framework**: React 18
+- **Frontend Framework**: React 19
+- **Language**: TypeScript (`strict` mode)
 - **Build Tool**: Vite
 - **Routing**: React Router DOM
 - **Styling**: Vanilla CSS (Global styles with custom design system)
@@ -35,7 +36,17 @@ npm install
 npm run dev
 ```
 
-3. Build for production:
+3. Check TypeScript types (application, tests, and Vite configuration):
+```bash
+npm run typecheck
+```
+
+4. Run tests:
+```bash
+npm test
+```
+
+5. Build for production (includes type checking):
 ```bash
 npm run build
 ```
@@ -61,6 +72,8 @@ npm run build
 - `src/components/onboarding/`: คอมโพเนนต์สำหรับ Onboarding Modal แต่ละสเตป
 - `src/context/`: Context Provider (AuthContext, OnboardingContext)
 - `src/pages/`: หน้าหลักของเว็บไซต์ (Home, Login, Onboarding, Profile)
+- `src/types/models.ts`: Shared types for users, profiles, events, comments, and onboarding forms
+- `tsconfig.json`: Strict TypeScript configuration
 - `src/style.css`: ไฟล์ CSS หลักที่มี Design System Tokens
 
 ## 📄 Documentation
