@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { vi } from 'vitest';
 import Home from '../src/pages/Home';
@@ -68,23 +68,24 @@ describe('Homepage', () => {
     expect(howToLinks.length).toBeGreaterThan(0);
   });
 
-  test('header shows profile and buddy links when logged in', () => {
-    vi.mocked(useAuth, { partial: true }).mockReturnValue({ 
-      user: { id: 1, username: 'testuser', displayName: 'Test User' },
+  test('header shows the training journey and quick log for members', () => {
+    vi.mocked(useAuth, { partial: true }).mockReturnValue({
+      user: { id: 1, username: 'testuser', displayName: 'Test User', onboardingStatus: 'completed' },
       logout: vi.fn()
     });
     renderHome();
-    
-    const buddyLinks = screen.getAllByRole('link', { name: 'กิจกรรม' });
-    expect(buddyLinks.length).toBeGreaterThan(0);
-    
+
+    const mainNav = screen.getByRole('navigation', { name: 'Main Navigation' });
+    expect(within(mainNav).getAllByRole('link').map(link => link.textContent)).toEqual(['เลเวลของฉัน', 'ตี้ซ้อม', 'บัดดี้']);
+    expect(screen.getAllByRole('link', { name: /บันทึกการวิ่ง/ })[0]).toHaveAttribute('href', '/level?log=1');
+
+    // Phone tab bar mirrors the journey
+    const tabbar = screen.getByRole('navigation', { name: 'เมนูหลัก' });
+    expect(within(tabbar).getByRole('link', { name: 'บัดดี้' })).toHaveAttribute('href', '/buddies');
+
     fireEvent.click(screen.getByRole('button', { name: /เมนูโปรไฟล์/ }));
-    expect(screen.getByRole('link', { name: 'My Profile' })).toBeInTheDocument();
-    
-    // Verify login button is NOT there
+    expect(screen.getByRole('link', { name: 'โปรไฟล์ของฉัน' })).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'เข้าสู่ระบบ' })).not.toBeInTheDocument();
-    
-    const logoutBtns = screen.getAllByRole('button', { name: 'ออกจากระบบ' });
-    expect(logoutBtns.length).toBeGreaterThan(0);
+    expect(screen.getByRole('button', { name: 'ออกจากระบบ' })).toBeInTheDocument();
   });
 });

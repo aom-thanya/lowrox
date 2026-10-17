@@ -155,7 +155,7 @@ export default function Settings() {
               </div>
 
               {saveError && (
-                <div className="validation-message error-text mt-4" role="alert">
+                <div className="validation-message text-error mt-1" role="alert">
                   {saveError}
                 </div>
               )}

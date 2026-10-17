@@ -77,10 +77,10 @@ export default function EventList() {
 
   return (
     <PageShell className="event-list-page">
-        <div className="container event-list-container">
+        <div className="page-container event-list-container">
           <div className="event-list-heading event-list-heading-row">
             <div>
-              <h1 className="heading-2">กิจกรรม</h1>
+              <h1 className="heading-2">ตี้ซ้อม</h1>
               <p className="body-lg text-neutral-600">หาตี้ซ้อมที่สนใจ หรือเปิดตี้เองแล้วรอคนเลเวลใกล้กันมาจอย</p>
             </div>
             <Link to="/parties/new" className="btn btn-primary btn-md btn-cta event-create-btn"><Plus size={18} /> ตั้งหัวตี้</Link>
@@ -180,7 +180,7 @@ export default function EventList() {
             </div>
           ) : (
             <div className="event-list-empty">
-              <p className="text-neutral-500 text-lg mb-4">ไม่พบกิจกรรมที่ค้นหา</p>
+              <p className="text-neutral-500 text-lg mb-1">ไม่พบกิจกรรมที่ค้นหา</p>
               <button onClick={handleClear} className="btn btn-primary btn-md">ดูทั้งหมด</button>
             </div>
           )}

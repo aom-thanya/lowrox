@@ -9,7 +9,7 @@ export default function AccountLayout({ items, label }: { items: NavigationItem[
   return (
     <div className="account-layout flex flex-col min-h-screen">
       <Header />
-      <div className="account-container container">
+      <div className="account-container page-container">
         <SidebarNav items={items} label={label} />
         <main className="account-content"><Outlet /></main>
       </div>

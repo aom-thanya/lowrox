@@ -102,7 +102,7 @@ export default function PartyCreate() {
 
   return (
     <PageShell className="party-create-page">
-      <div className="container party-create">
+      <div className="page-container party-create">
         <Link to="/events" className="party-back"><ArrowLeft size={18} /> กลับหน้ากิจกรรม</Link>
         <h1 className="heading-2">ตั้งหัวตี้</h1>
         <p className="party-create-lead">เลือกไม่กี่อย่าง แล้วรอคนเลเวลใกล้กันมาจอย ทุกช่องตั้งค่าเริ่มต้นไว้ให้แล้ว</p>

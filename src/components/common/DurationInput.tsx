@@ -13,7 +13,7 @@ export default function DurationInput({
 }: { hours: string; minutes: string; onHoursChange: (value: string) => void; onMinutesChange: (value: string) => void; hasError?: boolean; inputClassName?: string; idPrefix?: string }) {
   const errorClass = hasError ? 'input-error' : '';
   return (
-    <div className="flex gap-16 items-center">
+    <div className="flex gap-4 items-center">
       <InputWrapper suffix="ชั่วโมง" className="w-[140px]">
         <input
           type="number"
@@ -23,7 +23,7 @@ export default function DurationInput({
           onChange={(e) => onHoursChange(e.target.value)}
           placeholder="00"
           min="0"
-          className={`w-full pr-64 text-center ${inputClassName} ${errorClass}`}
+          className={`w-full pr-16 text-center ${inputClassName} ${errorClass}`}
         />
       </InputWrapper>
       <InputWrapper suffix="นาที" className="w-[140px]">
@@ -36,7 +36,7 @@ export default function DurationInput({
           placeholder="00"
           min="0"
           max="59"
-          className={`w-full pr-48 text-center ${inputClassName} ${errorClass}`}
+          className={`w-full pr-12 text-center ${inputClassName} ${errorClass}`}
         />
       </InputWrapper>
     </div>

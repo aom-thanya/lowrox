@@ -70,7 +70,7 @@ function ProfileContent({ userId }: { userId: string }) {
   const counts = eventStatus === 'ready' ? data?.counts : null;
   const total = counts ? Object.values(counts).reduce((sum, count) => sum + count, 0) : null;
   return <PageShell className="public-profile-page">
-      <div className="container public-profile-container">
+      <div className="page-container public-profile-container">
         <Link to="/events" className="public-profile-back">กลับหน้ากิจกรรม</Link>
         {profileStatus === 'loading' && <ContentCard><div role="status" aria-label="กำลังโหลดโปรไฟล์"><Skeleton /><Skeleton /><Skeleton /></div></ContentCard>}
         {profileStatus === 'error' && <EmptyState action={<Link to="/events" className="btn btn-secondary btn-md">กลับหน้า Events</Link>}>ไม่พบโปรไฟล์นี้ หรือไม่สามารถเปิดดูได้</EmptyState>}

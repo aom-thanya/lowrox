@@ -1,4 +1,6 @@
 /* Level page — loaded with the MyLevel route chunk only */
+/* In the components layer so Tailwind utilities can override it. */
+@layer components {
 
 .level-page { justify-content: flex-start; padding-top: var(--space-8); background: var(--color-neutral-50); }
 .level-container { display: grid; gap: var(--space-6); max-width: 1040px; }
@@ -128,4 +130,5 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .level-page *, .level-up { animation: none !important; transition: none !important; }
+}
 }

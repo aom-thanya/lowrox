@@ -26,7 +26,7 @@ export default function EventCard({ event, navigationState, onNavigate }: { even
           {event.isParty && <span className="level-chip" data-level={event.levelId ?? 'all'}>{event.levelId && event.levelId !== 'all' ? LEVELS.find(level => level.id === event.levelId)?.label : 'ทุกเลเวล'}</span>}
         </div>
         
-        <h2 className="heading-4 event-list-card-title text-clamp-2"><Link to={`/events/${event.id}`} state={navigationState} onClick={onNavigate}>{event.title}</Link></h2>
+        <h2 className="heading-4 event-list-card-title line-clamp-2"><Link to={`/events/${event.id}`} state={navigationState} onClick={onNavigate}>{event.title}</Link></h2>
         
         <div className="event-list-card-meta">
           <div className="event-list-card-meta-row">
@@ -35,12 +35,12 @@ export default function EventCard({ event, navigationState, onNavigate }: { even
           </div>
           <div className="event-list-card-meta-row">
             <MapPin size={16} className="event-list-card-icon" />
-            <span className="text-clamp-1">{event.location}</span>
+            <span className="line-clamp-1">{event.location}</span>
           </div>
         </div>
         
         {Number.isFinite(event.participantCount) && <p className="text-sm text-neutral-600">ผู้เข้าร่วม {event.participantCount}{Number.isFinite(event.capacity) ? ` / ${event.capacity}` : ''} คน</p>}
-        <p className="body-sm event-list-card-description text-clamp-2">
+        <p className="body-sm event-list-card-description line-clamp-2">
           {event.description}
         </p>
         

@@ -16,11 +16,11 @@ export default function FormSection({
         </label>
       )}
       {helperText && (
-        <span id={htmlFor ? `${htmlFor}-help` : undefined} className="onboarding-helper-text mb-8">{helperText}</span>
+        <span id={htmlFor ? `${htmlFor}-help` : undefined} className="onboarding-helper-text mb-2">{helperText}</span>
       )}
       {children}
       {error && (
-        <span id={htmlFor ? `${htmlFor}-error` : undefined} className="validation-message onboarding-error-text mt-8" role="alert">
+        <span id={htmlFor ? `${htmlFor}-error` : undefined} className="validation-message onboarding-error-text mt-2" role="alert">
           {error}
         </span>
       )}

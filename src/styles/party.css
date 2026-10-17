@@ -1,4 +1,6 @@
 /* Parties (ตี้ซ้อม): slots, join panel, create page */
+/* In the components layer so Tailwind utilities can override it. */
+@layer components {
 
 .party-slots { display: grid; gap: var(--space-2); }
 .party-slot-row { display: flex; flex-wrap: wrap; gap: var(--space-2); }
@@ -59,7 +61,8 @@
 
 @media (min-width: 1024px) {
   .party-create-grid { grid-template-columns: 1.3fr 1fr; }
-  .party-preview { position: sticky; top: 104px; }
+  .party-preview { position: sticky; top: calc(var(--header-height) + var(--space-6)); }
   .party-templates { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .party-template { flex-direction: column; justify-content: center; }
+}
 }

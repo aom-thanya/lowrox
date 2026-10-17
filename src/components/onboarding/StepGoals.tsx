@@ -292,7 +292,7 @@ const StepGoals = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, isEditor,
               type="number"
               value={customDist}
               onChange={(e) => { setCustomDist(e.target.value); if (showValidation) validate(); }}
-              className={`w-full pr-48 bg-white ${showValidation && errors.distance ? 'input-error' : ''}`}
+              className={`w-full pr-12 bg-white ${showValidation && errors.distance ? 'input-error' : ''}`}
               placeholder="เช่น 12.5"
               step="0.01"
               min="0.01"
@@ -312,13 +312,13 @@ const StepGoals = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, isEditor,
       </div>
 
       {distSelect === 'custom' && (
-        <div className="form-group mb-24">
+        <div className="form-group mb-6">
           <InputWrapper suffix="กม." className="max-w-[200px]">
             <input
               type="number"
               value={customDist}
               onChange={(e) => { setCustomDist(e.target.value); if (showValidation) validate(); }}
-              className={`w-full pr-48 bg-white ${errors.targetGoal ? 'input-error' : ''}`}
+              className={`w-full pr-12 bg-white ${errors.targetGoal ? 'input-error' : ''}`}
               placeholder="ระยะทาง"
               step="0.01"
               min="0.01"
@@ -329,9 +329,9 @@ const StepGoals = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, isEditor,
 
       {distSelect && (
         <>
-          <label className="onboarding-label mb-8">อยากทำระยะนี้ให้ได้ภายในเท่าไร?</label>
+          <label className="onboarding-label mb-2">อยากทำระยะนี้ให้ได้ภายในเท่าไร?</label>
           {distSelect === String(currentDist) && currentDur > 0 && (
-            <div className="onboarding-helper-text mb-12">ปัจจุบัน {currentDur} นาที</div>
+            <div className="onboarding-helper-text mb-3">ปัจจุบัน {currentDur} นาที</div>
           )}
 
           <div className="onboarding-pill-container">
@@ -365,7 +365,7 @@ const StepGoals = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, isEditor,
   const renderPrepareEvent = () => (
     <div className="onboarding-fade-in">
       <label className="onboarding-label">มีสนามที่อยากไปพิชิตแล้วหรือยัง?</label>
-      <div className="flex flex-col gap-8 mb-24">
+      <div className="flex flex-col gap-2 mb-6">
         {EVENT_OPTIONS.map(opt => (
           <ChoiceCard
             key={opt.value}
@@ -402,7 +402,7 @@ const StepGoals = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, isEditor,
       {eventSelect && (
         <>
           <label className="onboarding-label">ตอนนี้มี Buddy แล้วหรือยัง?</label>
-          <div className="flex flex-col gap-8 mb-24">
+          <div className="flex flex-col gap-2 mb-6">
             {BUDDY_OPTIONS.map(opt => (
               <ChoiceCard
                 key={opt.value}
@@ -415,7 +415,7 @@ const StepGoals = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, isEditor,
             ))}
           </div>
           {buddyStatus === 'looking_for_buddy' && (
-            <FeedbackCard className="mb-24 p-[12px_16px] bg-white">
+            <FeedbackCard className="mb-6 px-4 py-3 bg-white">
               <p className="text-sm text-neutral-700 m-0">
                 หลังจากรู้ Level แล้ว เราจะช่วยแนะนำ Buddy ที่มีจังหวะใกล้กับคุณ
               </p>
@@ -443,7 +443,7 @@ const StepGoals = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, isEditor,
     if (goalType === 'improve_endurance' && !enduranceFocus) return null;
 
     return (
-      <div className="onboarding-fade-in mt-32">
+      <div className="onboarding-fade-in mt-8">
         <label className="onboarding-label">อยากพิชิต Challenge นี้เมื่อไร? 📅</label>
         <PillGroup options={TARGET_DATE_OPTIONS} value={dateSelect} onSelect={(value) => { setDateSelect(value); if (showValidation) validate(); }} />
 
@@ -491,10 +491,10 @@ const StepGoals = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, isEditor,
       const targetVal = distSelect === 'custom' ? customDist : distSelect;
       previewContent = (
         <>
-          <div className="text-[16px] font-semibold text-brand-600">
+          <div className="text-base font-semibold text-brand-600">
             วิ่ง {currentDist > 0 ? `จาก ${currentDist} กม. ` : ''}ให้ถึง {targetVal} กม.
           </div>
-          {pDate && <div className="text-sm mt-4 font-semibold text-brand-600">{pDate}</div>}
+          {pDate && <div className="text-sm mt-1 font-semibold text-brand-600">{pDate}</div>}
         </>
       );
     } else if (goalType === 'improve_time') {
@@ -502,47 +502,47 @@ const StepGoals = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, isEditor,
       const dur = durSelect === 'custom' ? ((Number(customHrs) || 0) * 60 + (Number(customMins) || 0)) : durSelect;
       previewContent = (
         <>
-          <div className="text-[16px] font-semibold text-brand-600">
+          <div className="text-base font-semibold text-brand-600">
             วิ่ง {dist} กม. ให้ได้ภายใน {dur} นาที
           </div>
           {dist === String(currentDist) && currentDur > 0 && (
-            <div className="text-sm text-neutral-600 mt-4">
+            <div className="text-sm text-neutral-600 mt-1">
               ปัจจุบันประมาณ {currentDur} นาที
             </div>
           )}
-          {pDate && <div className="text-sm mt-4 font-semibold text-brand-600">{pDate}</div>}
+          {pDate && <div className="text-sm mt-1 font-semibold text-brand-600">{pDate}</div>}
         </>
       );
     } else if (goalType === 'prepare_event' || goalType === 'buddy_event') {
       const evName = eventSelect === 'custom_event' ? customEvent : (eventSelect === 'system_event' ? 'BKK Night Run' : '(ยังไม่ระบุ)');
       previewContent = (
         <>
-          <div className="text-[16px] font-semibold text-brand-600">
+          <div className="text-base font-semibold text-brand-600">
             เตรียมลง {evName} {goalType === 'buddy_event' ? 'แบบ Buddy' : ''}
           </div>
           {goalType === 'buddy_event' && buddyStatus === 'looking_for_buddy' && (
-            <div className="text-sm text-neutral-600 mt-4">
+            <div className="text-sm text-neutral-600 mt-1">
               และหา Buddy ที่ Level ใกล้กัน
             </div>
           )}
-          {pDate && <div className="text-sm mt-4 font-semibold text-brand-600">{pDate}</div>}
+          {pDate && <div className="text-sm mt-1 font-semibold text-brand-600">{pDate}</div>}
         </>
       );
     } else if (goalType === 'improve_endurance') {
       const lbl = ENDURANCE_OPTIONS.find(o => o.value === enduranceFocus)?.label || '';
       previewContent = (
         <>
-          <div className="text-[16px] font-semibold text-brand-600">
+          <div className="text-base font-semibold text-brand-600">
             โฟกัส: {lbl}
           </div>
-          {pDate && <div className="text-sm mt-4 font-semibold text-brand-600">{pDate}</div>}
+          {pDate && <div className="text-sm mt-1 font-semibold text-brand-600">{pDate}</div>}
         </>
       );
     }
 
     if (previewContent) {
       return (
-        <FeedbackCard title="Challenge ของคุณ" icon="🎯" className="mt-24">
+        <FeedbackCard title="Challenge ของคุณ" icon="🎯" className="mt-6">
           {previewContent}
         </FeedbackCard>
       );
@@ -560,7 +560,7 @@ const StepGoals = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, isEditor,
   const formContent = (
     <>
         {submitError && (
-          <div className="error-message-area mb-24" role="alert">
+          <div className="error-message-area mb-6" role="alert">
             {submitError}
           </div>
         )}
@@ -574,10 +574,10 @@ const StepGoals = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, isEditor,
                 key={opt.value}
                 isSelected={goalType === opt.value}
                 onClick={() => { setGoalType(opt.value); resetForm(); if (showValidation) validate(); }}
-                icon={<span className="mr-16 flex items-center justify-center">{opt.icon}</span>}
+                icon={<span className="mr-4 flex items-center justify-center">{opt.icon}</span>}
                 label={<span className="text-[15px] font-semibold">{opt.label}</span>}
                 description=""
-                className="flex-col items-start p-16 border-2 transition-all duration-200 hover:border-brand-300 hover:shadow-sm"
+                className="flex-col items-start p-4 border-2 transition-all duration-200 hover:border-brand-300 hover:shadow-sm"
               />
             );
           })}
@@ -585,7 +585,7 @@ const StepGoals = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, isEditor,
 
         {/* Conditional Questions Box */}
         {goalType && (
-          <div className="onboarding-fade-in mt-16 p-16 rounded-xl border border-brand-200 bg-brand-50">
+          <div className="onboarding-fade-in mt-4 p-4 rounded-xl border border-brand-200 bg-brand-50">
             {goalType === 'increase_distance' && renderIncreaseDistance()}
             {goalType === 'improve_time' && renderImproveTime()}
             {goalType === 'prepare_event' && renderPrepareEvent()}

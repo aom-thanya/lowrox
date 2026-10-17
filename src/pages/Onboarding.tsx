@@ -35,8 +35,8 @@ export default function Onboarding() {
   return (
     <>
       <Header />
-      <div className="flex flex-col min-h-screen items-center justify-center container text-center">
-        <h1 className="display-lg text-orange">Onboarding</h1>
+      <div className="flex flex-col min-h-screen items-center justify-center page-container text-center">
+        <h1 className="display-lg text-brand-500">Onboarding</h1>
         <p className="body-lg" style={{ marginTop: 'var(--space-4)', color: 'var(--color-neutral-600)' }}>
           ระบบกำลังเตรียมความพร้อมให้คุณ กรุณากรอกข้อมูลในหน้าต่าง Onboarding
         </p>

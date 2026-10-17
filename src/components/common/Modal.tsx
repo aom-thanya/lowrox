@@ -50,7 +50,7 @@ export default function Modal({
       >
         {!hideCloseButton && onClose && (
           <button 
-            className="absolute top-16 right-16 w-32 h-32 flex items-center justify-center bg-neutral-100 hover:bg-neutral-200 text-neutral-600 rounded-full transition-colors z-10 text-[20px] font-medium leading-none"
+            className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center bg-neutral-100 hover:bg-neutral-200 text-neutral-600 rounded-full transition-colors z-10 text-xl font-medium leading-none"
             onClick={onClose}
             aria-label="Close modal"
           >

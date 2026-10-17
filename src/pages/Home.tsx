@@ -64,7 +64,7 @@ export default function Home() {
         {/* Hero */}
         <section className="home-hero">
           <div className="home-hero-bg" aria-hidden="true" />
-          <div className="container home-hero-grid">
+          <div className="page-container home-hero-grid">
             <div className="home-hero-copy">
               <span className="home-eyebrow">สำหรับสาย HYROX · วิ่ง · Functional Fitness</span>
               <h1 className="display-lg">
@@ -97,7 +97,7 @@ export default function Home() {
 
         {/* Consumer pains → gains */}
         <section className="home-section">
-          <div className="container">
+          <div className="page-container">
             <Reveal className="home-section-heading">
               <span className="home-kicker">ปัญหาที่เรารู้ดี</span>
               <h2 className="heading-2">ออกกำลังกายเป็นประจำ แต่อยากไปให้ไกลกว่าเดิม</h2>
@@ -120,7 +120,7 @@ export default function Home() {
 
         {/* Level-up journey */}
         <section className="home-section home-journey">
-          <div className="container home-split">
+          <div className="page-container home-split">
             <Reveal from="left" className="home-split-copy">
               <span className="home-kicker">Level Up</span>
               <h2 className="heading-2">จาก 5 กม. 60 นาที สู่ 40 นาที ทีละก้าว</h2>
@@ -153,7 +153,7 @@ export default function Home() {
 
         {/* Producer: open a party */}
         <section className="home-section home-party">
-          <div className="container home-split is-reversed">
+          <div className="page-container home-split is-reversed">
             <Reveal from="right" className="home-split-copy">
               <span className="home-kicker">ตั้งหัวตี้</span>
               <h2 className="heading-2">ใครก็เป็นหัวตี้ได้ แล้วรอคนเลเวลเดียวกันมาจอย</h2>
@@ -177,7 +177,7 @@ export default function Home() {
 
         {/* How it works */}
         <section id="how-it-works" className="home-section">
-          <div className="container">
+          <div className="page-container">
             <Reveal className="home-section-heading">
               <span className="home-kicker">วิธีใช้งาน</span>
               <h2 className="heading-2">เริ่มได้ใน 3 ขั้นตอน</h2>
@@ -198,7 +198,7 @@ export default function Home() {
 
         {/* Free vs member */}
         <section id="plans" className="home-section home-plans">
-          <div className="container">
+          <div className="page-container">
             <Reveal className="home-section-heading">
               <span className="home-kicker">แพ็กเกจ</span>
               <h2 className="heading-2">เริ่มฟรี แล้วอัปเกรดเมื่อพร้อมไปต่อ</h2>
@@ -234,7 +234,7 @@ export default function Home() {
         {/* Final CTA */}
         <section className="home-cta">
           <Sparkles points={CTA_SPARKLES} />
-          <Reveal className="container home-cta-content">
+          <Reveal className="page-container home-cta-content">
             <h2 className="heading-2">พร้อมรู้เลเวลตัวเองหรือยัง?</h2>
             <p className="body-lg">เช็กเลเวลฟรี แล้วไปหาบัดดี้ที่พร้อมพิชิตสนามจริงไปด้วยกัน</p>
             <Link to="/login" className="btn btn-primary btn-md btn-cta home-btn-glow">

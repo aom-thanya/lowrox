@@ -65,7 +65,7 @@
 .password-input-wrapper input { padding-right: 3.5rem; width: 100%; box-sizing: border-box; }
 .password-toggle {
   position: absolute;
-  right: 10px;
+  right: var(--space-3);
   top: 50%;
   transform: translateY(-50%);
   background: transparent;
@@ -110,7 +110,7 @@ a.btn { text-decoration: none; }
 
 /* Header */
 .header {
-  height: 80px;
+  height: var(--header-height);
   display: flex;
   align-items: center;
   border-bottom: 1px solid var(--color-neutral-800);
@@ -125,7 +125,7 @@ a.btn { text-decoration: none; }
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
-.header .container {
+.header .page-container {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -177,7 +177,7 @@ a.btn { text-decoration: none; }
 }
 
 .btn-cta {
-  padding: 0 24px;
+  padding: 0 var(--space-6);
   border-radius: var(--radius-md);
 }
 
@@ -206,10 +206,10 @@ a.btn { text-decoration: none; }
 /* Mobile Drawer */
 .mobile-drawer {
   position: fixed;
-  top: 80px;
+  top: var(--header-height);
   left: 0;
   width: 100%;
-  height: calc(100vh - 80px);
+  height: calc(100vh - var(--header-height));
   background-color: var(--color-black);
   z-index: 40;
   padding: var(--space-6) var(--space-4);
@@ -409,13 +409,13 @@ textarea.form-control { display: block; padding: var(--space-3) var(--space-4); 
 
 /* Badge base */
 .event-badge {
-  padding: 4px 10px;
+  padding: var(--space-1) var(--space-3);
   border-radius: var(--radius-pill);
 }
 
 /* Overlay badge — base + BEM modifier */
 .event-overlay-badge {
-  padding: 8px 16px;
+  padding: var(--space-2) var(--space-4);
   border-radius: var(--radius-pill);
   color: var(--color-white);
   font-weight: 700;
@@ -424,8 +424,8 @@ textarea.form-control { display: block; padding: var(--space-3) var(--space-4); 
 .event-overlay-badge--neutral { background-color: var(--color-neutral-800); }
 
 /* Legacy class aliases — keep so existing HTML stays unbroken */
-.event-overlay-badge-error   { background-color: var(--color-error);       color: var(--color-white); padding: 8px 16px; border-radius: var(--radius-pill); font-weight: 700; }
-.event-overlay-badge-neutral { background-color: var(--color-neutral-800); color: var(--color-white); padding: 8px 16px; border-radius: var(--radius-pill); font-weight: 700; }
+.event-overlay-badge-error   { background-color: var(--color-error);       color: var(--color-white); padding: var(--space-2) var(--space-4); border-radius: var(--radius-pill); font-weight: 700; }
+.event-overlay-badge-neutral { background-color: var(--color-neutral-800); color: var(--color-white); padding: var(--space-2) var(--space-4); border-radius: var(--radius-pill); font-weight: 700; }
 
 .event-overlay-bg {
   background-color: rgba(255, 255, 255, 0.7);
@@ -444,18 +444,18 @@ textarea.form-control { display: block; padding: var(--space-3) var(--space-4); 
 .event-skeleton-card { height: 400px; }
 .event-icon-box      { width: 48px; height: 48px; }
 .event-spinner       { width: 48px; height: 48px; }
-.event-box-p24       { padding: 24px; }
-.event-box-p40       { padding: 40px; }
+.event-box-p24       { padding: var(--space-6); }
+.event-box-p40       { padding: var(--space-10); }
 
 .event-join-section {
   border-top: 1px solid var(--color-neutral-200);
-  padding-top: 32px;
+  padding-top: var(--space-8);
 }
-.event-join-status { padding: 12px 24px; }
+.event-join-status { padding: var(--space-3) var(--space-6); }
 .event-join-btn    { min-width: 200px; }
 
 .event-comment-textarea {
-  padding: 16px;
+  padding: var(--space-4);
   min-height: 100px;
   resize: vertical;
   outline: none;
@@ -674,7 +674,7 @@ textarea.form-control { display: block; padding: var(--space-3) var(--space-4); 
 @media (prefers-reduced-motion: reduce) { .onboarding-modal-content .onboarding-progress-fill { transition: none; } }
 
 /* Account navigation disclosure — shared by desktop and mobile */
-.header-authenticated .container { gap: var(--space-3); }
+.header-authenticated .page-container { gap: var(--space-3); }
 .header-profile-menu { position: relative; min-width: 0; margin-left: auto; }
 .header-profile-trigger { display: flex; align-items: center; gap: var(--space-2); min-height: 48px; max-width: 100%; padding: var(--space-1) var(--space-2); border: 1px solid transparent; border-radius: var(--radius-md); background: transparent; color: var(--color-white); cursor: pointer; }
 .header-profile-trigger:hover, .header-profile-trigger[aria-expanded="true"] { background: var(--color-neutral-800); }
@@ -701,7 +701,7 @@ textarea.form-control { display: block; padding: var(--space-3) var(--space-4); 
 .comment-image-previews:empty { display: none; }
 .comment-image-preview { position: relative; }
 .comment-image-preview img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: var(--radius-md); border: var(--border-subtle); }
-.comment-image-preview button { position: absolute; top: 4px; right: 4px; width: 44px; height: 44px; display: grid; place-items: center; border: var(--border-subtle); border-radius: var(--radius-pill); background: white; cursor: pointer; }
+.comment-image-preview button { position: absolute; top: var(--space-1); right: var(--space-1); width: 44px; height: 44px; display: grid; place-items: center; border: var(--border-subtle); border-radius: var(--radius-pill); background: white; cursor: pointer; }
 .comment-add-images { gap: var(--space-2); align-self: flex-start; }
 .comment-image-gallery { margin-top: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(120px, 240px)); }
 .comment-image-gallery img { width: 100%; height: 100%; aspect-ratio: 1; object-fit: cover; border-radius: var(--radius-md); border: var(--border-subtle); }
@@ -824,3 +824,65 @@ textarea.form-control { display: block; padding: var(--space-3) var(--space-4); 
 .event-create-btn { gap: var(--space-2); min-height: 48px; }
 .event-level-filter { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-4); }
 .event-level-filter .onboarding-pill-button { flex: none; padding-inline: var(--space-5); }
+
+/* Header journey layout: nav left, actions right; phones get a bottom tab bar */
+.header-member-actions { display: flex; align-items: center; gap: var(--space-3); margin-left: auto; min-width: 0; }
+.header-member-actions .header-profile-menu { margin-left: 0; }
+.header-log-btn { display: none; gap: var(--space-1); }
+.header-login { margin-left: auto; height: 40px; padding: 0 var(--space-4); }
+.header-login + .mobile-menu-btn { margin-left: var(--space-2); }
+.header-profile-upgrade { display: flex; align-items: center; gap: var(--space-3); min-height: 44px; padding: var(--space-3); border-radius: var(--radius-sm); color: var(--color-brand-700); text-decoration: none; font-weight: 600; }
+.header-profile-upgrade:hover { background: var(--color-brand-50); }
+@media (min-width: 1024px) {
+  .header-log-btn { display: inline-flex; }
+  .header-login { height: 44px; padding: 0 var(--space-6); }
+}
+
+.tabbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 60;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  align-items: end;
+  padding: var(--space-1) var(--space-2) max(var(--space-2), env(safe-area-inset-bottom));
+  border-top: 1px solid var(--color-neutral-800);
+  background: rgba(11, 11, 12, 0.96);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.tabbar-item { display: grid; justify-items: center; gap: 2px; min-height: 52px; padding-top: var(--space-2); color: var(--color-neutral-400); font-size: 11px; font-weight: 600; text-decoration: none; }
+.tabbar-item.is-active { color: var(--color-brand-400); }
+.tabbar-log {
+  justify-self: center;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  margin-top: calc(var(--space-5) * -1);
+  border: 4px solid var(--color-black);
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-brand-400), var(--color-brand-600));
+  color: var(--color-white);
+  box-shadow: 0 6px 20px rgba(255, 107, 0, 0.45);
+}
+body.has-tabbar { padding-bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom)); }
+@media (min-width: 1024px) {
+  .tabbar { display: none; }
+  body.has-tabbar { padding-bottom: 0; }
+}
+
+/* Icon Box — shared centered icon container (48×48, brand tint) */
+.icon-box {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  background: var(--color-brand-50);
+  color: var(--color-brand-600);
+  border-radius: var(--radius-md);
+}
+.event-list-card-badge { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }

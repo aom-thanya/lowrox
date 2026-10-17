@@ -1,4 +1,6 @@
 /* Buddies page — loaded with the Buddies route chunk only */
+/* In the components layer so Tailwind utilities can override it. */
+@layer components {
 
 .buddies-page { justify-content: flex-start; padding-top: var(--space-8); background: var(--color-neutral-50); }
 .buddies { display: grid; gap: var(--space-6); max-width: 1120px; }
@@ -29,7 +31,7 @@
 .buddy-goal { display: flex; align-items: center; gap: var(--space-2); font-weight: 600; font-size: 14px; }
 .buddy-goal svg { color: var(--color-brand-500); flex-shrink: 0; }
 .buddy-reasons { display: flex; flex-wrap: wrap; gap: var(--space-1); list-style: none; }
-.buddy-reasons li { display: inline-flex; align-items: center; gap: 4px; padding: 2px var(--space-2); border-radius: var(--radius-pill); background: var(--color-success-soft); color: #0F7A4F; font-size: 12px; font-weight: 600; }
+.buddy-reasons li { display: inline-flex; align-items: center; gap: var(--space-1); padding: 2px var(--space-2); border-radius: var(--radius-pill); background: var(--color-success-soft); color: #0F7A4F; font-size: 12px; font-weight: 600; }
 .buddy-bio { color: var(--color-neutral-600); font-size: 14px; }
 .buddy-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); margin-top: var(--space-1); }
 .buddy-actions .btn { flex: 1 1 140px; gap: var(--space-1); min-height: 44px; }
@@ -42,3 +44,4 @@
 @media (min-width: 1100px) { .buddies-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (prefers-reduced-motion: reduce) { .buddy-card { animation: none; transition: none; } }
 .buddies-tabs .onboarding-pill-button { flex: none; padding-inline: var(--space-5); }
+}

@@ -9,8 +9,8 @@ export default function FeedbackCard({
   return (
     <div className={`onboarding-feedback-card onboarding-fade-in ${className}`}>
       {title && (
-        <h4 className="font-bold mb-4 flex items-center gap-8">
-          {icon && <span className="text-[16px]">{icon}</span>}
+        <h4 className="font-bold mb-1 flex items-center gap-2">
+          {icon && <span className="text-base">{icon}</span>}
           {title}
         </h4>
       )}

@@ -20,7 +20,7 @@ export default function ChoiceCard({
     >
       {icon && <div className="choice-card-icon">{icon}</div>}
       {label && <div className="choice-card-label">{label}</div>}
-      {description && <div className="choice-card-description text-sm text-neutral-500 mt-4">{description}</div>}
+      {description && <div className="choice-card-description text-sm text-neutral-500 mt-1">{description}</div>}
       {children}
       {hasCheckMark && isSelected && (
         <div className="choice-card-check">

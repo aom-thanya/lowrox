@@ -127,8 +127,8 @@ export default function EventDetails() {
   if (error || !event) {
     return (
       <PageShell className="event-detail-page">
-          <div className="container max-w-3xl text-center py-20">
-            <h2 className="heading-3 mb-4">{error}</h2>
+          <div className="page-container max-w-3xl text-center py-20">
+            <h2 className="heading-3 mb-1">{error}</h2>
             {fromProfile && <Link to={fromProfile} state={{ restoreProfile: true }} className="btn btn-secondary btn-md">กลับโปรไฟล์</Link>}
             <button onClick={() => navigate('/events')} className="btn btn-primary btn-md mx-auto">
               ดูกิจกรรมทั้งหมด
@@ -153,7 +153,7 @@ export default function EventDetails() {
         />
       }
     >
-        <div className="container event-detail-container">
+        <div className="page-container event-detail-container">
           {/* Back Button */}
           <button 
             onClick={handleBack} 

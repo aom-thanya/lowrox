@@ -215,7 +215,7 @@ const StepHealth = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, isEditor
         options={options}
         value={current}
         onSelect={(opt) => handleTempChange(field, current.includes(opt) ? current.filter(val => val !== opt) : [...current, opt])}
-        className="gap-8"
+        className="gap-2"
       />
     );
   };
@@ -225,10 +225,10 @@ const StepHealth = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, isEditor
     const typeLabel = MAIN_OPTIONS.find(o => o.value === activeFormType)?.label;
 
     return (
-      <div className="onboarding-fade-in bg-brand-50 p-24 rounded-2xl mt-16">
-        <div className="flex justify-between items-center mb-24">
-          <h3 className="text-brand-600 font-bold text-[16px]">รายละเอียด: {typeLabel}</h3>
-          <button type="button" onClick={closeForm} className="bg-transparent border-none text-[20px] cursor-pointer text-neutral-500">✕</button>
+      <div className="onboarding-fade-in bg-brand-50 p-6 rounded-lg mt-4">
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-brand-600 font-bold text-base">รายละเอียด: {typeLabel}</h3>
+          <button type="button" onClick={closeForm} className="bg-transparent border-none text-xl cursor-pointer text-neutral-500">✕</button>
         </div>
 
         {activeFormType === 'injury' && (
@@ -236,16 +236,16 @@ const StepHealth = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, isEditor
             <FormSection label="มีอาการบริเวณไหน?" error={errors.concern_name}>
               {renderMultiSelectPills(INJURY_PARTS, tempConcern.concern_name || [], 'concern_name')}
               {tempConcern.concern_name?.includes('อื่น ๆ') && (
-                <input type="text" value={tempConcern.custom_concern_name} onChange={e => handleTempChange('custom_concern_name', e.target.value)} placeholder="ระบุบริเวณ" className={`w-full mt-16 bg-white ${errors.custom_concern_name ? 'input-error' : ''}`} />
+                <input type="text" value={tempConcern.custom_concern_name} onChange={e => handleTempChange('custom_concern_name', e.target.value)} placeholder="ระบุบริเวณ" className={`w-full mt-4 bg-white ${errors.custom_concern_name ? 'input-error' : ''}`} />
               )}
             </FormSection>
 
             <FormSection label="ตอนนี้อาการกระทบการออกกำลังกายแค่ไหน?" error={errors.restriction_level}>
-              <PillGroup options={RESTRICTION_LEVELS} value={tempConcern.restriction_level} onSelect={(value) => handleTempChange('restriction_level', value)} className="gap-8" />
+              <PillGroup options={RESTRICTION_LEVELS} value={tempConcern.restriction_level} onSelect={(value) => handleTempChange('restriction_level', value)} className="gap-2" />
             </FormSection>
 
             <FormSection label="มีอะไรที่อยากให้เราระวังเป็นพิเศษไหม? (Optional)">
-              <textarea value={tempConcern.restriction_note} onChange={e => handleTempChange('restriction_note', e.target.value)} placeholder="เช่น หลีกเลี่ยงการกระโดดหรือใช้แรงกดเข่า" rows={2} className="w-full p-[12px] border border-neutral-300 rounded-xl" />
+              <textarea value={tempConcern.restriction_note} onChange={e => handleTempChange('restriction_note', e.target.value)} placeholder="เช่น หลีกเลี่ยงการกระโดดหรือใช้แรงกดเข่า" rows={2} className="w-full p-3 border border-neutral-300 rounded-xl" />
             </FormSection>
           </>
         )}
@@ -257,11 +257,11 @@ const StepHealth = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, isEditor
             </FormSection>
 
             <FormSection label="มีข้อแนะนำหรือสิ่งที่ควรหลีกเลี่ยงไหม? (Optional)">
-              <textarea value={tempConcern.restriction_note} onChange={e => handleTempChange('restriction_note', e.target.value)} placeholder="เช่น ควรพักเมื่อมีอาการ หรือหลีกเลี่ยงกิจกรรมบางประเภท" rows={2} className="w-full p-[12px] border border-neutral-300 rounded-xl" />
+              <textarea value={tempConcern.restriction_note} onChange={e => handleTempChange('restriction_note', e.target.value)} placeholder="เช่น ควรพักเมื่อมีอาการ หรือหลีกเลี่ยงกิจกรรมบางประเภท" rows={2} className="w-full p-3 border border-neutral-300 rounded-xl" />
             </FormSection>
 
             <FormSection label="เรื่องนี้กระทบการออกกำลังกายแค่ไหน?" error={errors.restriction_level}>
-              <PillGroup options={RESTRICTION_LEVELS} value={tempConcern.restriction_level} onSelect={(value) => handleTempChange('restriction_level', value)} className="gap-8" />
+              <PillGroup options={RESTRICTION_LEVELS} value={tempConcern.restriction_level} onSelect={(value) => handleTempChange('restriction_level', value)} className="gap-2" />
             </FormSection>
           </>
         )}
@@ -273,7 +273,7 @@ const StepHealth = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, isEditor
             </FormSection>
 
             <FormSection label="มีสิ่งที่ต้องระวังจากยานี้ไหม? (Optional)">
-              <textarea value={tempConcern.restriction_note} onChange={e => handleTempChange('restriction_note', e.target.value)} placeholder="ระบุเฉพาะข้อมูลที่เกี่ยวข้องกับการออกกำลังกาย" rows={2} className="w-full p-[12px] border border-neutral-300 rounded-xl" />
+              <textarea value={tempConcern.restriction_note} onChange={e => handleTempChange('restriction_note', e.target.value)} placeholder="ระบุเฉพาะข้อมูลที่เกี่ยวข้องกับการออกกำลังกาย" rows={2} className="w-full p-3 border border-neutral-300 rounded-xl" />
             </FormSection>
           </>
         )}
@@ -282,16 +282,16 @@ const StepHealth = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, isEditor
           <FormSection label="มีอะไรที่ควรหลีกเลี่ยงหรือปรับให้คุณบ้าง?" error={errors.concern_name}>
             {renderMultiSelectPills(OTHER_RESTRICTIONS, tempConcern.concern_name || [], 'concern_name')}
             {tempConcern.concern_name?.includes('อื่น ๆ') && (
-              <input type="text" value={tempConcern.custom_concern_name} onChange={e => handleTempChange('custom_concern_name', e.target.value)} placeholder="ระบุสิ่งที่ควรระวัง" className={`w-full mt-16 bg-white ${errors.custom_concern_name ? 'input-error' : ''}`} />
+              <input type="text" value={tempConcern.custom_concern_name} onChange={e => handleTempChange('custom_concern_name', e.target.value)} placeholder="ระบุสิ่งที่ควรระวัง" className={`w-full mt-4 bg-white ${errors.custom_concern_name ? 'input-error' : ''}`} />
             )}
           </FormSection>
         )}
 
-        <hr className="border-none border-t border-brand-200 my-24" />
+        <hr className="border-none border-t border-brand-200 my-6" />
 
         {/* Active Status */}
         <FormSection label="เรื่องนี้ยังมีผลอยู่ตอนนี้ไหม?">
-          <PillGroup options={STATUS_OPTIONS} value={tempConcern.status} onSelect={(value) => handleTempChange('status', value)} className="gap-8" />
+          <PillGroup options={STATUS_OPTIONS} value={tempConcern.status} onSelect={(value) => handleTempChange('status', value)} className="gap-2" />
         </FormSection>
 
         {/* Dates */}
@@ -301,7 +301,7 @@ const StepHealth = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, isEditor
               + เพิ่มช่วงเวลาของอาการ (Optional)
             </button>
           ) : (
-            <div className="flex flex-wrap gap-16">
+            <div className="flex flex-wrap gap-4">
               <div className="flex-1 min-w-[120px]">
                 <label className="onboarding-label text-[13px] font-normal">เริ่มมีอาการเมื่อ</label>
                 <input type="date" value={tempConcern.start_date} onChange={e => handleTempChange('start_date', e.target.value)} className="w-full bg-white" max={new Date().toISOString().split("T")[0]} />
@@ -314,7 +314,7 @@ const StepHealth = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, isEditor
           )}
         </FormSection>
 
-        <div className="flex justify-end gap-12">
+        <div className="flex justify-end gap-3">
           <button type="button" className="btn btn-secondary btn-sm" onClick={closeForm}>ยกเลิก</button>
           <button type="button" className="btn btn-primary btn-sm" onClick={saveForm}>ยืนยัน</button>
         </div>
@@ -325,11 +325,11 @@ const StepHealth = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, isEditor
   const getSummaryCard = () => {
     if (concerns.length === 0) return null;
     return (
-      <FeedbackCard className="mt-24">
-        <h4 className="text-[13px] font-bold text-brand-600 mb-16 flex items-center">
-          <span className="text-[18px] mr-8">🛡️</span>สิ่งที่เราจะคำนึงถึง
+      <FeedbackCard className="mt-6">
+        <h4 className="text-[13px] font-bold text-brand-600 mb-4 flex items-center">
+          <span className="text-lg mr-2">🛡️</span>สิ่งที่เราจะคำนึงถึง
         </h4>
-        <div className="flex flex-col gap-16">
+        <div className="flex flex-col gap-4">
           {concerns.map((c, i) => {
             const typeLabel = MAIN_OPTIONS.find(o => o.value === c.concern_type)?.label;
             const nameStr = Array.isArray(c.concern_name) ?
@@ -338,15 +338,15 @@ const StepHealth = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, isEditor
             const levelLabel = RESTRICTION_LEVELS.find(l => l.value === c.restriction_level)?.label;
 
             return (
-              <div key={i} className={i < concerns.length - 1 ? 'border-b border-neutral-200 pb-16' : ''}>
+              <div key={i} className={i < concerns.length - 1 ? 'border-b border-neutral-200 pb-4' : ''}>
                 <div className="flex justify-between items-start">
                   <div>
-                    <div className="font-semibold text-[14px] text-neutral-800">
+                    <div className="font-semibold text-sm text-neutral-800">
                       {typeLabel} {nameStr ? ` — ${nameStr}` : ''}
                     </div>
-                    {levelLabel && <div className="text-[13px] text-neutral-600 mt-4">• {levelLabel}</div>}
-                    {c.restriction_note && <div className="text-[13px] text-neutral-600 mt-4">• {c.restriction_note}</div>}
-                    <div className="text-[13px] text-brand-500 mt-4">• {STATUS_MAPPING[c.status].label}</div>
+                    {levelLabel && <div className="text-[13px] text-neutral-600 mt-1">• {levelLabel}</div>}
+                    {c.restriction_note && <div className="text-[13px] text-neutral-600 mt-1">• {c.restriction_note}</div>}
+                    <div className="text-[13px] text-brand-500 mt-1">• {STATUS_MAPPING[c.status].label}</div>
                   </div>
                   <button type="button" onClick={() => openForm(c.concern_type, i)} className="bg-transparent border-none text-neutral-500 text-[13px] underline cursor-pointer">แก้ไข</button>
                 </div>
@@ -362,19 +362,19 @@ const StepHealth = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, isEditor
   const formContent = (
     <>
         <div className="onboarding-privacy-notice">
-          <span className="text-neutral-500 mr-12"><Lock size={24} /></span>
+          <span className="text-neutral-500 mr-3"><Lock size={24} /></span>
           <div>
             <p className="body-sm text-neutral-700 m-0 font-semibold">ข้อมูลนี้เป็นเรื่องส่วนตัว</p>
             <p className="text-sm text-neutral-600 mt-1">คุณเลือกบอกเฉพาะสิ่งที่สะดวกได้ และกลับมาแก้ไขภายหลังได้เสมอ</p>
           </div>
         </div>
         {submitError && (
-          <div className="error-message-area mb-24" role="alert">
+          <div className="error-message-area mb-6" role="alert">
             {submitError}
           </div>
         )}
         {errors.main && (
-          <div className="error-message-area mb-24" role="alert">
+          <div className="error-message-area mb-6" role="alert">
             {errors.main}
           </div>
         )}
@@ -390,10 +390,10 @@ const StepHealth = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, isEditor
                   key={opt.value}
                   isSelected={isSelected}
                   onClick={() => handleMainSelection(opt.value)}
-                  icon={<span className="flex items-center text-brand-500 mr-8">{opt.icon}</span>}
+                  icon={<span className="flex items-center text-brand-500 mr-2">{opt.icon}</span>}
                   label={<span className="text-[15px] font-semibold">{opt.label}</span>}
                   description={<span className="text-[13px] text-neutral-500">{opt.desc}</span>}
-                  className="p-16 items-center flex-row justify-start min-h-[80px]"
+                  className="p-4 items-center flex-row justify-start min-h-[80px]"
                 />
               );
             })}
@@ -404,16 +404,16 @@ const StepHealth = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, isEditor
 
           {/* Special states feedbacks */}
           {mainSelection.includes('none') && (
-            <FeedbackCard className="mt-24 bg-success-soft border border-success">
-              <p className="m-0 text-success font-semibold flex items-center gap-8">
-                <span className="text-[18px]">✅</span> พร้อมแล้ว เราจะใช้ข้อมูลที่มีเพื่อแนะนำจุดเริ่มต้นให้คุณ
+            <FeedbackCard className="mt-6 bg-success-soft border border-success">
+              <p className="m-0 text-success font-semibold flex items-center gap-2">
+                <span className="text-lg">✅</span> พร้อมแล้ว เราจะใช้ข้อมูลที่มีเพื่อแนะนำจุดเริ่มต้นให้คุณ
               </p>
             </FeedbackCard>
           )}
           {mainSelection.includes('unsure') && (
-            <FeedbackCard className="mt-24">
-              <p className="m-0 text-neutral-700 flex items-center gap-8">
-                <span className="text-brand-500 mr-8"><Info size={20} /></span> ไม่เป็นไร คุณกลับมาเพิ่มหรือแก้ไขข้อมูลนี้ใน Profile ได้ภายหลัง
+            <FeedbackCard className="mt-6">
+              <p className="m-0 text-neutral-700 flex items-center gap-2">
+                <span className="text-brand-500 mr-2"><Info size={20} /></span> ไม่เป็นไร คุณกลับมาเพิ่มหรือแก้ไขข้อมูลนี้ใน Profile ได้ภายหลัง
               </p>
             </FeedbackCard>
           )}
@@ -426,13 +426,13 @@ const StepHealth = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, isEditor
             <button
               type="button"
               onClick={() => openForm(mainSelection[0])}
-              className="mt-16 block w-full p-[12px] rounded-xl border border-dashed border-brand-400 bg-white text-brand-600 font-semibold cursor-pointer text-sm"
+              className="mt-4 block w-full p-3 rounded-xl border border-dashed border-brand-400 bg-white text-brand-600 font-semibold cursor-pointer text-sm"
             >
               + เพิ่มอีกเรื่อง
             </button>
           )}
 
-          <div className="onboarding-helper-text mt-32 text-center">
+          <div className="onboarding-helper-text mt-8 text-center">
             ⓘ Lowrox ใช้ข้อมูลนี้เพื่อปรับคำแนะนำเบื้องต้นเท่านั้น ไม่ใช่การวินิจฉัยหรือการรับรองความพร้อมทางการแพทย์
           </div>
         </div>
@@ -444,7 +444,7 @@ const StepHealth = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, isEditor
       isEditor={isEditor}
       illustration={step5Img}
       illustrationAlt="Lowrox safety check illustration"
-      title={<>ก่อนเริ่ม มีอะไรที่เราควรรู้ไหม? <ShieldAlert size={28} className="ml-8 text-brand-500" /></>}
+      title={<>ก่อนเริ่ม มีอะไรที่เราควรรู้ไหม? <ShieldAlert size={28} className="ml-2 text-brand-500" /></>}
       description="บอกเฉพาะเรื่องที่เกี่ยวข้องกับการออกกำลังกาย เพื่อให้คำแนะนำเหมาะกับคุณมากขึ้น"
       onPrev={onPrev}
       onNext={handleNext}

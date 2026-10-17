@@ -1,7 +1,7 @@
 import type { User } from '../types/models';
 import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { ChevronDown, Gauge, UserRound, Users, LogOut } from 'lucide-react';
+import { ChevronDown, Crown, Settings, UserRound, LogOut } from 'lucide-react';
 import Avatar from './common/Avatar';
 
 export default function ProfileMenu({ user, onLogout }: { user: User; onLogout: () => void }) {
@@ -36,9 +36,9 @@ export default function ProfileMenu({ user, onLogout }: { user: User; onLogout: 
       </button>
       {open && (
         <nav id="header-profile-links" className="header-profile-dropdown" aria-label="เมนูโปรไฟล์">
-          <NavLink to="/level" onClick={() => setOpen(false)}><Gauge size={20} aria-hidden="true" />เลเวลของฉัน</NavLink>
-          <NavLink to="/profile" onClick={() => setOpen(false)}><UserRound size={20} aria-hidden="true" />My Profile</NavLink>
-          <NavLink to="/buddies" onClick={() => setOpen(false)}><Users size={20} aria-hidden="true" />My Buddy</NavLink>
+          <NavLink to="/profile" end onClick={() => setOpen(false)}><UserRound size={20} aria-hidden="true" />โปรไฟล์ของฉัน</NavLink>
+          <NavLink to="/profile/settings" onClick={() => setOpen(false)}><Settings size={20} aria-hidden="true" />ตั้งค่าบัญชี</NavLink>
+          {user.tier !== 'premium' && <a href="/#plans" className="header-profile-upgrade" onClick={() => setOpen(false)}><Crown size={20} aria-hidden="true" />อัปเกรดเป็น Member</a>}
           <div className="header-profile-divider" />
           <button type="button" className="header-profile-logout" onClick={() => {
             setOpen(false);

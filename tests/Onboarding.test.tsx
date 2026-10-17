@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import Onboarding from '../src/pages/Onboarding';
 import { useAuth } from '../src/context/AuthContext';
 
@@ -16,75 +16,69 @@ vi.mock('../src/context/UnsavedChangesContext', () => ({
   }))
 }));
 
-// Mock the child steps because we want to test the flow, not the individual step DOMs deeply here.
-// But we actually need to test "prevent advancing to next step if validation fails".
-// So we can mock OnboardingModal or test it directly.
-// Let's mock the steps to just be forms that can be valid or invalid.
-vi.mock('../src/components/onboarding/StepBasicInfo', () => ({
-  default: ({ onNext }) => (
-    <div>
-      <button data-testid="mock-next-btn" onClick={onNext}>Next</button>
-    </div>
-  )
-}));
-
-vi.mock('../src/components/onboarding/StepFitnessLevel', () => ({
-  default: ({ onNext, onPrev }) => (
-    <div>
-      <button data-testid="mock-prev-btn" onClick={onPrev}>Prev</button>
-      <button data-testid="mock-next-btn" onClick={onNext}>Next</button>
-    </div>
-  )
-}));
-
-// We can just test that Onboarding handles Auth correctly and opens the modal.
-describe('Onboarding Page', () => {
+describe('Onboarding (3 quick steps)', () => {
   const updateOnboardingStatus = vi.fn();
+  const saveOnboardingData = vi.fn(async (data) => data);
 
   const renderOnboarding = (user) => {
-    vi.mocked(useAuth, { partial: true }).mockReturnValue({ user, updateOnboardingStatus });
+    vi.mocked(useAuth, { partial: true }).mockReturnValue({ user, updateOnboardingStatus, saveOnboardingData });
     return render(
-      <MemoryRouter>
-        <Onboarding />
+      <MemoryRouter initialEntries={['/onboarding']}>
+        <Routes>
+          <Route path="/onboarding" element={<Onboarding />} />
+          <Route path="/level" element={<div data-testid="level-page" />} />
+        </Routes>
       </MemoryRouter>
     );
   };
 
-  test('redirects to profile if onboarding is completed', () => {
-    const { container } = renderOnboarding({ onboardingStatus: 'completed' });
-    expect(container).toBeEmptyDOMElement(); // Redirects
+  beforeEach(() => vi.clearAllMocks());
+
+  test('redirects to the level page if onboarding is completed', () => {
+    renderOnboarding({ onboardingStatus: 'completed' });
+    expect(screen.getByTestId('level-page')).toBeInTheDocument();
   });
 
-  test('shows onboarding modal if not completed', () => {
+  test('shows the level on the first screen, then finishes in two taps', async () => {
     renderOnboarding({ onboardingStatus: 'not_started' });
-    expect(screen.getByText('1 / 5')).toBeInTheDocument();
+    expect(screen.getByText('1 / 3')).toBeInTheDocument();
+
+    // 5 km is preselected; typing the time reveals the level immediately.
+    fireEvent.change(screen.getByPlaceholderText('เช่น 35'), { target: { value: '35' } });
+    expect(screen.getByText('Intermediate')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'ไปต่อ →' }));
+
+    // One tap on a goal moves on.
+    fireEvent.click(await screen.findByRole('button', { name: /หาบัดดี้ลงแข่ง/ }));
+    expect(await screen.findByText('3 / 3')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /ไม่มี พร้อมลุย/ }));
+
+    await waitFor(() => expect(updateOnboardingStatus).toHaveBeenCalledWith('completed'));
+    const saved = saveOnboardingData.mock.calls[0][0];
+    expect(saved.fitnessLevel).toMatchObject({ runningDistance: '5', runningDuration: '35' });
+    expect(saved.goals[0].goalType).toBe('buddy_event');
+    expect(saved.safetyCheck).toEqual({ mainSelection: ['none'], concerns: [] });
+    expect(await screen.findByTestId('level-page')).toBeInTheDocument();
   });
 
-  test('can navigate between steps', async () => {
+  test('reported health concerns are saved', async () => {
     renderOnboarding({ onboardingStatus: 'not_started' });
-    
-    // Step 1
-    expect(screen.getByText('1 / 5')).toBeInTheDocument();
-    
-    // Click next
-    fireEvent.click(screen.getByTestId('mock-next-btn'));
-    
-    // Step 2
-    expect(screen.getByText('2 / 5')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'ยังไม่เคยจับเวลา' }));
+    fireEvent.click(screen.getByRole('button', { name: 'ข้ามไปก่อน →' }));
+    fireEvent.click(await screen.findByRole('button', { name: /ยังไม่แน่ใจ/ }));
 
-    // Click prev
-    fireEvent.click(screen.getByTestId('mock-prev-btn'));
+    fireEvent.click(await screen.findByRole('button', { name: /มี ขอบอกหน่อย/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'บาดเจ็บหรือปวด' }));
+    fireEvent.click(screen.getByRole('button', { name: /เสร็จแล้ว ดูเลเวลของฉัน/ }));
 
-    // Step 1 again
-    expect(screen.getByText('1 / 5')).toBeInTheDocument();
+    await waitFor(() => expect(saveOnboardingData).toHaveBeenCalled());
+    expect(saveOnboardingData.mock.calls[0][0].safetyCheck.concerns).toHaveLength(1);
   });
 
-  test('shows confirm dialog on exit attempt', async () => {
+  test('shows confirm dialog on exit attempt', () => {
     renderOnboarding({ onboardingStatus: 'not_started' });
-    
-    const closeBtn = screen.getByLabelText('Close onboarding');
-    fireEvent.click(closeBtn);
-    
+    fireEvent.click(screen.getByLabelText('Close onboarding'));
     expect(screen.getByText('จะพักก่อนใช่ไหม?')).toBeInTheDocument();
   });
 });

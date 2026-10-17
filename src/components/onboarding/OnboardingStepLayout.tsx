@@ -42,8 +42,8 @@ export default function OnboardingStepLayout({
             <div className="onboarding-illustration-container">
               <Image src={illustration} alt={illustrationAlt} className="onboarding-illustration" />
             </div>
-            <div className="onboarding-form-section mt-24">
-              <h2 className="display-sm mb-8">{title}</h2>
+            <div className="onboarding-form-section mt-6">
+              <h2 className="display-sm mb-2">{title}</h2>
               <p className="body-md text-neutral-600">{description}</p>
             </div>
           </div>
@@ -54,7 +54,7 @@ export default function OnboardingStepLayout({
           <div className="onboarding-fullwidth-header">
             <Image src={illustration} alt={illustrationAlt} />
             <div className="onboarding-text-align">
-              <h2 className="heading-2 mb-8 flex items-center">{title}</h2>
+              <h2 className="heading-2 mb-2 flex items-center">{title}</h2>
               <p className="body-md text-neutral-600">{description}</p>
             </div>
           </div>

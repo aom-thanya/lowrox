@@ -18,6 +18,7 @@ input, select, textarea, button {
 
 /* Typography */
 .display-lg { font-size: clamp(40px, 5vw, 64px); font-weight: 700; line-height: 1.1; }
+.display-sm { font-size: 28px; font-weight: 700; line-height: 1.25; }
 .display-md { font-size: clamp(34px, 4vw, 52px); font-weight: 700; line-height: 1.15; }
 .heading-1 { font-size: clamp(30px, 3.5vw, 44px); font-weight: 700; line-height: 1.2; }
 .heading-2 { font-size: clamp(26px, 3vw, 36px); font-weight: 700; line-height: 1.25; }

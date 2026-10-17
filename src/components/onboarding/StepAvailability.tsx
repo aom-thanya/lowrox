@@ -280,11 +280,11 @@ const StepAvailability = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, is
   const renderDayChip = (day: { value: string; label: string }, isSelected: boolean, onClick: () => void) => (
     <button
       type="button"
-      className={`onboarding-pill-button ${isSelected ? 'selected' : ''} w-[40px] h-[40px] min-w-[40px] p-0 rounded-full relative flex items-center justify-center flex-none`}
+      className={`onboarding-pill-button ${isSelected ? 'selected' : ''} w-10 h-10 min-w-10 p-0 rounded-full relative flex items-center justify-center flex-none`}
       onClick={onClick}
     >
       {isSelected && (
-        <div className="absolute top-[-4px] right-[-4px] w-16 h-16 rounded-full bg-brand-500 flex items-center justify-center text-white">
+        <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-brand-500 flex items-center justify-center text-white">
           <Check size={10} strokeWidth={3} />
         </div>
       )}
@@ -333,16 +333,16 @@ const StepAvailability = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, is
     }
 
     return (
-      <FeedbackCard className="mt-24">
-        <h4 className="text-[13px] font-bold text-brand-600 mb-12">
-          <span className="mr-8 text-brand-500"><Sparkles size={16} /></span>จังหวะที่เหมาะกับคุณ
+      <FeedbackCard className="mt-6">
+        <h4 className="text-[13px] font-bold text-brand-600 mb-3">
+          <span className="mr-2 text-brand-500"><Sparkles size={16} /></span>จังหวะที่เหมาะกับคุณ
         </h4>
-        <div className="flex flex-col gap-8">
-          {areaText && <div className="text-sm text-neutral-800 flex items-center"><MapPin size={16} className="text-brand-500 mr-8" /> {areaText}</div>}
-          {daysText && <div className="text-sm text-neutral-800 flex items-center mt-4"><CalendarIcon size={16} className="text-brand-500 mr-8" /> {daysText}</div>}
-          {timeText && <div className="text-sm text-neutral-800 flex items-center mt-4"><Clock size={16} className="text-brand-500 mr-8" /> {timeText}</div>}
+        <div className="flex flex-col gap-2">
+          {areaText && <div className="text-sm text-neutral-800 flex items-center"><MapPin size={16} className="text-brand-500 mr-2" /> {areaText}</div>}
+          {daysText && <div className="text-sm text-neutral-800 flex items-center mt-1"><CalendarIcon size={16} className="text-brand-500 mr-2" /> {daysText}</div>}
+          {timeText && <div className="text-sm text-neutral-800 flex items-center mt-1"><Clock size={16} className="text-brand-500 mr-2" /> {timeText}</div>}
         </div>
-        {freqText && <div className="text-sm text-neutral-500 mt-12 border-t border-neutral-200 pt-12">{freqText}</div>}
+        {freqText && <div className="text-sm text-neutral-500 mt-3 border-t border-neutral-200 pt-3">{freqText}</div>}
       </FeedbackCard>
     );
   };
@@ -351,7 +351,7 @@ const StepAvailability = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, is
   const formContent = (
     <>
         {submitError && (
-          <div className="error-message-area mb-24" role="alert">
+          <div className="error-message-area mb-6" role="alert">
             {submitError}
           </div>
         )}
@@ -360,16 +360,16 @@ const StepAvailability = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, is
           {windows.map((win, index) => (
             <div
               key={win.id}
-              className={`relative ${index < windows.length - 1 ? 'border-b border-dashed border-neutral-300 pb-32 mb-32' : ''}`}
+              className={`relative ${index < windows.length - 1 ? 'border-b border-dashed border-neutral-300 pb-8 mb-8' : ''}`}
             >
 
               {windows.length > 1 && (
-                <div className="flex justify-between items-center mb-16">
-                  <h3 className="text-[16px] font-bold text-brand-600">ช่วงเวลาที่ {index + 1}</h3>
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-base font-bold text-brand-600">ช่วงเวลาที่ {index + 1}</h3>
                   <button
                     type="button"
                     onClick={() => removeWindow(index)}
-                    className="bg-transparent border-none text-error-500 text-[14px] cursor-pointer underline"
+                    className="bg-transparent border-none text-error text-sm cursor-pointer underline"
                   >
                     ลบ
                   </button>
@@ -377,18 +377,18 @@ const StepAvailability = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, is
               )}
 
               {/* Area Input */}
-              <div className="mb-24">
-                <label className="flex items-center font-semibold mb-12">ปกติคุณสะดวกซ้อมแถวไหน? <MapPin size={20} className="ml-8" /></label>
+              <div className="mb-6">
+                <label className="flex items-center font-semibold mb-3">ปกติคุณสะดวกซ้อมแถวไหน? <MapPin size={20} className="ml-2" /></label>
                 <div className="relative onboarding-area-input">
-                  <span className="absolute left-16 top-1/2 -translate-y-1/2 text-neutral-400"><MapPin size={18} /></span>
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400"><MapPin size={18} /></span>
                   <input
                     type="text"
                     value={win.areaLabel}
                     onChange={(e) => updateWindow(index, 'areaLabel', e.target.value)}
-                    className={`w-full p-[12px_16px_12px_48px] bg-white ${showValidation && !win.area ? 'input-error' : ''}`}
+                    className={`w-full py-3 pr-4 pl-12 bg-white ${showValidation && !win.area ? 'input-error' : ''}`}
                   />
                 </div>
-                <div className="onboarding-helper-text mt-8">
+                <div className="onboarding-helper-text mt-2">
                   ใส่ชื่อย่านเช่น สวนลุมพินี, อารีย์, บางนา หรือเว้นว่างหากยังไม่กำหนด
                 </div>
               </div>
@@ -402,7 +402,7 @@ const StepAvailability = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, is
                   options={AREA_OPTIONS}
                   value={win.areaTypes}
                   onSelect={(value) => handleAreaTypeSelect(index, value)}
-                  className="gap-10"
+                  className="gap-2"
                   pillClassName="flex-none"
                 />
               </FormSection>
@@ -412,12 +412,12 @@ const StepAvailability = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, is
                 label="วันไหนที่คุณมักสะดวกซ้อม?"
                 error={errors[index]?.days}
               >
-                <div className="onboarding-pill-container gap-[10px] mb-16">
+                <div className="onboarding-pill-container gap-2 mb-4">
                   {DAY_PRESETS.map(opt => (
                     <button
                       key={opt.value}
                       type="button"
-                      className={`onboarding-pill-button p-[10px_16px] flex-none min-h-[44px] ${win.dayPreset === opt.value ? 'selected' : ''}`}
+                      className={`onboarding-pill-button px-4 py-2 flex-none min-h-11 ${win.dayPreset === opt.value ? 'selected' : ''}`}
                       onClick={() => {
                         updateWindow(index, 'dayPreset', opt.value);
                         clearError(index, 'days');
@@ -429,16 +429,16 @@ const StepAvailability = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, is
                 </div>
 
                 {win.dayPreset === 'custom' && (
-                  <div className="onboarding-fade-in mb-16">
-                    <div className="onboarding-pill-container gap-12">
+                  <div className="onboarding-fade-in mb-4">
+                    <div className="onboarding-pill-container gap-3">
                       {DAYS_OF_WEEK.map(day => renderDayChip(day, win.selectedDays.includes(day.value), () => handleDaySelect(index, day.value)))}
                     </div>
                   </div>
                 )}
 
                 {(win.dayPreset === 'weekdays' || win.dayPreset === 'weekends' || win.dayPreset === 'flexible') && (
-                  <div className="onboarding-fade-in mt-16 bg-neutral-50 p-16 rounded-xl">
-                    <label className="onboarding-label text-sm mb-12">อยากซ้อมประมาณกี่วันต่อสัปดาห์?</label>
+                  <div className="onboarding-fade-in mt-4 bg-neutral-50 p-4 rounded-xl">
+                    <label className="onboarding-label text-sm mb-3">อยากซ้อมประมาณกี่วันต่อสัปดาห์?</label>
                     <PillGroup
                       options={WEEKLY_FREQUENCY_OPTIONS.slice(0, win.dayPreset === 'weekends' ? 2 : (win.dayPreset === 'weekdays' ? 5 : 7))}
                       value={win.weeklyFrequency}
@@ -446,16 +446,16 @@ const StepAvailability = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, is
                         updateWindow(index, 'weeklyFrequency', value);
                         clearError(index, 'frequency');
                       }}
-                      className="gap-8"
+                      className="gap-2"
                       pillClassName="flex-none"
                     />
                     {errors[index]?.frequency && <div className="validation-message onboarding-error-text" role="alert">{errors[index].frequency}</div>}
-                    <div className="onboarding-helper-text mt-8">(ระบบจะช่วยกระจายวันซ้อมให้เหมาะสม)</div>
+                    <div className="onboarding-helper-text mt-2">(ระบบจะช่วยกระจายวันซ้อมให้เหมาะสม)</div>
                   </div>
                 )}
 
                 {win.dayPreset === 'custom' && win.selectedDays.length > 0 && (
-                  <div className="onboarding-helper-text mt-8">
+                  <div className="onboarding-helper-text mt-2">
                     คุณมีเวลาซ้อมประมาณ {win.selectedDays.length} วันต่อสัปดาห์
                   </div>
                 )}
@@ -470,32 +470,32 @@ const StepAvailability = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, is
                   options={TIME_OPTIONS_WITH_CUSTOM}
                   value={win.timePresets}
                   onSelect={(value) => handleTimeSelect(index, value)}
-                  className="gap-[10px] mb-16"
+                  className="gap-2 mb-4"
                   pillClassName="flex-none"
                 />
 
                 {win.timePresets.includes('custom') && (
-                  <div className="onboarding-fade-in bg-brand-50 p-16 rounded-xl">
-                    <div className="flex gap-16 items-center">
+                  <div className="onboarding-fade-in bg-brand-50 p-4 rounded-xl">
+                    <div className="flex gap-4 items-center">
                       <div>
-                        <label className="block text-[12px] font-semibold text-neutral-600 mb-4">ตั้งแต่เวลา</label>
-                        <input type="time" value={win.customTimeFrom} onChange={(e) => updateWindow(index, 'customTimeFrom', e.target.value)} className="p-[10px_16px] rounded-lg border border-neutral-300" />
+                        <label className="block text-xs font-semibold text-neutral-600 mb-1">ตั้งแต่เวลา</label>
+                        <input type="time" value={win.customTimeFrom} onChange={(e) => updateWindow(index, 'customTimeFrom', e.target.value)} className="px-4 py-2 rounded-sm border border-neutral-300" />
                       </div>
                       <div>
-                        <label className="block text-[12px] font-semibold text-neutral-600 mb-4">ถึงเวลา</label>
-                        <input type="time" value={win.customTimeTo} onChange={(e) => updateWindow(index, 'customTimeTo', e.target.value)} className="p-[10px_16px] rounded-lg border border-neutral-300" />
+                        <label className="block text-xs font-semibold text-neutral-600 mb-1">ถึงเวลา</label>
+                        <input type="time" value={win.customTimeTo} onChange={(e) => updateWindow(index, 'customTimeTo', e.target.value)} className="px-4 py-2 rounded-sm border border-neutral-300" />
                       </div>
                     </div>
                     {errors[index]?.customTimeFrom && <div className="validation-message onboarding-error-text" role="alert">{errors[index].customTimeFrom}</div>}
                     {errors[index]?.customTimeTo && <div className="validation-message onboarding-error-text" role="alert">{errors[index].customTimeTo}</div>}
                     {errors[index]?.customTimeOrder && <div className="validation-message onboarding-error-text" role="alert">{errors[index].customTimeOrder}</div>}
-                    <div className="onboarding-helper-text mt-8">หากเวลาข้ามเที่ยงคืน คุณสามารถเพิ่มภายหลังได้ใน Profile</div>
+                    <div className="onboarding-helper-text mt-2">หากเวลาข้ามเที่ยงคืน คุณสามารถเพิ่มภายหลังได้ใน Profile</div>
                   </div>
                 )}
               </FormSection>
 
               {/* Note */}
-              <div className="onboarding-form-section mb-16">
+              <div className="onboarding-form-section mb-4">
                 {!showNote[index] ? (
                   <button type="button" onClick={() => setShowNote({ ...showNote, [index]: true })} className="bg-transparent border-none text-brand-600 font-semibold cursor-pointer text-sm underline">
                     มีข้อจำกัดเรื่องเวลาเพิ่มเติมไหม?
@@ -509,9 +509,9 @@ const StepAvailability = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, is
                         if (e.target.value.length <= 500) updateWindow(index, 'note', e.target.value);
                       }}
                       placeholder="เช่น สะดวกเฉพาะหลังเลิกงาน หรือเวลาอาจเปลี่ยนในแต่ละสัปดาห์"
-                      className={`w-full p-12 border rounded-xl ${win.note.length > 400 ? 'border-error-500' : 'border-neutral-300'}`}
+                      className={`w-full p-3 border rounded-xl ${win.note.length > 400 ? 'border-error' : 'border-neutral-300'}`}
                     />
-                    <div className={`text-right text-[12px] mt-4 ${win.note.length > 400 ? 'text-error-500' : 'text-neutral-500'}`}>
+                    <div className={`text-right text-xs mt-1 ${win.note.length > 400 ? 'text-error' : 'text-neutral-500'}`}>
                       {win.note.length}/500
                     </div>
                   </div>
@@ -524,7 +524,7 @@ const StepAvailability = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, is
           {windows.length < 3 && (
             <button
               type="button"
-              className="btn btn-secondary w-full border-dashed flex items-center justify-center gap-8 mt-8"
+              className="btn btn-secondary w-full border-dashed flex items-center justify-center gap-2 mt-2"
               onClick={addWindow}
             >
               <Plus size={16} /> เพิ่มอีกช่วงเวลา
@@ -541,7 +541,7 @@ const StepAvailability = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, is
       isEditor={isEditor}
       illustration={step4Img}
       illustrationAlt="Lowrox training availability illustration"
-      title={<>จังหวะไหนเข้ากับชีวิตคุณ? <CalendarIcon size={28} className="ml-8" /></>}
+      title={<>จังหวะไหนเข้ากับชีวิตคุณ? <CalendarIcon size={28} className="ml-2" /></>}
       description="เลือกช่วงที่มักสะดวก เราจะช่วยหา Buddy และ Training Party ที่เข้ากับคุณ"
       onPrev={onPrev}
       onNext={handleNext}

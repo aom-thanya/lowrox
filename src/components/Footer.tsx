@@ -8,7 +8,7 @@ export default function Footer() {
 
   return (
     <footer className="footer">
-      <div className="container">
+      <div className="page-container">
         <div className="footer-top">
           <div className="footer-brand">
             <Link to="/" className="logo" aria-label="Lowrox homepage">

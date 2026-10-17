@@ -183,7 +183,7 @@ const StepFitnessLevel = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, is
           label="ครั้งล่าสุด คุณวิ่งได้ประมาณเท่าไร?"
           error={displayValidation && errors.distance}
         >
-          <div className="choice-cards-container flex-wrap mt-12">
+          <div className="choice-cards-container flex-wrap mt-3">
             {DISTANCE_OPTIONS.map(opt => {
               const isSelected = distSelect === opt.value;
               return (
@@ -196,7 +196,7 @@ const StepFitnessLevel = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, is
                     if (displayValidation) validate();
                   }}
                   label={opt.label}
-                  className="flex-1 min-w-[120px] p-[16px_32px]"
+                  className="flex-1 min-w-[120px] px-8 py-4"
                 />
               );
             })}
@@ -207,9 +207,9 @@ const StepFitnessLevel = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, is
           <FormSection
             label="ระยะทางโดยประมาณ"
             htmlFor="customDist"
-            className="mt-[-16px]"
+            className="-mt-4"
           >
-            <InputWrapper suffix="กม." className="max-w-[200px] mt-8">
+            <InputWrapper suffix="กม." className="max-w-[200px] mt-2">
               <input
                 type="number"
                 id="customDist"
@@ -222,7 +222,7 @@ const StepFitnessLevel = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, is
                 step="0.01"
                 min="0.01"
                 max="999.99"
-                className={`w-full pr-48 appearance-none ${displayValidation && errors.distance ? 'input-error' : ''}`}
+                className={`w-full pr-12 appearance-none ${displayValidation && errors.distance ? 'input-error' : ''}`}
               />
             </InputWrapper>
           </FormSection>
@@ -236,7 +236,7 @@ const StepFitnessLevel = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, is
             error={displayValidation && errors.duration}
             className="onboarding-fade-in"
           >
-            <div className="choice-cards-container flex-wrap mt-12">
+            <div className="choice-cards-container flex-wrap mt-3">
               {DURATION_OPTIONS.map(opt => {
                 const isSelected = durSelect === opt.value;
                 return (
@@ -248,7 +248,7 @@ const StepFitnessLevel = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, is
                       if (displayValidation) validate();
                     }}
                     label={opt.label}
-                    className="flex-[1_0_45%] min-w-[140px] p-[16px_32px]"
+                    className="flex-[1_0_45%] min-w-[140px] px-8 py-4"
                   />
                 );
               })}
@@ -257,7 +257,7 @@ const StepFitnessLevel = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, is
         )}
 
         {durSelect === 'custom' && (
-          <div className="onboarding-form-section mt-[-16px]">
+          <div className="onboarding-form-section -mt-4">
             <DurationInput
               idPrefix="custom"
               hours={customHrs}
@@ -285,20 +285,20 @@ const StepFitnessLevel = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, is
 
         {exactDist > 0 && exactDur > 0 && paceStr && (
           <FeedbackCard>
-            <h4 className="text-sm font-semibold text-neutral-600 mb-8 uppercase">จุดเริ่มต้นของคุณ</h4>
-            <div className="flex gap-24 items-baseline mb-12">
+            <h4 className="text-sm font-semibold text-neutral-600 mb-2 uppercase">จุดเริ่มต้นของคุณ</h4>
+            <div className="flex gap-6 items-baseline mb-3">
               <div>
                 <div className="text-[28px] font-bold text-brand-600 leading-none">
-                  {exactDist} <span className="text-[16px] font-semibold">กม.</span>
+                  {exactDist} <span className="text-base font-semibold">กม.</span>
                 </div>
               </div>
               <div>
                 <div className="text-[28px] font-bold text-brand-600 leading-none">
-                  {exactDur} <span className="text-[16px] font-semibold">นาที</span>
+                  {exactDur} <span className="text-base font-semibold">นาที</span>
                 </div>
               </div>
             </div>
-            <div className="text-[16px] font-semibold mb-8">
+            <div className="text-base font-semibold mb-2">
               Pace โดยประมาณ {paceStr} นาที/กม. (ความเร็ว {speedStr} กม./ชม.)
             </div>
             <p className="text-sm text-neutral-700">ดีเลย เราเริ่มเห็นจังหวะของคุณแล้ว</p>
@@ -312,7 +312,7 @@ const StepFitnessLevel = forwardRef<StepHandle, StepProps>(({ onNext, onPrev, is
       isEditor={isEditor}
       illustration={step2Img}
       illustrationAlt="Lowrox current pace illustration"
-      title={<><Activity size={28} className="mr-8 text-brand-500" />สถิติปัจจุบันของคุณ</>}
+      title={<><Activity size={28} className="mr-2 text-brand-500" />สถิติปัจจุบันของคุณ</>}
       description="ไม่ต้องเป็นสถิติที่ดีที่สุด เลือกครั้งที่ใกล้เคียงกับคุณที่สุดได้เลย"
       onPrev={onPrev}
       onNext={handleNext}

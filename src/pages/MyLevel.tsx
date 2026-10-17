@@ -1,5 +1,5 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { ArrowRight, Flame, Handshake, X } from 'lucide-react';
 import PageShell from '../components/common/PageShell';
 import Sparkles from '../components/common/Sparkles';
@@ -28,11 +28,21 @@ export default function MyLevel() {
   const { user } = useAuth();
   const location = useLocation();
   const { workouts, summary, hasHealthConcerns, logWorkout, removeWorkout } = useMyLevel();
-  const [logOpen, setLogOpen] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [logOpen, setLogOpen] = useState(searchParams.get('log') === '1');
   const [levelUp, setLevelUp] = useState<{ from: Level | null; to: Level } | null>(null);
   const [toast, setToast] = useState('');
   const [doneIds, setDoneIds] = useState(() => (user ? readPlanDone(user.id) : []));
   const dismissToast = useCallback(() => setToast(''), []);
+
+  // The header's "บันทึกการวิ่ง" links here with ?log=1; open the sheet and drop the flag from the URL.
+  useEffect(() => {
+    if (searchParams.get('log') !== '1') return;
+    setLogOpen(true);
+    const next = new URLSearchParams(searchParams);
+    next.delete('log');
+    setSearchParams(next, { replace: true });
+  }, [searchParams, setSearchParams]);
 
   const sessions = useMemo(() => buildWeeklyPlan(summary, hasHealthConcerns), [summary, hasHealthConcerns]);
   const name = user?.displayName || user?.username || 'นักวิ่ง';
@@ -52,7 +62,7 @@ export default function MyLevel() {
 
   return (
     <PageShell className="level-page">
-      <div className="container level-container">
+      <div className="page-container level-container">
         {levelUp && (
           <div className="level-up" role="status">
             <Sparkles points={CELEBRATE_SPARKLES} />

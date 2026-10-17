@@ -12,9 +12,9 @@ export default function CommentList({ comments, isLoading }: { comments: Comment
     return (
       <div className="event-comment-list">
         {[1, 2].map(i => (
-          <div key={i} className="flex gap-4 animate-pulse">
-            <div className="w-10 h-10 rounded-full bg-neutral-200 flex-shrink-0"></div>
-            <div className="flex-grow flex flex-col gap-8">
+          <div key={i} className="flex gap-1 animate-pulse">
+            <div className="w-10 h-10 rounded-full bg-neutral-200 shrink-0"></div>
+            <div className="grow flex flex-col gap-2">
               <div className="h-4 bg-neutral-200 rounded w-1/4"></div>
               <div className="h-4 bg-neutral-200 rounded w-3/4"></div>
             </div>
@@ -37,7 +37,7 @@ export default function CommentList({ comments, isLoading }: { comments: Comment
       {gallery && <CommentGallery images={gallery.images} initialIndex={gallery.index} returnFocus={gallery.trigger} onClose={() => setGallery(null)} />}
       {comments.map(comment => (
         <div key={comment.id} className="event-comment-item">
-          <Link to={`/users/${comment.userId}`} className="public-member-avatar" aria-label={`ดูโปรไฟล์ ${comment.userDisplayName}`}><Avatar src={comment.userAvatarUrl} size="small" className="flex-shrink-0" /></Link>
+          <Link to={`/users/${comment.userId}`} className="public-member-avatar" aria-label={`ดูโปรไฟล์ ${comment.userDisplayName}`}><Avatar src={comment.userAvatarUrl} size="small" className="shrink-0" /></Link>
           <div className="event-comment-content">
             <div className="event-comment-meta">
               <Link to={`/users/${comment.userId}`} className="public-member-link font-medium">{comment.userDisplayName}</Link>

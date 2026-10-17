@@ -100,7 +100,7 @@ export default function Buddies() {
 
   return (
     <PageShell className="buddies-page">
-      <div className="container buddies">
+      <div className="page-container buddies">
         <header className="buddies-head">
           <h1 className="heading-2">บัดดี้ที่เข้ากับคุณ</h1>
           <p>เราจับคู่จากเลเวล เป้าหมาย เวลาว่าง และพื้นที่ที่คุณบอกไว้ เรียงจากเข้ากันมากที่สุด</p>

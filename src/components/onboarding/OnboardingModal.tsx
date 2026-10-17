@@ -2,18 +2,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import Image from '../common/Image';
 import { OnboardingProvider, useOnboarding } from '../../context/OnboardingContext';
 import { useAuth } from '../../context/AuthContext';
-import StepBasicInfo from './StepBasicInfo';
-import StepFitnessLevel from './StepFitnessLevel';
-import StepGoals from './StepGoals';
-import StepAvailability from './StepAvailability';
-import StepHealth from './StepHealth';
-import StepReview from './StepReview';
+import type { OnboardingData } from '../../types/models';
+import { QuickGoalStep, QuickRunStep, QuickSafetyStep } from './QuickSteps';
 import logoImg from '../../assets/logo-64.png';
 import ExitConfirmationModal from './ExitConfirmationModal';
 import Modal from '../common/Modal';
 
 function OnboardingContent({ onClose, onComplete, redirectDestination }: { onClose: () => void; onComplete?: () => void; redirectDestination: string }) {
-  const { currentStep, nextStep, prevStep, formData } = useOnboarding();
+  const { currentStep, formData } = useOnboarding();
   const { saveOnboardingData } = useAuth();
   const [showExitConfirm, setShowExitConfirm] = useState(false);
   const stepRegion = useRef<HTMLDivElement | null>(null);
@@ -37,12 +33,14 @@ function OnboardingContent({ onClose, onComplete, redirectDestination }: { onClo
   };
 
   // Save the answers to the account; the first level is computed from them.
-  const handleSubmit = async () => {
-    await saveOnboardingData(formData);
+  // `latest` carries the final step's answers, which aren't in formData until the next render.
+  const handleSubmit = async (latest: Partial<OnboardingData> = {}) => {
+    await saveOnboardingData({ ...formData, ...latest });
     onComplete?.();
   };
 
-  const progressPercentage = ((currentStep - 1) / 5) * 100;
+  const TOTAL_STEPS = 3;
+  const progressPercentage = (currentStep / TOTAL_STEPS) * 100;
 
   return (
     <>
@@ -50,24 +48,21 @@ function OnboardingContent({ onClose, onComplete, redirectDestination }: { onClo
         <div className="onboarding-modal-header">
           <div className="onboarding-header-top">
             <Image src={logoImg} alt="LOWROX" className="onboarding-logo" loading="eager" />
-            <div className="onboarding-step-text mr-32">{currentStep <= 5 ? `${currentStep} / 5` : 'ตรวจสอบข้อมูล'}</div>
+            <div className="onboarding-step-text mr-8">{`${Math.min(currentStep, TOTAL_STEPS)} / ${TOTAL_STEPS}`}</div>
           </div>
           <div className="onboarding-progress-bar">
             <div className="onboarding-progress-fill" style={{ width: `${progressPercentage}%` }}></div>
           </div>
-          <button className="modal-close-btn top-[24px] right-[24px]" onClick={handleCloseAttempt} aria-label="Close onboarding">
+          <button className="modal-close-btn top-6 right-6" onClick={handleCloseAttempt} aria-label="Close onboarding">
             &times;
           </button>
         </div>
 
         <div className="onboarding-step-region" ref={stepRegion}>
         {/* Each step shares a scrollable body and a fixed footer. */}
-        {currentStep === 1 && <StepBasicInfo onNext={nextStep} />}
-        {currentStep === 2 && <StepFitnessLevel onNext={nextStep} onPrev={prevStep} />}
-        {currentStep === 3 && <StepGoals onNext={nextStep} onPrev={prevStep} />}
-        {currentStep === 4 && <StepAvailability onNext={nextStep} onPrev={prevStep} />}
-        {currentStep === 5 && <StepHealth onNext={nextStep} onPrev={prevStep} />}
-        {currentStep === 6 && <StepReview onPrev={prevStep} onSubmit={handleSubmit} redirectDestination={redirectDestination} />}
+        {currentStep === 1 && <QuickRunStep />}
+        {currentStep === 2 && <QuickGoalStep />}
+        {currentStep >= 3 && <QuickSafetyStep onFinish={handleSubmit} />}
         </div>
       </Modal>
 

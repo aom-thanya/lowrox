@@ -15,7 +15,7 @@ export default function PillButton({
       onClick={onClick}
     >
       {hasCheck && isSelected && (
-        <div className="w-[18px] h-[18px] rounded-full bg-brand-500 flex items-center justify-center text-white shrink-0 mr-8">
+        <div className="w-4.5 h-4.5 rounded-full bg-brand-500 flex items-center justify-center text-white shrink-0 mr-2">
           <Check size={12} strokeWidth={3} />
         </div>
       )}
