@@ -4,7 +4,10 @@ import { useSearchParams } from 'react-router-dom';
 import PageShell from '../components/common/PageShell';
 import EventCard from '../components/events/EventCard';
 import { getEvents } from '../services/eventRepository';
-import { Search } from 'lucide-react';
+import { Plus, Search } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { useMyLevel } from '../hooks/useMyLevel';
 
 export default function EventList() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -15,6 +18,9 @@ export default function EventList() {
   const query = searchParams.get('q') || '';
   const type = searchParams.get('type') || '';
   const area = searchParams.get('area') || '';
+  const level = searchParams.get('level') || '';
+  const { user } = useAuth();
+  const { summary } = useMyLevel();
   
   // Local state for the filter form so it doesn't update URL on every keystroke
   const [formQuery, setFormQuery] = useState(query);
@@ -32,7 +38,7 @@ export default function EventList() {
     const fetchEvents = async () => {
       setIsLoading(true);
       try {
-        const data = await getEvents({ query, type, area });
+        const data = await getEvents({ query, type, area, level });
         if (isMounted) {
           setEvents(data);
         }
@@ -48,7 +54,7 @@ export default function EventList() {
     return () => {
       isMounted = false;
     };
-  }, [query, type, area]);
+  }, [query, type, area, level]);
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -57,6 +63,7 @@ export default function EventList() {
     if (formQuery) newParams.set('q', formQuery);
     if (formType) newParams.set('type', formType);
     if (formArea) newParams.set('area', formArea);
+    if (level) newParams.set('level', level);
     
     setSearchParams(newParams);
   };
@@ -71,10 +78,30 @@ export default function EventList() {
   return (
     <PageShell className="event-list-page">
         <div className="container event-list-container">
-          <div className="event-list-heading">
-            <h1 className="heading-2">กิจกรรม</h1>
-            <p className="body-lg text-neutral-600">หากิจกรรมที่สนใจ แล้วไปออกกำลังกายด้วยกัน</p>
+          <div className="event-list-heading event-list-heading-row">
+            <div>
+              <h1 className="heading-2">กิจกรรม</h1>
+              <p className="body-lg text-neutral-600">หาตี้ซ้อมที่สนใจ หรือเปิดตี้เองแล้วรอคนเลเวลใกล้กันมาจอย</p>
+            </div>
+            <Link to="/parties/new" className="btn btn-primary btn-md btn-cta event-create-btn"><Plus size={18} /> ตั้งหัวตี้</Link>
           </div>
+
+          {user && summary && (
+            <div className="event-level-filter">
+              <button
+                type="button"
+                className={`onboarding-pill-button${level ? ' selected' : ''}`}
+                aria-pressed={Boolean(level)}
+                onClick={() => {
+                  const next = new URLSearchParams(searchParams);
+                  if (level) next.delete('level'); else next.set('level', summary.level.id);
+                  setSearchParams(next);
+                }}
+              >
+                ตี้เลเวลของฉัน ({summary.level.label})
+              </button>
+            </div>
+          )}
           
           {/* Filters */}
           <div className="event-filter-panel">

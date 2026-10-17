@@ -17,6 +17,9 @@ const Settings = React.lazy(() => import('./pages/Settings'));
 const EventList = React.lazy(() => import('./pages/EventList'));
 const EventDetails = React.lazy(() => import('./pages/EventDetails'));
 const UserProfile = React.lazy(() => import('./pages/UserProfile'));
+const MyLevel = React.lazy(() => import('./pages/MyLevel'));
+const PartyCreate = React.lazy(() => import('./pages/PartyCreate'));
+const Buddies = React.lazy(() => import('./pages/Buddies'));
 import './style.css';
 
 const router = createBrowserRouter(createRoutesFromElements(
@@ -25,7 +28,6 @@ const router = createBrowserRouter(createRoutesFromElements(
           <Route path="/events" element={<EventList />} />
           <Route path="/users/:userId" element={<UserProfile />} />
           <Route path="/events/:eventId" element={<EventDetails />} />
-          <Route path="/buddies" element={<Navigate to="/events" replace />} />
 
           <Route element={<PublicRoute />}>
             <Route path="/login" element={<Login />} />
@@ -33,6 +35,12 @@ const router = createBrowserRouter(createRoutesFromElements(
 
           <Route element={<ProtectedRoute requireOnboardingComplete={false} />}>
             <Route path="/onboarding" element={<Onboarding />} />
+          </Route>
+
+          <Route element={<ProtectedRoute requireOnboardingComplete />}>
+            <Route path="/level" element={<MyLevel />} />
+            <Route path="/parties/new" element={<PartyCreate />} />
+            <Route path="/buddies" element={<Buddies />} />
           </Route>
 
           <Route element={<ProtectedRoute />}>

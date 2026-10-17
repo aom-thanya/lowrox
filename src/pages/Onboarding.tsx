@@ -9,20 +9,20 @@ export default function Onboarding() {
   const { user, updateOnboardingStatus } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const redirectDestination = location.state?.redirectOnComplete || '/profile';
+  const redirectDestination = location.state?.redirectOnComplete || '/level';
   
   // Ensure we open the modal as soon as this page is rendered if onboarding is not started.
   const [isModalOpen, setIsModalOpen] = useState(true);
 
-  // If user is already completed onboarding, redirect them to profile.
+  // If user is already completed onboarding, send them to their level.
   if (user && user.onboardingStatus === 'completed') {
-    return <Navigate to="/profile" replace />;
+    return <Navigate to="/level" replace />;
   }
 
   const handleComplete = () => {
     setIsModalOpen(false);
     updateOnboardingStatus('completed');
-    navigate(redirectDestination, { replace: true });
+    navigate(redirectDestination, { replace: true, state: { fromOnboarding: true } });
   };
 
   const handleClose = () => {

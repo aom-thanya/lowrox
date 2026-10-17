@@ -7,6 +7,7 @@ import ContentCard from '../common/ContentCard';
 import { eventStatusLabel } from '../../utils/eventVisibility';
 import Badge from '../common/Badge';
 import { formatDateTimeShort } from '../../utils/formatDate';
+import { LEVELS } from '../../utils/leveling';
 
 export default function EventCard({ event, navigationState, onNavigate }: { event: EventRecord; navigationState?: Record<string, unknown>; onNavigate?: () => void }) {
   return (
@@ -22,6 +23,7 @@ export default function EventCard({ event, navigationState, onNavigate }: { even
       <div className="event-list-card-body">
         <div className="event-list-card-badge">
           <Badge variant="neutral">{event.type}</Badge>
+          {event.isParty && <span className="level-chip" data-level={event.levelId ?? 'all'}>{event.levelId && event.levelId !== 'all' ? LEVELS.find(level => level.id === event.levelId)?.label : 'ทุกเลเวล'}</span>}
         </div>
         
         <h2 className="heading-4 event-list-card-title text-clamp-2"><Link to={`/events/${event.id}`} state={navigationState} onClick={onNavigate}>{event.title}</Link></h2>

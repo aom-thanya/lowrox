@@ -164,15 +164,6 @@
 .chip-safety { bottom: -4px; right: 4%; animation: home-float 6s 1.2s ease-in-out infinite; display: none; }
 .chip-safety svg { color: var(--color-success); }
 
-/* Sparkles */
-.home-sparkles { position: absolute; inset: 0; pointer-events: none; }
-.home-sparkle {
-  position: absolute;
-  fill: var(--color-brand-300);
-  filter: drop-shadow(0 0 6px rgba(255, 173, 92, 0.9));
-  animation: home-twinkle 2.6s ease-in-out infinite both;
-}
-
 /* ---------- Ticker ---------- */
 .home-ticker {
   position: relative;
@@ -341,10 +332,6 @@
 @keyframes home-rise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
 @keyframes home-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 @keyframes home-pulse { 0%, 100% { opacity: 0.7; transform: scale(1); } 50% { opacity: 1; transform: scale(1.08); } }
-@keyframes home-twinkle {
-  0%, 100% { opacity: 0; transform: scale(0.3) rotate(0deg); }
-  50% { opacity: 1; transform: scale(1) rotate(90deg); }
-}
 @keyframes home-shimmer { from { background-position: 100% 0; } to { background-position: -150% 0; } }
 @keyframes home-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 @keyframes home-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
@@ -380,5 +367,4 @@
 @media (prefers-reduced-motion: reduce) {
   .home-main *, .home-main *::before, .home-main *::after { animation: none !important; transition: none !important; }
   .home-reveal { opacity: 1; transform: none; }
-  .home-sparkle { opacity: 0.8; }
 }

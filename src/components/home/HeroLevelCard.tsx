@@ -1,6 +1,6 @@
 import React from 'react';
 import { Flame, Handshake, ShieldCheck, TrendingUp } from 'lucide-react';
-import Sparkles from './Sparkles';
+import Sparkles from '../common/Sparkles';
 
 const HERO_SPARKLES = [
   { top: '2%', left: '12%', size: 18, delay: 0 },

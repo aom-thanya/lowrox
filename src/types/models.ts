@@ -119,10 +119,16 @@ export interface EventRecord {
   capacity?: number;
   participantCount?: number;
   registrationClosed?: boolean;
+  // Parties (ตี้ซ้อม) are member-hosted events with in-app joining.
+  isParty?: boolean;
+  levelId?: PartyLevel;
+  participants?: PartyParticipant[];
   deletedAt?: string;
   deleted_at?: string;
   isDeleted?: boolean;
 }
+export type PartyLevel = 'beginner' | 'intermediate' | 'advanced' | 'elite' | 'all';
+export interface PartyParticipant { id: UserId; name: string; levelId?: PartyLevel }
 export interface CommentImage { id: string; name: string; url: string; width: number; height: number }
 export interface CommentRecord {
   id: string;

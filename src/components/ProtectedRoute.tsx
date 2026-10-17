@@ -23,7 +23,7 @@ export function ProtectedRoute({ requireOnboardingComplete = null }: { requireOn
   }
 
   if (requireOnboardingComplete === false && onboardingStatus === 'completed') {
-    return <Navigate to="/profile" replace />;
+    return <Navigate to="/level" replace />;
   }
 
   return <Outlet />;

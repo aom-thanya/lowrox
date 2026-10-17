@@ -10,7 +10,7 @@ export default function LoginModal({ isOpen, onClose, redirectOnComplete }: { is
   const handleSuccess = (user: User) => {
     onClose();
     if (redirectOnComplete || user.onboardingStatus === 'completed') {
-      navigate(redirectOnComplete || '/profile');
+      navigate(redirectOnComplete || '/level');
     } else {
       navigate('/onboarding');
     }

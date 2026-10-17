@@ -1,7 +1,7 @@
 import type { User } from '../types/models';
 import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { ChevronDown, UserRound, Users, LogOut } from 'lucide-react';
+import { ChevronDown, Gauge, UserRound, Users, LogOut } from 'lucide-react';
 import Avatar from './common/Avatar';
 
 export default function ProfileMenu({ user, onLogout }: { user: User; onLogout: () => void }) {
@@ -36,8 +36,9 @@ export default function ProfileMenu({ user, onLogout }: { user: User; onLogout: 
       </button>
       {open && (
         <nav id="header-profile-links" className="header-profile-dropdown" aria-label="เมนูโปรไฟล์">
+          <NavLink to="/level" onClick={() => setOpen(false)}><Gauge size={20} aria-hidden="true" />เลเวลของฉัน</NavLink>
           <NavLink to="/profile" onClick={() => setOpen(false)}><UserRound size={20} aria-hidden="true" />My Profile</NavLink>
-          <NavLink to="/my-buddies" onClick={() => setOpen(false)}><Users size={20} aria-hidden="true" />My Buddy</NavLink>
+          <NavLink to="/buddies" onClick={() => setOpen(false)}><Users size={20} aria-hidden="true" />My Buddy</NavLink>
           <div className="header-profile-divider" />
           <button type="button" className="header-profile-logout" onClick={() => {
             setOpen(false);

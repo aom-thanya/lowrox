@@ -1,8 +1,9 @@
 import type { EventRecord, User, UserId } from '../types/models';
 import { isPublicEvent, eventHasEnded, selectHostedEvents } from '../utils/eventVisibility';
+import { applyPartyState, readStoredParties } from './partyRepository';
 // Mock Event Repository
 
-const initialEvents: EventRecord[] = [
+const initialEvents: EventRecord[] = ([
   {
     id: 'e1',
     title: 'วิ่งสวนลุมยามเช้า - สำหรับผู้เริ่มต้น',
@@ -93,8 +94,57 @@ const initialEvents: EventRecord[] = [
       avatarUrl: 'https://i.pravatar.cc/150?u=2'
     },
     joinUrl: null
+  },
+  // Seeded member parties (ตี้ซ้อม) with in-app joining.
+  {
+    id: 'p-seed-1',
+    title: 'HYROX Doubles ซ้อมวิ่ง + สถานี',
+    type: 'HYROX',
+    date: '2026-10-25T07:00:00+07:00',
+    location: 'สวนลุมพินี, กรุงเทพฯ',
+    description: 'ซ้อมแบบ Doubles สลับกันทำ Wall ball, Lunge และวิ่ง 1 กม. หาคู่ลงแข่งไปด้วยเลย',
+    status: 'published',
+    organizer: { id: 'm1', name: 'ต้น', avatarUrl: null },
+    joinUrl: null,
+    isParty: true,
+    levelId: 'intermediate',
+    capacity: 4,
+    participants: [{ id: 'm1', name: 'ต้น', levelId: 'intermediate' }, { id: 'm6', name: 'เจ', levelId: 'intermediate' }, { id: 'm2', name: 'บีม', levelId: 'intermediate' }]
+  },
+  {
+    id: 'p-seed-2',
+    title: 'วิ่ง Easy run มือใหม่ ไม่ทิ้งกัน',
+    type: 'Running',
+    date: '2026-10-24T06:30:00+07:00',
+    location: 'สวนจตุจักร, กรุงเทพฯ',
+    description: 'วิ่งช้า ๆ 4 กม. คุยกันไปเรื่อย ๆ เดินพักได้',
+    status: 'published',
+    organizer: { id: 'm3', name: 'จูน', avatarUrl: null },
+    joinUrl: null,
+    isParty: true,
+    levelId: 'beginner',
+    capacity: 6,
+    participants: [{ id: 'm3', name: 'จูน', levelId: 'beginner' }, { id: 'm5', name: 'มิ้นท์', levelId: 'beginner' }]
+  },
+  {
+    id: 'p-seed-3',
+    title: 'วิ่ง Interval 5 × 1 กม. สายเร็ว',
+    type: 'Running',
+    date: '2026-10-23T18:30:00+07:00',
+    location: 'สวนเบญจกิติ, กรุงเทพฯ',
+    description: 'Interval 1 กม. 5 เที่ยว พักจ๊อก 2 นาที สำหรับคนที่อยากลดเวลา',
+    status: 'published',
+    organizer: { id: 'm4', name: 'ปาล์ม', avatarUrl: null },
+    joinUrl: null,
+    isParty: true,
+    levelId: 'advanced',
+    capacity: 4,
+    participants: [{ id: 'm4', name: 'ปาล์ม', levelId: 'advanced' }, { id: 'm8', name: 'โอ๊ต', levelId: 'advanced' }]
   }
-].map(event => ({ ...event, hostUserId: event.organizer.id, visibility: 'public' }));
+] as Omit<EventRecord, 'hostUserId'>[]).map(event => ({ ...event, hostUserId: event.organizer.id, visibility: 'public' }));
+
+// Seeded events plus parties members created, with joins applied.
+const allEvents = (): EventRecord[] => [...initialEvents, ...readStoredParties()].map(event => applyPartyState(event));
 
 // Helper to check if event has ended
 export function isEventEnded(event: Pick<EventRecord, 'date' | 'endDate' | 'status'>) {
@@ -105,11 +155,11 @@ export function isEventEnded(event: Pick<EventRecord, 'date' | 'endDate' | 'stat
  * Get all public events (published). 
  * Can be filtered by type, area, and search query.
  */
-export async function getEvents({ query = '', type = '', area = '' } = {}) {
+export async function getEvents({ query = '', type = '', area = '', level = '' } = {}) {
   // Simulate network delay
   await new Promise(resolve => setTimeout(resolve, 300));
   
-  let results = initialEvents.filter(isPublicEvent);
+  let results = allEvents().filter(isPublicEvent);
 
   if (query) {
     const q = query.toLowerCase();
@@ -126,6 +176,11 @@ export async function getEvents({ query = '', type = '', area = '' } = {}) {
 
   if (area) {
     results = results.filter(e => e.location.includes(area));
+  }
+
+  // "ตี้เลเวลของฉัน": parties for this level or open to all levels.
+  if (level) {
+    results = results.filter(e => e.isParty && (e.levelId === level || e.levelId === 'all'));
   }
 
   // Sort: Upcoming events first (closest to now), then past events.
@@ -158,7 +213,7 @@ export async function getEvents({ query = '', type = '', area = '' } = {}) {
  */
 export async function getEventById(id: string) {
   await new Promise(resolve => setTimeout(resolve, 200));
-  const event = initialEvents.find(e => e.id === id);
+  const event = allEvents().find(e => e.id === id);
   if (!event || !isPublicEvent(event)) {
     throw new Error('Event not found or not public');
   }
@@ -177,7 +232,7 @@ export async function getJoinGroupUrl(eventId: string, user: User | null) {
     throw new Error('Unauthorized');
   }
   
-  const event = initialEvents.find(e => e.id === eventId);
+  const event = allEvents().find(e => e.id === eventId);
   if (!event || !isPublicEvent(event)) {
     throw new Error('Event not found');
   }
@@ -191,7 +246,7 @@ export async function getJoinGroupUrl(eventId: string, user: User | null) {
 
 export async function getHostedEvents(userId: UserId, { tab = 'upcoming', limit = 6 } = {}) {
   await new Promise(resolve => setTimeout(resolve, 200));
-  const groups = selectHostedEvents(initialEvents, userId);
+  const groups = selectHostedEvents(allEvents(), userId);
   const selected = groups[tab as keyof typeof groups] || groups.upcoming;
   const counts = Object.fromEntries(Object.entries(groups).map(([key, items]) => [key, items.length]));
   const size = Math.max(6, Math.floor(Number(limit) || 6));
@@ -200,6 +255,6 @@ export async function getHostedEvents(userId: UserId, { tab = 'upcoming', limit 
 
 // Existing mock members, sourced only from identities already present in events.
 export function getKnownEventMember(userId: UserId) {
-  const event = initialEvents.find(item => isPublicEvent(item) && String(item.hostUserId) === String(userId));
+  const event = allEvents().find(item => isPublicEvent(item) && String(item.hostUserId) === String(userId));
   return event ? { id: event.hostUserId, displayName: event.organizer.name, avatarUrl: event.organizer.avatarUrl } : null;
 }

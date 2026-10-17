@@ -2,6 +2,8 @@ import type { User, UserId } from '../types/models';
 import areas from '../data/thaiAreas.json';
 import { readUser } from './userRepository';
 import { getKnownEventMember } from './eventRepository';
+import { findMockMember } from '../data/mockMembers';
+import { LEVELS } from '../utils/leveling';
 
 const text = (value: unknown) => typeof value === 'string' ? value : '';
 // Explicit public projection: never return a raw account or onboarding object.
@@ -28,6 +30,11 @@ export async function getPublicProfile(userId: UserId, storage = localStorage) {
     const saved = JSON.parse(raw);
     if (String(saved.id) !== String(userId)) throw new Error('Profile unavailable');
     return toPublicProfile(readUser(saved.id, storage));
+  }
+  const mock = findMockMember(String(userId));
+  if (mock) {
+    const level = LEVELS.find(item => item.id === mock.levelId)?.label;
+    return toPublicProfile({ id: mock.id, displayName: mock.displayName, avatarUrl: '', bio: mock.bio, publicOnboarding: { level, goals: [mock.goalLabel] } });
   }
   const member = getKnownEventMember(userId);
   if (!member) throw new Error('Profile unavailable');

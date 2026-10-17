@@ -16,7 +16,7 @@ export function eventStatusLabel(event: EventRecord, now = Date.now()) {
   if (eventHasEnded(event, now)) return 'จบแล้ว';
   if (eventIsOngoing(event, now)) return 'กำลังดำเนินอยู่';
   if (Number.isFinite(event.capacity) && Number.isFinite(event.participantCount) && event.participantCount! >= event.capacity!) return 'เต็มแล้ว';
-  if (event.registrationClosed || !event.joinUrl) return 'ปิดรับ';
+  if (event.registrationClosed || (!event.joinUrl && !event.isParty)) return 'ปิดรับ';
   return 'เปิดรับ';
 }
 export function selectHostedEvents(events: EventRecord[], userId: UserId, now = Date.now()) {

@@ -5,11 +5,11 @@ export type SparklePoint = { top: string; left: string; size: number; delay: num
 // Decorative twinkling four-point stars. Positions are fixed so layout never shifts.
 export default function Sparkles({ points, className = '' }: { points: SparklePoint[]; className?: string }) {
   return (
-    <div className={`home-sparkles ${className}`} aria-hidden="true">
+    <div className={`sparkles ${className}`} aria-hidden="true">
       {points.map((point, index) => (
         <svg
           key={index}
-          className="home-sparkle"
+          className="sparkle"
           viewBox="0 0 24 24"
           width={point.size}
           height={point.size}

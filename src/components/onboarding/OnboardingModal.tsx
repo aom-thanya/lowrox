@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Image from '../common/Image';
 import { OnboardingProvider, useOnboarding } from '../../context/OnboardingContext';
+import { useAuth } from '../../context/AuthContext';
 import StepBasicInfo from './StepBasicInfo';
 import StepFitnessLevel from './StepFitnessLevel';
 import StepGoals from './StepGoals';
@@ -12,7 +13,8 @@ import ExitConfirmationModal from './ExitConfirmationModal';
 import Modal from '../common/Modal';
 
 function OnboardingContent({ onClose, onComplete, redirectDestination }: { onClose: () => void; onComplete?: () => void; redirectDestination: string }) {
-  const { currentStep, nextStep, prevStep, submitForm } = useOnboarding();
+  const { currentStep, nextStep, prevStep, formData } = useOnboarding();
+  const { saveOnboardingData } = useAuth();
   const [showExitConfirm, setShowExitConfirm] = useState(false);
   const stepRegion = useRef<HTMLDivElement | null>(null);
 
@@ -34,8 +36,9 @@ function OnboardingContent({ onClose, onComplete, redirectDestination }: { onClo
     setShowExitConfirm(false);
   };
 
+  // Save the answers to the account; the first level is computed from them.
   const handleSubmit = async () => {
-    await submitForm();
+    await saveOnboardingData(formData);
     onComplete?.();
   };
 
@@ -75,11 +78,11 @@ function OnboardingContent({ onClose, onComplete, redirectDestination }: { onClo
   );
 }
 
-export default function OnboardingModal({ isOpen, onClose, onComplete, redirectDestination = '/profile' }: { isOpen: boolean; onClose: () => void; onComplete?: () => void; redirectDestination?: string }) {
+export default function OnboardingModal({ isOpen, onClose, onComplete, redirectDestination = '/level' }: { isOpen: boolean; onClose: () => void; onComplete?: () => void; redirectDestination?: string }) {
   if (!isOpen) return null;
 
   return (
-    <OnboardingProvider onComplete={onComplete}>
+    <OnboardingProvider>
       <OnboardingContent onClose={onClose} onComplete={onComplete} redirectDestination={redirectDestination} />
     </OnboardingProvider>
   );

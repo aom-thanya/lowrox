@@ -768,3 +768,59 @@ textarea.form-control { display: block; padding: var(--space-3) var(--space-4); 
 .line-consent-scopes { display: grid; gap: var(--space-2); margin-bottom: var(--space-3); list-style: none; }
 .line-consent-scopes li { display: flex; align-items: center; gap: var(--space-2); }
 .line-consent-scopes svg { color: #06C755; }
+
+/* Sparkles — decorative twinkling stars (components/common/Sparkles) */
+.sparkles { position: absolute; inset: 0; pointer-events: none; }
+.sparkle {
+  position: absolute;
+  fill: var(--color-brand-300);
+  filter: drop-shadow(0 0 6px rgba(255, 173, 92, 0.9));
+  animation: twinkle 2.6s ease-in-out infinite both;
+}
+@keyframes twinkle {
+  0%, 100% { opacity: 0; transform: scale(0.3) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1) rotate(90deg); }
+}
+@media (prefers-reduced-motion: reduce) { .sparkle { animation: none; opacity: 0.8; } }
+
+/* Level chips — shared by level page, parties and buddies */
+.level-chip { display: inline-flex; align-items: center; flex-shrink: 0; padding: 2px var(--space-3); border-radius: var(--radius-pill); font-size: 12px; font-weight: 700; line-height: 1.6; white-space: nowrap; background: var(--color-neutral-100); color: var(--color-neutral-700); }
+.level-chip[data-level="beginner"] { background: var(--color-success-soft); color: #0F7A4F; }
+.level-chip[data-level="intermediate"] { background: var(--color-brand-100); color: var(--color-brand-800); }
+.level-chip[data-level="advanced"] { background: var(--color-info-soft); color: #1D5FA8; }
+.level-chip[data-level="elite"] { background: #F3E8FF; color: #6B21A8; }
+
+/* Quick log dialog — bottom sheet on phones */
+.log-form { display: grid; gap: var(--space-5); }
+.log-field { display: grid; gap: var(--space-3); border: 0; min-width: 0; }
+.log-field legend { margin-bottom: var(--space-3); font-weight: 600; }
+.log-pills { gap: var(--space-2); }
+.log-input-unit { position: relative; display: flex; align-items: center; gap: var(--space-2); }
+.log-input-unit span { color: var(--color-neutral-500); font-size: 14px; }
+.log-time { display: flex; align-items: center; gap: var(--space-2); }
+.log-time-input { width: 88px; text-align: center; font-size: 22px; font-weight: 700; }
+.log-time-sep { font-size: 22px; font-weight: 700; color: var(--color-neutral-400); }
+.log-preview { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); min-height: 48px; padding: var(--space-3) var(--space-4); border-radius: var(--radius-md); background: var(--color-brand-50); color: var(--color-neutral-700); font-size: 14px; }
+.log-preview b { font-size: 18px; color: var(--color-neutral-900); }
+.log-error { color: var(--color-error); font-size: 14px; }
+@media (max-width: 599px) {
+  .common-dialog.log-dialog { width: 100%; max-width: none; margin: auto 0 0; border-radius: var(--radius-xl) var(--radius-xl) 0 0; padding-bottom: max(var(--space-6), env(safe-area-inset-bottom)); }
+}
+
+/* Initial avatar — colored letter circle (components/common/InitialAvatar) */
+.initial-avatar { display: inline-grid; place-items: center; flex-shrink: 0; border-radius: 50%; color: var(--color-white); font-weight: 700; line-height: 1; }
+.initial-avatar.is-sm { width: 32px; height: 32px; font-size: 14px; }
+.initial-avatar.is-md { width: 40px; height: 40px; font-size: 16px; }
+.initial-avatar.is-lg { width: 56px; height: 56px; font-size: 22px; }
+.initial-avatar.tone-orange { background: linear-gradient(135deg, var(--color-brand-400), var(--color-brand-600)); }
+.initial-avatar.tone-blue { background: linear-gradient(135deg, #5FA8F5, #2878D0); }
+.initial-avatar.tone-green { background: linear-gradient(135deg, #4FD49E, #16A36A); }
+.initial-avatar.tone-purple { background: linear-gradient(135deg, #B794F4, #7C3AED); }
+.initial-avatar.tone-pink { background: linear-gradient(135deg, #F9A8D4, #DB2777); }
+.initial-avatar.tone-teal { background: linear-gradient(135deg, #5EEAD4, #0D9488); }
+
+/* Event list: create party + level filter */
+.event-list-heading-row { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--space-4); }
+.event-create-btn { gap: var(--space-2); min-height: 48px; }
+.event-level-filter { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-4); }
+.event-level-filter .onboarding-pill-button { flex: none; padding-inline: var(--space-5); }

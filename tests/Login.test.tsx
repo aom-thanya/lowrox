@@ -19,7 +19,7 @@ describe('Login with LINE', () => {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/onboarding" element={<div data-testid="onboarding-page" />} />
-        <Route path="/profile" element={<div data-testid="profile-page" />} />
+        <Route path="/level" element={<div data-testid="level-page" />} />
         <Route path="/events/:id" element={<div data-testid="event-page" />} />
       </Routes>
     </MemoryRouter>
@@ -55,12 +55,12 @@ describe('Login with LINE', () => {
     expect(loginWithLine).toHaveBeenCalledWith(expect.objectContaining({ userId: expect.any(String) }));
   });
 
-  test('an existing account with completed onboarding goes to profile', async () => {
+  test('an existing account with completed onboarding goes to the level page', async () => {
     loginWithLine.mockResolvedValueOnce({ user: { id: 'line-1', onboardingStatus: 'completed' }, isNew: false });
     renderLogin();
     signInWithLine();
 
-    expect(await screen.findByTestId('profile-page')).toBeInTheDocument();
+    expect(await screen.findByTestId('level-page')).toBeInTheDocument();
   });
 
   test('returns to the protected page the user came from', async () => {

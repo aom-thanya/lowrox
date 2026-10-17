@@ -1,12 +1,13 @@
 import type { EventRecord, CommentRecord, CommentImage } from '../types/models';
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
-import { MapPin, Calendar, Activity, ArrowLeft, ExternalLink } from 'lucide-react';
+import { MapPin, Calendar, Activity, ArrowLeft, ExternalLink, Link2 } from 'lucide-react';
 import PageShell from '../components/common/PageShell';
 import { formatDateTimeFull } from '../utils/formatDate';
 import Badge from '../components/common/Badge';
 import Avatar from '../components/common/Avatar';
 import LoginModal from '../components/LoginModal';
+import PartyJoinPanel from '../components/party/PartyJoinPanel';
 import CommentList from '../components/events/CommentList';
 import CommentComposer from '../components/events/CommentComposer';
 import { useAuth } from '../context/AuthContext';
@@ -64,6 +65,16 @@ export default function EventDetails() {
     
     return () => { isMounted = false; };
   }, [eventId]);
+
+  const [linkCopied, setLinkCopied] = useState(false);
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setLinkCopied(true);
+    } catch {
+      setLinkCopied(false);
+    }
+  };
 
   const handleBack = () => {
     // Navigate back to preserve search params if we came from list
@@ -151,6 +162,13 @@ export default function EventDetails() {
             <ArrowLeft size={20} /> {fromProfile ? 'กลับโปรไฟล์' : 'กลับหน้ากิจกรรม'}
           </button>
           
+          {location.state?.justCreated && (
+            <div className="party-created" role="status">
+              <p>🎉 เปิดตี้แล้ว! ชวนเพื่อนด้วยลิงก์นี้ได้เลย</p>
+              <button type="button" className="btn btn-secondary btn-md" onClick={copyLink}><Link2 size={18} /> {linkCopied ? 'คัดลอกแล้ว' : 'คัดลอกลิงก์ตี้'}</button>
+            </div>
+          )}
+
           <div className="event-detail-card">
             {/* Event Header Image */}
             <div className="event-detail-cover">
@@ -221,7 +239,9 @@ export default function EventDetails() {
               
               {/* Join Group Section */}
               <div className="event-detail-join">
-                {!isActive ? (
+                {event.isParty ? (
+                  <PartyJoinPanel event={event} isActive={isActive} onChange={setEvent} onRequireLogin={() => setIsLoginModalOpen(true)} />
+                ) : !isActive ? (
                   <p className="text-neutral-500 font-medium">ไม่สามารถเข้าร่วมได้ (กิจกรรมจบหรือถูกยกเลิกแล้ว)</p>
                 ) : !event.joinUrl ? (
                   <p className="text-neutral-500 font-medium bg-neutral-100 inline-block rounded-xl event-join-status">ยังไม่เปิดให้เข้าร่วมกลุ่ม</p>

@@ -5,5 +5,5 @@ export function getLoginDestination(user: Pick<User, 'onboardingStatus'>, from?:
   if (from?.pathname?.startsWith('/') && !from.pathname.startsWith('//') && from.pathname !== '/login') {
     return { pathname: from.pathname, search: from.search || '', hash: from.hash || '' };
   }
-  return user.onboardingStatus === 'completed' ? '/profile' : '/onboarding';
+  return user.onboardingStatus === 'completed' ? '/level' : '/onboarding';
 }

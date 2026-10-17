@@ -17,7 +17,9 @@ const GUEST_NAV: NavItem[] = [
   { label: 'แพ็กเกจ', to: '/#plans', hash: true }
 ];
 const MEMBER_NAV: NavItem[] = [
+  { label: 'เลเวลของฉัน', to: '/level' },
   { label: 'กิจกรรม', to: '/events' },
+  { label: 'บัดดี้', to: '/buddies' },
   { label: 'แพ็กเกจ', to: '/#plans', hash: true }
 ];
 

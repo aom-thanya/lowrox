@@ -14,7 +14,7 @@ function ReviewSection({ title, onEdit, className = 'mb-16', children }: { title
   );
 }
 
-export default function StepReview({ onPrev, onSubmit, redirectDestination = '/profile' }: { onPrev: () => void; onSubmit?: () => void; redirectDestination?: string }) {
+export default function StepReview({ onPrev, onSubmit, redirectDestination = '/level' }: { onPrev: () => void; onSubmit?: () => void; redirectDestination?: string }) {
   const { formData, goToStep } = useOnboarding();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -100,7 +100,7 @@ export default function StepReview({ onPrev, onSubmit, redirectDestination = '/p
         <button className="btn btn-primary btn-md btn-cta w-full flex items-center justify-center gap-4" onClick={handleSubmit} disabled={isSubmitting}>
           {isSubmitting ? 'กำลังเตรียมโปรไฟล์ให้คุณ...' : (
             <>
-              ยืนยัน แล้วไป{redirectDestination === '/buddies' ? 'หา Buddy' : 'ดูโปรไฟล์'} <ArrowRight size={16} />
+              ยืนยัน แล้วไป{redirectDestination === '/buddies' ? 'หาบัดดี้' : 'ดูเลเวลของฉัน'} <ArrowRight size={16} />
             </>
           )}
         </button>

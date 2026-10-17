@@ -8,9 +8,9 @@ test('getLoginDestination returns onboarding if status is not completed', () => 
   assert.equal(getLoginDestination(user, null), '/onboarding');
 });
 
-test('getLoginDestination returns profile if status is completed', () => {
+test('getLoginDestination returns level page if status is completed', () => {
   const user = { onboardingStatus: 'completed' };
-  assert.equal(getLoginDestination(user, null), '/profile');
+  assert.equal(getLoginDestination(user, null), '/level');
 });
 
 test('getLoginDestination restores internal URL correctly', () => {
@@ -23,11 +23,11 @@ test('getLoginDestination ignores external or invalid URLs and falls back to def
   const user = { onboardingStatus: 'completed' };
   
   // External URL
-  assert.equal(getLoginDestination(user, { pathname: '//example.com' }), '/profile');
+  assert.equal(getLoginDestination(user, { pathname: '//example.com' }), '/level');
   
   // Login URL
-  assert.equal(getLoginDestination(user, { pathname: '/login' }), '/profile');
+  assert.equal(getLoginDestination(user, { pathname: '/login' }), '/level');
   
   // No pathname
-  assert.equal(getLoginDestination(user, {}), '/profile');
+  assert.equal(getLoginDestination(user, {}), '/level');
 });

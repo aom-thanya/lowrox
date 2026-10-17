@@ -8,7 +8,7 @@ import HeroLevelCard from '../components/home/HeroLevelCard';
 import Marquee from '../components/home/Marquee';
 import PartyCard from '../components/home/PartyCard';
 import Reveal from '../components/home/Reveal';
-import Sparkles from '../components/home/Sparkles';
+import Sparkles from '../components/common/Sparkles';
 import '../styles/home.css';
 
 const MARQUEE_TOP = ['HYROX', 'Buddy Doubles', 'วิ่ง 5K', 'Functional Race', 'Same-Level Training', 'Trail Run', 'ตั้งหัวตี้'];

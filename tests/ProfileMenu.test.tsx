@@ -9,7 +9,7 @@ it('opens account links and closes on Escape, outside click, and navigation', ()
   expect(screen.queryByRole('link', { name: 'My Profile' })).not.toBeInTheDocument();
   fireEvent.click(trigger);
   expect(trigger).toHaveAttribute('aria-expanded', 'true');
-  expect(screen.getByRole('link', { name: 'My Buddy' })).toHaveAttribute('href', '/my-buddies');
+  expect(screen.getByRole('link', { name: 'My Buddy' })).toHaveAttribute('href', '/buddies');
   expect(screen.queryByRole('link', { name: 'Message' })).not.toBeInTheDocument();
   fireEvent.keyDown(document, { key: 'Escape' });
   expect(trigger).toHaveFocus();
