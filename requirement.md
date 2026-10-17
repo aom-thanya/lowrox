@@ -5,21 +5,21 @@ This document outlines the requirements for each key page in the Lowrox applicat
 ---
 
 ## 1. Login Page (`/login`)
-**Description:** The authentication entry point for users.
+**Description:** The authentication entry point. LINE is the only sign-in method; there is no separate sign-up page.
 
 * **Input:**
-  * User credentials (Username/Password).
+  * LINE account consent (display name, profile picture, email). Currently simulated by `services/lineAuth.ts`.
   * URL redirect parameter (where the user came from).
 * **Process:**
-  * Validate if the fields are empty.
-  * Authenticate credentials against the mock `userRepository`.
-  * Retrieve user data and check `onboardingStatus`.
+  * Find the Lowrox user linked to the LINE user ID (`startLineSession`).
+  * If none exists, register one automatically (`tier: free`, `onboardingStatus: not_started`).
   * Determine the redirection target (`getLoginDestination`):
     * If `onboardingStatus` is `not_started`, target is `/onboarding`.
     * If `onboardingStatus` is `completed`, target is `/profile` (or the previous internal URL).
 * **Output:**
   * **Success:** Create session in local storage. Redirect user to the target URL.
-  * **Error:** Display "ข้อมูลการเข้าสู่ระบบไม่ถูกต้อง" (Invalid credentials) error message.
+  * **Cancelled consent:** Stay on the page with "ยกเลิกการเชื่อมต่อ LINE แล้ว คุณลองใหม่ได้ทุกเมื่อ".
+  * **Error:** Display "เชื่อมต่อ LINE ไม่สำเร็จ กรุณาลองอีกครั้ง".
 
 ---
 

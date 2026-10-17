@@ -125,7 +125,7 @@ export default function Settings() {
               <h2 className="heading-4">การเข้าสู่ระบบ</h2>
               <div className="settings-account-field">
                 <p className="settings-field-label">วิธีเข้าสู่ระบบ</p>
-                <p className="font-medium">{user?.username}</p>
+                <p className="font-medium">{user?.authProvider === 'line' ? 'LINE' : user?.username}</p>
               </div>
               {user?.email && (
                 <div className="settings-account-field">

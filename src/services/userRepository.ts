@@ -1,4 +1,5 @@
 import type { User, UserId } from '../types/models';
+import type { LineProfile } from './lineAuth';
 // Adapter for the project's existing local mock authentication.
 // All user fields live in one record per account; the session contains only its ID.
 const userKey = (id: UserId) => `lowrox:user:${id}`;
@@ -46,4 +47,25 @@ export function updateCurrentUser(expectedId: UserId, changes: Partial<User>, st
   const current = readCurrentUser(expectedId, storage);
   // Callers only pass explicitly permitted profile/status fields.
   return writeUser({ ...current, ...changes, id: current.id, updated_at: new Date().toISOString() }, storage);
+}
+
+// A LINE account maps to exactly one Lowrox user. The first sign-in creates the account
+// (onboarding not started); later sign-ins reuse it so profile edits are kept.
+export function startLineSession(profile: LineProfile, storage: Pick<Storage, 'getItem' | 'setItem'> = localStorage) {
+  const id = `line-${profile.userId}`;
+  const isNew = !storage.getItem(userKey(id));
+  const now = new Date().toISOString();
+  const user = startSession({
+    id,
+    authProvider: 'line',
+    lineUserId: profile.userId,
+    displayName: profile.displayName,
+    avatarUrl: profile.pictureUrl || '',
+    email: profile.email,
+    tier: 'free',
+    onboardingStatus: 'not_started',
+    created_at: now,
+    updated_at: now
+  }, storage);
+  return { user, isNew };
 }

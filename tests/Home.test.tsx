@@ -31,23 +31,29 @@ describe('Homepage', () => {
     );
   };
 
-  test('renders hero section and highlights', () => {
+  test('renders hero, pain points, party, steps and plans', () => {
     vi.mocked(useAuth, { partial: true }).mockReturnValue({ user: null });
     renderHome();
     
-    // Check hero text
-    expect(screen.getByText('หาเพื่อนออกกำลังกาย ในจังหวะที่ใช่สำหรับคุณ')).toBeInTheDocument();
-    
-    // Check if highlights exist
-    expect(screen.getByText('เป้าหมายใกล้กัน')).toBeInTheDocument();
-    expect(screen.getByText('จังหวะที่เข้ากัน')).toBeInTheDocument();
-    expect(screen.getByText('เวลาที่ลงตัว')).toBeInTheDocument();
-    
-    // Check if how it works exists
-    expect(screen.getByText('เริ่มหา Buddy ใน 3 ขั้นตอน')).toBeInTheDocument();
-    expect(screen.getByText('บอกเราเกี่ยวกับคุณ')).toBeInTheDocument();
-    expect(screen.getByText('เลือก Buddy ที่สนใจ')).toBeInTheDocument();
-    expect(screen.getByText('คุยแล้วนัดกัน')).toBeInTheDocument();
+    // Hero
+    expect(screen.getByRole('heading', { level: 1, name: /รู้เลเวล หาบัดดี้/ })).toBeInTheDocument();
+    expect(screen.getAllByRole('link', { name: /เช็กเลเวลฟรี/ })[0]).toHaveAttribute('href', '/login');
+
+    // Consumer pain points → solutions
+    expect(screen.getByRole('heading', { name: 'เห็นเลเวลชัด' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Safety check ก่อนซ้อม' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'จับคู่เลเวลเดียวกัน' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'แผนซ้อมทีละขั้น' })).toBeInTheDocument();
+
+    // Producer + plans
+    expect(screen.getByRole('heading', { name: /ใครก็เป็นหัวตี้ได้/ })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Member' })).toBeInTheDocument();
+
+    // How it works (anchor target used by the header link)
+    expect(screen.getByText('เริ่มได้ใน 3 ขั้นตอน').closest('section')).toHaveAttribute('id', 'how-it-works');
+    expect(screen.getByText('เช็กเลเวลของคุณ')).toBeInTheDocument();
+    expect(screen.getByText('จอยหรือตั้งตี้ซ้อม')).toBeInTheDocument();
+    expect(screen.getByText('ซ้อมแล้วอัปเลเวล')).toBeInTheDocument();
   });
 
   test('header shows login and find buddy when not logged in', () => {

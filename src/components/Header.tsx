@@ -1,13 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { useNavigate, Link, NavLink } from 'react-router-dom';
 import Image from './common/Image';
-import { Menu } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import logoImg from '../assets/logo-64.png';
 import { useAuth } from '../context/AuthContext';
 import ProfileMenu from './ProfileMenu';
 import { useUnsavedChanges } from '../context/UnsavedChangesContext';
 import LoginModal from './LoginModal';
 
+type NavItem = { label: string; to: string; hash?: boolean };
+
+// Hash links use a plain <a> so the browser jumps to the homepage section.
+const GUEST_NAV: NavItem[] = [
+  { label: 'กิจกรรม', to: '/events' },
+  { label: 'วิธีใช้งาน', to: '/#how-it-works', hash: true },
+  { label: 'แพ็กเกจ', to: '/#plans', hash: true }
+];
+const MEMBER_NAV: NavItem[] = [
+  { label: 'กิจกรรม', to: '/events' },
+  { label: 'แพ็กเกจ', to: '/#plans', hash: true }
+];
 
 export default function Header() {
   const navigate = useNavigate();
@@ -52,6 +64,14 @@ export default function Header() {
     return () => document.body.classList.remove('menu-open');
   }, [isMenuOpen]);
 
+  const closeMenu = () => setIsMenuOpen(false);
+  const navItems = user ? MEMBER_NAV : GUEST_NAV;
+  const renderNavItems = (onNavigate?: () => void) => navItems.map((item) => (
+    item.hash
+      ? <a key={item.label} href={item.to} className="nav-link" onClick={onNavigate}>{item.label}</a>
+      : <NavLink key={item.label} to={item.to} className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`} onClick={onNavigate}>{item.label}</NavLink>
+  ));
+
   return (
     <>
       <header className={`header ${user ? 'header-authenticated' : ''} ${isScrolled ? 'scrolled' : ''}`} id="site-header">
@@ -59,64 +79,44 @@ export default function Header() {
           <Link to="/" className="logo" aria-label="Lowrox homepage">
             <Image src={logoImg} alt="LOWROX" className="h-8" loading="eager" />
           </Link>
-          
-          <nav className="desktop-nav" aria-label="Main Navigation">
-            {!user ? (
-              <>
-                <Link to="/events" className="nav-link">กิจกรรม</Link>
-                <a href="/#how-it-works" className="nav-link">วิธีใช้งาน</a>
-                <button className="nav-link bg-transparent border-none p-0 cursor-pointer" onClick={() => setIsLoginModalOpen(true)}>เข้าสู่ระบบ</button>
-              </>
-            ) : (
-              <>
-                <Link to="/events" className="nav-link">กิจกรรม</Link>
-              </>
-            )}
-          </nav>
-          
-          {user && <ProfileMenu user={user} onLogout={handleLogout} />}
 
-          {!user && (
+          <nav className="desktop-nav" aria-label="Main Navigation">
+            {renderNavItems()}
+          </nav>
+
+          {user ? (
+            <ProfileMenu user={user} onLogout={handleLogout} />
+          ) : (
             <div className="header-actions">
-              <Link to="/events" className="btn btn-primary btn-md btn-cta">ดูกิจกรรม</Link>
+              <button type="button" className="btn btn-primary btn-md btn-cta" onClick={() => setIsLoginModalOpen(true)}>เข้าสู่ระบบ</button>
             </div>
           )}
 
-          <button 
-            className="mobile-menu-btn" 
-            id="mobile-menu-btn" 
-            aria-label="Open navigation" 
-            aria-expanded={isMenuOpen} 
+          <button
+            className="mobile-menu-btn"
+            id="mobile-menu-btn"
+            aria-label={isMenuOpen ? 'Close navigation' : 'Open navigation'}
+            aria-expanded={isMenuOpen}
             aria-controls="mobile-drawer"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
-            <Menu size={24} />
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
       </header>
 
-      <div 
-        className={`mobile-drawer ${isMenuOpen ? 'open' : ''}`} 
-        id="mobile-drawer" 
+      <div
+        className={`mobile-drawer ${isMenuOpen ? 'open' : ''}`}
+        id="mobile-drawer"
         aria-hidden={!isMenuOpen}
         inert={!isMenuOpen}
       >
         <nav className="mobile-drawer-nav" aria-label="Mobile Navigation">
-            {!user ? (
-              <>
-                <Link to="/events" className="nav-link" onClick={() => setIsMenuOpen(false)}>กิจกรรม</Link>
-                <a href="/#how-it-works" className="nav-link" onClick={() => setIsMenuOpen(false)}>วิธีใช้งาน</a>
-                <button className="nav-link bg-transparent border-none p-0 cursor-pointer text-left w-full" onClick={() => { setIsMenuOpen(false); setIsLoginModalOpen(true); }}>เข้าสู่ระบบ</button>
-              </>
-            ) : (
-              <>
-                <Link to="/events" className="nav-link" onClick={() => setIsMenuOpen(false)}>กิจกรรม</Link>
-              </>
-            )}
+          {renderNavItems(closeMenu)}
         </nav>
         {!user && (
           <div className="mobile-drawer-actions">
-            <Link to="/events" className="btn btn-primary btn-md btn-cta w-full" onClick={() => setIsMenuOpen(false)}>ดูกิจกรรม</Link>
+            <button type="button" className="btn btn-primary btn-md btn-cta w-full" onClick={() => { closeMenu(); setIsLoginModalOpen(true); }}>เข้าสู่ระบบ</button>
           </div>
         )}
       </div>

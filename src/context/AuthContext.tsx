@@ -1,13 +1,14 @@
 import type { User, Profile, OnboardingData } from '../types/models';
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 
-import { restoreSession, startSession, readCurrentUser, updateCurrentUser } from '../services/userRepository';
+import { restoreSession, startLineSession, readCurrentUser, updateCurrentUser } from '../services/userRepository';
+import type { LineProfile } from '../services/lineAuth';
 import { profileFromUser, validateProfile } from '../utils/profile';
 
 interface AuthContextValue {
   user: User | null;
   loading: boolean;
-  login: (username: string, password: string) => Promise<{ success: true; user: User } | { success: false; error: string }>;
+  loginWithLine: (profile: LineProfile) => Promise<{ user: User; isNew: boolean }>;
   logout: () => void;
   updateOnboardingStatus: (status: string) => void;
   loadProfile: () => Promise<Profile>;
@@ -38,40 +39,12 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
     checkSession();
   }, []);
 
-  const login = useCallback(async (username: string, password: string): ReturnType<AuthContextValue['login']> => {
-    // Mock API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    // Basic mock logic: test/password is "completed", new/password is "not_started"
-    if (username === 'test' && password === 'password') {
-      const mockUser = {
-        id: 1,
-        username: 'test',
-        email: 'test@example.com',
-        tier: 'premium',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        onboardingStatus: 'completed' // Keeping this for routing logic as requested
-      };
-      const savedUser = startSession(mockUser);
-      setUser(savedUser);
-      return { success: true, user: savedUser };
-    } else if (username === 'new' && password === 'password') {
-      const mockUser = {
-        id: 2,
-        username: 'new',
-        email: 'new@example.com',
-        tier: 'free',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        onboardingStatus: 'not_started' // Keeping this for routing logic
-      };
-      const savedUser = startSession(mockUser);
-      setUser(savedUser);
-      return { success: true, user: savedUser };
-    }
-    
-    return { success: false, error: 'ไม่สามารถเข้าสู่ระบบได้ กรุณาตรวจสอบข้อมูลแล้วลองอีกครั้ง' };
+  // Signs in with a LINE profile, creating the Lowrox account on first use.
+  const loginWithLine = useCallback(async (profile: LineProfile) => {
+    await new Promise(resolve => setTimeout(resolve, 400));
+    const result = startLineSession(profile);
+    setUser(result.user);
+    return result;
   }, []);
 
   const logout = useCallback(() => {
@@ -125,8 +98,8 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
 
   // Stable value so consumers don't re-render unless auth state or a callback actually changes.
   const value = useMemo(
-    () => ({ user, loading, login, logout, updateOnboardingStatus, loadProfile, saveProfile, loadOnboardingData, saveOnboardingData }),
-    [user, loading, login, logout, updateOnboardingStatus, loadProfile, saveProfile, loadOnboardingData, saveOnboardingData]
+    () => ({ user, loading, loginWithLine, logout, updateOnboardingStatus, loadProfile, saveProfile, loadOnboardingData, saveOnboardingData }),
+    [user, loading, loginWithLine, logout, updateOnboardingStatus, loadProfile, saveProfile, loadOnboardingData, saveOnboardingData]
   );
 
   return (

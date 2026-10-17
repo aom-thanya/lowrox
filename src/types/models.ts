@@ -13,6 +13,8 @@ export interface User extends Partial<Profile> {
   id: UserId;
   username?: string;
   email?: string;
+  authProvider?: 'password' | 'line';
+  lineUserId?: string;
   tier?: string;
   created_at?: string;
   updated_at?: string;
