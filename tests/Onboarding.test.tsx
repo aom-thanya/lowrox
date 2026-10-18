@@ -4,6 +4,7 @@ import { vi } from 'vitest';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import Onboarding from '../src/pages/Onboarding';
 import { useAuth } from '../src/context/AuthContext';
+import type { OnboardingData, User } from '../src/types/models';
 
 vi.mock('../src/context/AuthContext', () => ({
   useAuth: vi.fn()
@@ -12,16 +13,16 @@ vi.mock('../src/context/AuthContext', () => ({
 vi.mock('../src/context/UnsavedChangesContext', () => ({
   useUnsavedChanges: vi.fn(() => ({
     setDirty: vi.fn(),
-    requestAction: vi.fn(action => action())
+    requestAction: vi.fn((action: () => void) => action())
   }))
 }));
 
 describe('Onboarding (3 quick steps)', () => {
   const updateOnboardingStatus = vi.fn();
-  const saveOnboardingData = vi.fn(async (data) => data);
+  const saveOnboardingData = vi.fn(async (data: OnboardingData) => data);
 
-  const renderOnboarding = (user) => {
-    vi.mocked(useAuth, { partial: true }).mockReturnValue({ user, updateOnboardingStatus, saveOnboardingData });
+  const renderOnboarding = (user: Partial<User>) => {
+    vi.mocked(useAuth, { partial: true }).mockReturnValue({ user: user as User, updateOnboardingStatus, saveOnboardingData });
     return render(
       <MemoryRouter initialEntries={['/onboarding']}>
         <Routes>
