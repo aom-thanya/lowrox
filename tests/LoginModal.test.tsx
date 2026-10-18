@@ -2,29 +2,36 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { vi } from 'vitest';
-import Login from '../src/pages/Login';
+import Header from '../src/components/Header';
+import { ProtectedRoute } from '../src/components/ProtectedRoute';
 import { useAuth } from '../src/context/AuthContext';
 
 vi.mock('../src/context/AuthContext', () => ({ useAuth: vi.fn() }));
+vi.mock('../src/context/UnsavedChangesContext', () => ({
+  useUnsavedChanges: vi.fn(() => ({ setDirty: vi.fn(), requestAction: vi.fn((action: () => void) => action()) }))
+}));
 vi.mock('../src/services/lineAuth', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../src/services/lineAuth')>();
   return { ...actual, approveMockLineConsent: vi.fn(async () => actual.MOCK_LINE_PROFILE) };
 });
 
-describe('Login with LINE', () => {
+describe('Login with LINE (modal only)', () => {
   const loginWithLine = vi.fn();
 
-  const renderLogin = (from?: string) => render(
-    <MemoryRouter initialEntries={[{ pathname: '/login', state: from ? { from: { pathname: from } } : undefined }]}>
+  const renderApp = (path = '/') => render(
+    <MemoryRouter initialEntries={[path]}>
       <Routes>
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Header />} />
         <Route path="/onboarding" element={<div data-testid="onboarding-page" />} />
         <Route path="/level" element={<div data-testid="level-page" />} />
-        <Route path="/events/:id" element={<div data-testid="event-page" />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/profile/settings" element={<div data-testid="settings-page" />} />
+        </Route>
       </Routes>
     </MemoryRouter>
   );
 
+  const openLoginModal = () => fireEvent.click(screen.getByRole('button', { name: 'เข้าสู่ระบบ' }));
   const signInWithLine = () => {
     fireEvent.click(screen.getByRole('button', { name: 'เข้าสู่ระบบด้วย LINE' }));
     fireEvent.click(screen.getByRole('button', { name: 'อนุญาต' }));
@@ -32,11 +39,12 @@ describe('Login with LINE', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(useAuth, { partial: true }).mockReturnValue({ user: null, loginWithLine });
+    vi.mocked(useAuth, { partial: true }).mockReturnValue({ user: null, loading: false, loginWithLine });
   });
 
   test('offers LINE as the only sign-in method', () => {
-    renderLogin();
+    renderApp();
+    openLoginModal();
 
     expect(screen.getByRole('button', { name: 'เข้าสู่ระบบด้วย LINE' })).toBeInTheDocument();
     expect(screen.queryByLabelText('ชื่อผู้ใช้')).not.toBeInTheDocument();
@@ -45,7 +53,8 @@ describe('Login with LINE', () => {
 
   test('a LINE account without a Lowrox account is registered and sent to onboarding', async () => {
     loginWithLine.mockResolvedValueOnce({ user: { id: 'line-1', onboardingStatus: 'not_started' }, isNew: true });
-    renderLogin();
+    renderApp();
+    openLoginModal();
 
     fireEvent.click(screen.getByRole('button', { name: 'เข้าสู่ระบบด้วย LINE' }));
     expect(screen.getByText('โหมดจำลอง: ยังไม่ได้เชื่อมต่อกับ LINE จริง')).toBeInTheDocument();
@@ -57,22 +66,38 @@ describe('Login with LINE', () => {
 
   test('an existing account with completed onboarding goes to the level page', async () => {
     loginWithLine.mockResolvedValueOnce({ user: { id: 'line-1', onboardingStatus: 'completed' }, isNew: false });
-    renderLogin();
+    renderApp();
+    openLoginModal();
     signInWithLine();
 
     expect(await screen.findByTestId('level-page')).toBeInTheDocument();
   });
 
-  test('returns to the protected page the user came from', async () => {
-    loginWithLine.mockResolvedValueOnce({ user: { id: 'line-1', onboardingStatus: 'completed' }, isNew: false });
-    renderLogin('/events/e1');
+  test('a guest on a protected page gets the modal on the homepage, then returns to that page', async () => {
+    const user = { id: 'line-1', onboardingStatus: 'completed' };
+    loginWithLine.mockImplementationOnce(async () => {
+      vi.mocked(useAuth, { partial: true }).mockReturnValue({ user, loading: false, loginWithLine });
+      return { user, isNew: false };
+    });
+    renderApp('/profile/settings');
+
+    expect(screen.getByRole('button', { name: 'เข้าสู่ระบบด้วย LINE' })).toBeInTheDocument();
     signInWithLine();
 
-    expect(await screen.findByTestId('event-page')).toBeInTheDocument();
+    expect(await screen.findByTestId('settings-page')).toBeInTheDocument();
   });
 
-  test('cancelling consent keeps the user on the page with a message', () => {
-    renderLogin();
+  test('closing the modal opened by a protected page keeps it closed', () => {
+    renderApp('/profile/settings');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Close modal' }));
+
+    expect(screen.queryByRole('button', { name: 'เข้าสู่ระบบด้วย LINE' })).not.toBeInTheDocument();
+  });
+
+  test('cancelling consent keeps the user on the modal with a message', () => {
+    renderApp();
+    openLoginModal();
 
     fireEvent.click(screen.getByRole('button', { name: 'เข้าสู่ระบบด้วย LINE' }));
     fireEvent.click(screen.getByRole('button', { name: 'ยกเลิก' }));
@@ -83,7 +108,8 @@ describe('Login with LINE', () => {
 
   test('shows an error when the LINE connection fails', async () => {
     loginWithLine.mockRejectedValueOnce(new Error('network'));
-    renderLogin();
+    renderApp();
+    openLoginModal();
     signInWithLine();
 
     expect(await screen.findByText('เชื่อมต่อ LINE ไม่สำเร็จ กรุณาลองอีกครั้ง')).toBeInTheDocument();

@@ -1,14 +1,13 @@
 import React, { Suspense } from 'react';
 import { createBrowserRouter, createRoutesFromElements, RouterProvider, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
-import { ProtectedRoute, PublicRoute } from './components/ProtectedRoute';
+import { ProtectedRoute } from './components/ProtectedRoute';
 import { UnsavedChangesProvider } from './context/UnsavedChangesContext';
 import AccountLayout from './components/AccountLayout';
 import LoadingScreen from './components/common/LoadingScreen';
 import { profileNavigation } from './config/profileNavigation';
 
 const Home = React.lazy(() => import('./pages/Home'));
-const Login = React.lazy(() => import('./pages/Login'));
 const Onboarding = React.lazy(() => import('./pages/Onboarding'));
 const Profile = React.lazy(() => import('./pages/Profile'));
 const ProfileEditor = React.lazy(() => import('./pages/ProfileEditor'));
@@ -19,7 +18,6 @@ const EventDetails = React.lazy(() => import('./pages/EventDetails'));
 const UserProfile = React.lazy(() => import('./pages/UserProfile'));
 const MyLevel = React.lazy(() => import('./pages/MyLevel'));
 const PartyCreate = React.lazy(() => import('./pages/PartyCreate'));
-const Buddies = React.lazy(() => import('./pages/Buddies'));
 import './style.css';
 
 const router = createBrowserRouter(createRoutesFromElements(
@@ -29,10 +27,6 @@ const router = createBrowserRouter(createRoutesFromElements(
           <Route path="/users/:userId" element={<UserProfile />} />
           <Route path="/events/:eventId" element={<EventDetails />} />
 
-          <Route element={<PublicRoute />}>
-            <Route path="/login" element={<Login />} />
-          </Route>
-
           <Route element={<ProtectedRoute requireOnboardingComplete={false} />}>
             <Route path="/onboarding" element={<Onboarding />} />
           </Route>
@@ -40,7 +34,6 @@ const router = createBrowserRouter(createRoutesFromElements(
           <Route element={<ProtectedRoute requireOnboardingComplete />}>
             <Route path="/level" element={<MyLevel />} />
             <Route path="/parties/new" element={<PartyCreate />} />
-            <Route path="/buddies" element={<Buddies />} />
           </Route>
 
           <Route element={<ProtectedRoute />}>

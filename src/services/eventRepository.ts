@@ -1,6 +1,8 @@
 import type { EventRecord, User, UserId } from '../types/models';
 import { isPublicEvent, eventHasEnded, selectHostedEvents } from '../utils/eventVisibility';
 import { applyPartyState, readStoredParties } from './partyRepository';
+import { buildMockParties } from '../data/mockParties';
+import { findPersona } from '../utils/partyPersonas';
 // Mock Event Repository
 
 const initialEvents: EventRecord[] = ([
@@ -94,57 +96,16 @@ const initialEvents: EventRecord[] = ([
       avatarUrl: 'https://i.pravatar.cc/150?u=2'
     },
     joinUrl: null
-  },
-  // Seeded member parties (ตี้ซ้อม) with in-app joining.
-  {
-    id: 'p-seed-1',
-    title: 'HYROX Doubles ซ้อมวิ่ง + สถานี',
-    type: 'HYROX',
-    date: '2026-10-25T07:00:00+07:00',
-    location: 'สวนลุมพินี, กรุงเทพฯ',
-    description: 'ซ้อมแบบ Doubles สลับกันทำ Wall ball, Lunge และวิ่ง 1 กม. หาคู่ลงแข่งไปด้วยเลย',
-    status: 'published',
-    organizer: { id: 'm1', name: 'ต้น', avatarUrl: null },
-    joinUrl: null,
-    isParty: true,
-    levelId: 'intermediate',
-    capacity: 4,
-    participants: [{ id: 'm1', name: 'ต้น', levelId: 'intermediate' }, { id: 'm6', name: 'เจ', levelId: 'intermediate' }, { id: 'm2', name: 'บีม', levelId: 'intermediate' }]
-  },
-  {
-    id: 'p-seed-2',
-    title: 'วิ่ง Easy run มือใหม่ ไม่ทิ้งกัน',
-    type: 'Running',
-    date: '2026-10-24T06:30:00+07:00',
-    location: 'สวนจตุจักร, กรุงเทพฯ',
-    description: 'วิ่งช้า ๆ 4 กม. คุยกันไปเรื่อย ๆ เดินพักได้',
-    status: 'published',
-    organizer: { id: 'm3', name: 'จูน', avatarUrl: null },
-    joinUrl: null,
-    isParty: true,
-    levelId: 'beginner',
-    capacity: 6,
-    participants: [{ id: 'm3', name: 'จูน', levelId: 'beginner' }, { id: 'm5', name: 'มิ้นท์', levelId: 'beginner' }]
-  },
-  {
-    id: 'p-seed-3',
-    title: 'วิ่ง Interval 5 × 1 กม. สายเร็ว',
-    type: 'Running',
-    date: '2026-10-23T18:30:00+07:00',
-    location: 'สวนเบญจกิติ, กรุงเทพฯ',
-    description: 'Interval 1 กม. 5 เที่ยว พักจ๊อก 2 นาที สำหรับคนที่อยากลดเวลา',
-    status: 'published',
-    organizer: { id: 'm4', name: 'ปาล์ม', avatarUrl: null },
-    joinUrl: null,
-    isParty: true,
-    levelId: 'advanced',
-    capacity: 4,
-    participants: [{ id: 'm4', name: 'ปาล์ม', levelId: 'advanced' }, { id: 'm8', name: 'โอ๊ต', levelId: 'advanced' }]
   }
 ] as Omit<EventRecord, 'hostUserId'>[]).map(event => ({ ...event, hostUserId: event.organizer.id, visibility: 'public' }));
 
-// Seeded events plus parties members created, with joins applied.
-const allEvents = (): EventRecord[] => [...initialEvents, ...readStoredParties()].map(event => applyPartyState(event));
+// Seeded events, generated mock parties and parties members created, with joins applied.
+const allEvents = (): EventRecord[] => [...initialEvents, ...buildMockParties(), ...readStoredParties()].map(event => applyPartyState(event));
+
+export const EVENTS_PAGE_SIZE = 12;
+
+export interface EventQuery { query?: string; type?: string; area?: string; level?: string; persona?: string; page?: number; pageSize?: number }
+export interface EventPage { events: EventRecord[]; total: number; page: number; pageCount: number }
 
 // Helper to check if event has ended
 export function isEventEnded(event: Pick<EventRecord, 'date' | 'endDate' | 'status'>) {
@@ -152,10 +113,10 @@ export function isEventEnded(event: Pick<EventRecord, 'date' | 'endDate' | 'stat
 }
 
 /**
- * Get all public events (published). 
- * Can be filtered by type, area, and search query.
+ * Get one page of public events (published).
+ * Can be filtered by type, area, search query, level and the searcher's persona.
  */
-export async function getEvents({ query = '', type = '', area = '', level = '' } = {}) {
+export async function getEvents({ query = '', type = '', area = '', level = '', persona = '', page = 1, pageSize = EVENTS_PAGE_SIZE }: EventQuery = {}): Promise<EventPage> {
   // Simulate network delay
   await new Promise(resolve => setTimeout(resolve, 300));
   
@@ -183,6 +144,11 @@ export async function getEvents({ query = '', type = '', area = '', level = '' }
     results = results.filter(e => e.isParty && (e.levelId === level || e.levelId === 'all'));
   }
 
+  const selectedPersona = findPersona(persona);
+  if (selectedPersona) {
+    results = results.filter(e => e.isParty && selectedPersona.matches(e));
+  }
+
   // Sort: Upcoming events first (closest to now), then past events.
   const now = new Date();
   
@@ -205,7 +171,9 @@ export async function getEvents({ query = '', type = '', area = '', level = '' }
     return aEnded ? 1 : -1;
   });
 
-  return results;
+  const pageCount = Math.max(1, Math.ceil(results.length / pageSize));
+  const current = Math.min(Math.max(1, Math.floor(page) || 1), pageCount);
+  return { events: results.slice((current - 1) * pageSize, current * pageSize), total: results.length, page: current, pageCount };
 }
 
 /**

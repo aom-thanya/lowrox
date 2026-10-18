@@ -100,7 +100,7 @@ export default function StepReview({ onPrev, onSubmit, redirectDestination = '/l
         <button className="btn btn-primary btn-md btn-cta w-full flex items-center justify-center gap-1" onClick={handleSubmit} disabled={isSubmitting}>
           {isSubmitting ? 'กำลังเตรียมโปรไฟล์ให้คุณ...' : (
             <>
-              ยืนยัน แล้วไป{redirectDestination === '/buddies' ? 'หาบัดดี้' : 'ดูเลเวลของฉัน'} <ArrowRight size={16} />
+              ยืนยัน แล้วไปดูเลเวลของฉัน <ArrowRight size={16} />
             </>
           )}
         </button>

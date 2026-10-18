@@ -1,19 +1,18 @@
 import React, { useMemo, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, CalendarDays, Dumbbell, Footprints, MapPin, Minus, Plus, Route as RouteIcon, Timer } from 'lucide-react';
-import type { PartyLevel } from '../types/models';
+import type { PartyLevel, PartyStyle } from '../types/models';
 import PageShell from '../components/common/PageShell';
 import PillGroup from '../components/common/PillGroup';
 import PartySlots from '../components/party/PartySlots';
 import { useAuth } from '../context/AuthContext';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import { useMyLevel } from '../hooks/useMyLevel';
-import { findMockMember } from '../data/mockMembers';
 import { createParty, participantFrom } from '../services/partyRepository';
 import { LEVELS } from '../utils/leveling';
 import '../styles/party.css';
 
-const TEMPLATES = [
+const TEMPLATES: { id: PartyStyle; label: string; icon: typeof Dumbbell; type: string; title: string; description: string }[] = [
   { id: 'hyrox', label: 'HYROX', icon: Dumbbell, type: 'HYROX', title: 'HYROX ซ้อมวิ่ง + สถานี', description: 'ซ้อมวิ่งสลับสถานี HYROX หาคู่ลง Doubles ไปด้วย' },
   { id: 'easy', label: 'Easy run', icon: Footprints, type: 'Running', title: 'วิ่ง Easy run ชิล ๆ', description: 'วิ่งช้า ๆ คุยกันได้ ไม่ทิ้งกัน' },
   { id: 'interval', label: 'Interval', icon: Timer, type: 'Running', title: 'วิ่ง Interval ลดเวลา', description: 'วิ่งเร็วสลับพัก ช่วยกันลากเพซ' },
@@ -45,7 +44,6 @@ export default function PartyCreate() {
   const { summary } = useMyLevel();
   const navigate = useNavigate();
   const [params] = useSearchParams();
-  const invitedBuddy = findMockMember(params.get('buddy') || '');
 
   const whens = useMemo(whenOptions, []);
   const places = useMemo(() => {
@@ -56,7 +54,7 @@ export default function PartyCreate() {
     ? [{ value: summary.level.id, label: `เลเวลเดียวกับฉัน (${summary.level.label})` }, { value: 'all', label: 'ทุกเลเวล' }]
     : [{ value: 'all', label: 'ทุกเลเวล' }];
 
-  const [templateId, setTemplateId] = useState(params.get('type') === 'hyrox' || invitedBuddy?.goalType === 'buddy_event' ? 'hyrox' : 'easy');
+  const [templateId, setTemplateId] = useState(params.get('type') === 'hyrox' ? 'hyrox' : 'easy');
   const template = TEMPLATES.find(item => item.id === templateId)!;
   const [title, setTitle] = useState('');
   const [when, setWhen] = useState(whens[0].value);
@@ -72,8 +70,7 @@ export default function PartyCreate() {
   const finalTitle = title.trim() || template.title;
   const finalPlace = (place === CUSTOM ? customPlace : place).trim();
   const finalDate = when === CUSTOM ? (customWhen ? new Date(customWhen).toISOString() : '') : when;
-  const invited = invitedBuddy ? [{ id: invitedBuddy.id, name: invitedBuddy.displayName, levelId: invitedBuddy.levelId }] : [];
-  const previewParticipants = user ? [participantFrom(user, summary?.level.id), ...invited] : invited;
+  const previewParticipants = user ? [participantFrom(user, summary?.level.id)] : [];
 
   const submit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -90,8 +87,8 @@ export default function PartyCreate() {
         location: finalPlace,
         description: note.trim() || template.description,
         levelId: levelId as PartyLevel,
+        style: template.id,
         capacity,
-        invited,
       });
       navigate(`/events/${party.id}`, { state: { justCreated: true } });
     } catch {
@@ -167,7 +164,6 @@ export default function PartyCreate() {
               <p><CalendarDays size={15} aria-hidden="true" /> {whens.find(item => item.value === when && when !== CUSTOM)?.label ?? (customWhen ? new Date(customWhen).toLocaleString('th-TH', { dateStyle: 'medium', timeStyle: 'short' }) : 'เลือกเวลา')}</p>
               <p><MapPin size={15} aria-hidden="true" /> {finalPlace || 'เลือกสถานที่'}</p>
               <PartySlots participants={previewParticipants} capacity={capacity} />
-              {invitedBuddy && <p className="party-preview-invite">ชวน {invitedBuddy.displayName} เข้าตี้แล้ว</p>}
             </div>
           </aside>
         </div>

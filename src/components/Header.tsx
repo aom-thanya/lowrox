@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link, NavLink } from 'react-router-dom';
+import { useNavigate, useLocation, Link, NavLink, type Path } from 'react-router-dom';
 import Image from './common/Image';
-import { Flame, Gauge, Handshake, Menu, Plus, UserRound, X, type LucideIcon } from 'lucide-react';
+import { Flame, Gauge, Menu, Plus, UserRound, X, type LucideIcon } from 'lucide-react';
 import logoImg from '../assets/logo-64.png';
 import { useAuth } from '../context/AuthContext';
 import ProfileMenu from './ProfileMenu';
@@ -17,17 +17,15 @@ const GUEST_NAV: NavItem[] = [
   { label: 'วิธีใช้งาน', to: '/#how-it-works', hash: true },
   { label: 'แพ็กเกจ', to: '/#plans', hash: true }
 ];
-// Members: the training journey — know your level → train with a party → find a buddy.
+// Members: the training journey — know your level → train with a party.
 const MEMBER_NAV: NavItem[] = [
   { label: 'เลเวลของฉัน', to: '/level' },
-  { label: 'ตี้ซ้อม', to: '/events' },
-  { label: 'บัดดี้', to: '/buddies' }
+  { label: 'ตี้ซ้อม', to: '/events' }
 ];
 // Phone tab bar for members, with the quick log in the middle.
 const MEMBER_TABS: TabItem[] = [
   { label: 'เลเวล', to: '/level', icon: Gauge },
   { label: 'ตี้ซ้อม', to: '/events', icon: Flame },
-  { label: 'บัดดี้', to: '/buddies', icon: Handshake },
   { label: 'โปรไฟล์', to: '/profile', icon: UserRound }
 ];
 // Opens the run log on the level page from anywhere.
@@ -37,17 +35,21 @@ const navClass = ({ isActive }: { isActive: boolean }) => `nav-link${isActive ? 
 
 export default function Header() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, logout } = useAuth();
   const { requestAction } = useUnsavedChanges();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  // ProtectedRoute redirects guests here with { login: true, from } instead of a login page.
+  const loginRequest = location.state as { login?: boolean; from?: Partial<Path> } | null;
+  const isLoginRequested = !user && !!loginRequest?.login;
   const isMember = user?.onboardingStatus === 'completed';
 
   const handleLogout = () => requestAction(() => {
     setIsMenuOpen(false);
     logout();
-    navigate('/login');
+    navigate('/');
   });
 
   useEffect(() => {
@@ -145,7 +147,15 @@ export default function Header() {
         </nav>
       )}
 
-      <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
+      <LoginModal
+        isOpen={isLoginModalOpen || isLoginRequested}
+        onClose={() => {
+          setIsLoginModalOpen(false);
+          // Clear the request so closing the modal (or a refresh) doesn't reopen it.
+          if (isLoginRequested) navigate(location, { replace: true, state: null });
+        }}
+        from={isLoginRequested ? loginRequest?.from : null}
+      />
     </>
   );
 }

@@ -1,4 +1,4 @@
-import type { EventRecord, PartyLevel, PartyParticipant, User } from '../types/models';
+import type { EventRecord, PartyLevel, PartyParticipant, PartyStyle, User } from '../types/models';
 
 // Mock persistence for parties (ตี้ซ้อม) in localStorage:
 //   lowrox:parties              — parties created by users
@@ -42,23 +42,22 @@ export interface NewPartyInput {
   location: string;
   description: string;
   levelId: PartyLevel;
+  style?: PartyStyle;
   capacity: number;
-  invited?: PartyParticipant[];
 }
 
 export async function createParty(host: User, hostLevel: PartyLevel | undefined, input: NewPartyInput, storage: PartyStorage = localStorage) {
   await delay(400);
-  const { invited = [], ...details } = input;
   const party: EventRecord = {
     id: `p-${Date.now().toString(36)}`,
-    ...details,
+    ...input,
     status: 'published',
     visibility: 'public',
     isParty: true,
     hostUserId: host.id,
     organizer: { id: host.id, name: host.displayName || host.username || 'หัวตี้', avatarUrl: host.avatarUrl || null },
     joinUrl: null,
-    participants: [participantFrom(host, hostLevel), ...invited].slice(0, input.capacity),
+    participants: [participantFrom(host, hostLevel)],
   };
   storage.setItem(PARTIES_KEY, JSON.stringify([...readStoredParties(storage), party]));
   return applyPartyState(party, storage);

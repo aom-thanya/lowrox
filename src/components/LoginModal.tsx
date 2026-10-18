@@ -1,19 +1,16 @@
 import type { User } from '../types/models';
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, type Path } from 'react-router-dom';
+import { getLoginDestination } from '../utils/authRedirect';
 import LoginForm from './LoginForm';
 import Modal from './common/Modal';
 
-export default function LoginModal({ isOpen, onClose, redirectOnComplete }: { isOpen: boolean; onClose: () => void; redirectOnComplete?: string }) {
+export default function LoginModal({ isOpen, onClose, redirectOnComplete, from }: { isOpen: boolean; onClose: () => void; redirectOnComplete?: string; from?: Partial<Path> | null }) {
   const navigate = useNavigate();
 
   const handleSuccess = (user: User) => {
     onClose();
-    if (redirectOnComplete || user.onboardingStatus === 'completed') {
-      navigate(redirectOnComplete || '/level');
-    } else {
-      navigate('/onboarding');
-    }
+    navigate(redirectOnComplete || getLoginDestination(user, from), { replace: !!from });
   };
 
   return (

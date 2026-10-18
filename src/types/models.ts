@@ -122,12 +122,15 @@ export interface EventRecord {
   // Parties (ตี้ซ้อม) are member-hosted events with in-app joining.
   isParty?: boolean;
   levelId?: PartyLevel;
+  style?: PartyStyle;
   participants?: PartyParticipant[];
   deletedAt?: string;
   deleted_at?: string;
   isDeleted?: boolean;
 }
 export type PartyLevel = 'beginner' | 'intermediate' | 'advanced' | 'elite' | 'all';
+// What kind of session a party is; drives the persona filter on the party list.
+export type PartyStyle = 'easy' | 'long' | 'interval' | 'tempo' | 'hyrox' | 'trail';
 export interface PartyParticipant { id: UserId; name: string; levelId?: PartyLevel }
 export interface CommentImage { id: string; name: string; url: string; width: number; height: number }
 export interface CommentRecord {

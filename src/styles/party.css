@@ -54,7 +54,6 @@
 .party-preview-card > p { display: flex; align-items: center; gap: var(--space-2); color: var(--color-neutral-600); font-size: 14px; }
 .party-preview-top { display: flex; align-items: center; justify-content: space-between; }
 .party-preview-type { color: var(--color-neutral-500); font-size: 13px; font-weight: 600; }
-.party-preview-invite { color: var(--color-success) !important; font-weight: 600; }
 
 /* Party badge on event cards */
 .event-party-meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }

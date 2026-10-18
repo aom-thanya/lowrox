@@ -1,8 +1,5 @@
 import { describe, expect, test } from 'vitest';
 import { cancelParty, createParty, joinParty, leaveParty } from '../src/services/partyRepository';
-import { cancelBuddyRequest, readBuddyStatuses, requestBuddy } from '../src/services/buddyRepository';
-import { rankBuddies, scoreBuddy } from '../src/utils/buddyMatching';
-import { MOCK_MEMBERS, findMockMember } from '../src/data/mockMembers';
 
 function memoryStorage() {
   const data = new Map<string, string>();
@@ -34,28 +31,5 @@ describe('partyRepository', () => {
     const party = await createParty(host, 'beginner', input, storage);
     await expect(cancelParty(party, 'someone-else', storage)).rejects.toThrow();
     expect((await cancelParty(party, 'host-1', storage)).status).toBe('cancelled');
-  });
-});
-
-describe('buddy matching', () => {
-  test('same level, goal, time and area scores 100 with a reason for each', () => {
-    const member = findMockMember('m1')!;
-    const match = scoreBuddy({ levelId: 'intermediate', goalType: 'buddy_event', timePresets: ['early_morning'], areaLabels: ['สวนลุมพินี'] }, member);
-    expect(match.score).toBe(100);
-    expect(match.reasons).toEqual(['เลเวลเดียวกัน', 'เป้าหมายเดียวกัน', 'ว่างเช้าตรู่เหมือนกัน', 'ซ้อมแถวสวนลุมพินี']);
-  });
-
-  test('ranking puts the closest level first', () => {
-    const ranked = rankBuddies({ levelId: 'beginner', goalType: '', timePresets: [], areaLabels: [] }, MOCK_MEMBERS);
-    expect(ranked[0].member.levelId).toBe('beginner');
-    expect(ranked.at(-1)!.score).toBeLessThanOrEqual(ranked[0].score);
-  });
-
-  test('requests become buddies for auto-accepting members and stay pending otherwise', async () => {
-    const storage = memoryStorage();
-    await requestBuddy('u1', findMockMember('m1')!, storage);
-    await requestBuddy('u1', findMockMember('m4')!, storage);
-    expect(readBuddyStatuses('u1', storage)).toEqual({ m1: 'buddy', m4: 'pending' });
-    expect(cancelBuddyRequest('u1', 'm4', storage)).toEqual({ m1: 'buddy' });
   });
 });

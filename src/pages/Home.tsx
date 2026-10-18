@@ -1,8 +1,11 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, Check, Crown, Gauge, PlayCircle, ShieldCheck, Trophy, TrendingUp, Users } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import LoginModal from '../components/LoginModal';
+import { useAuth } from '../context/AuthContext';
+import { getLoginDestination } from '../utils/authRedirect';
 import FeatureCard from '../components/home/FeatureCard';
 import HeroLevelCard from '../components/home/HeroLevelCard';
 import Marquee from '../components/home/Marquee';
@@ -56,6 +59,12 @@ const CTA_SPARKLES = [
 ];
 
 export default function Home() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  // Signed-in users skip straight to their level (or onboarding); guests sign in first.
+  const startLevelCheck = () => (user ? navigate(getLoginDestination(user)) : setIsLoginModalOpen(true));
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
@@ -75,9 +84,9 @@ export default function Home() {
                 แล้วจับคู่ซ้อมกับคนเลเวลใกล้กัน ซ้อมสนุก ไม่กดดัน พร้อมลงแข่งแบบ Buddy
               </p>
               <div className="home-hero-actions">
-                <Link to="/login" className="btn btn-primary btn-md btn-cta home-btn-glow">
+                <button type="button" onClick={startLevelCheck} className="btn btn-primary btn-md btn-cta home-btn-glow">
                   เช็กเลเวลฟรี <ArrowRight size={18} />
-                </Link>
+                </button>
                 <Link to="/events" className="btn btn-md home-btn-ghost">ดูตี้ซ้อมทั้งหมด</Link>
               </div>
               <p className="home-hero-note"><Check size={16} /> เริ่มฟรี ใช้เวลาประมาณ 3 นาที</p>
@@ -237,14 +246,15 @@ export default function Home() {
           <Reveal className="page-container home-cta-content">
             <h2 className="heading-2">พร้อมรู้เลเวลตัวเองหรือยัง?</h2>
             <p className="body-lg">เช็กเลเวลฟรี แล้วไปหาบัดดี้ที่พร้อมพิชิตสนามจริงไปด้วยกัน</p>
-            <Link to="/login" className="btn btn-primary btn-md btn-cta home-btn-glow">
+            <button type="button" onClick={startLevelCheck} className="btn btn-primary btn-md btn-cta home-btn-glow">
               เช็กเลเวลฟรี <ArrowRight size={18} />
-            </Link>
+            </button>
           </Reveal>
         </section>
       </main>
 
       <Footer />
+      <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
     </div>
   );
 }

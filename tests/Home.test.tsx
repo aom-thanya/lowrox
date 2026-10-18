@@ -37,7 +37,9 @@ describe('Homepage', () => {
     
     // Hero
     expect(screen.getByRole('heading', { level: 1, name: /รู้เลเวล หาบัดดี้/ })).toBeInTheDocument();
-    expect(screen.getAllByRole('link', { name: /เช็กเลเวลฟรี/ })[0]).toHaveAttribute('href', '/login');
+    // The CTA opens the login modal instead of a login page
+    fireEvent.click(screen.getAllByRole('button', { name: /เช็กเลเวลฟรี/ })[0]);
+    expect(screen.getByRole('button', { name: 'เข้าสู่ระบบด้วย LINE' })).toBeInTheDocument();
 
     // Consumer pain points → solutions
     expect(screen.getByRole('heading', { name: 'เห็นเลเวลชัด' })).toBeInTheDocument();
@@ -76,12 +78,12 @@ describe('Homepage', () => {
     renderHome();
 
     const mainNav = screen.getByRole('navigation', { name: 'Main Navigation' });
-    expect(within(mainNav).getAllByRole('link').map(link => link.textContent)).toEqual(['เลเวลของฉัน', 'ตี้ซ้อม', 'บัดดี้']);
+    expect(within(mainNav).getAllByRole('link').map(link => link.textContent)).toEqual(['เลเวลของฉัน', 'ตี้ซ้อม']);
     expect(screen.getAllByRole('link', { name: /บันทึกการวิ่ง/ })[0]).toHaveAttribute('href', '/level?log=1');
 
     // Phone tab bar mirrors the journey
     const tabbar = screen.getByRole('navigation', { name: 'เมนูหลัก' });
-    expect(within(tabbar).getByRole('link', { name: 'บัดดี้' })).toHaveAttribute('href', '/buddies');
+    expect(within(tabbar).getAllByRole('link').map(link => link.getAttribute('href'))).toEqual(['/level', '/events', '/level?log=1', '/profile']);
 
     fireEvent.click(screen.getByRole('button', { name: /เมนูโปรไฟล์/ }));
     expect(screen.getByRole('link', { name: 'โปรไฟล์ของฉัน' })).toBeInTheDocument();

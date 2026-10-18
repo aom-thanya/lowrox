@@ -25,9 +25,6 @@ test('getLoginDestination ignores external or invalid URLs and falls back to def
   // External URL
   assert.equal(getLoginDestination(user, { pathname: '//example.com' }), '/level');
   
-  // Login URL
-  assert.equal(getLoginDestination(user, { pathname: '/login' }), '/level');
-  
   // No pathname
   assert.equal(getLoginDestination(user, {}), '/level');
 });

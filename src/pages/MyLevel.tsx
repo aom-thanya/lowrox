@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
-import { ArrowRight, Flame, Handshake, X } from 'lucide-react';
+import { ArrowRight, Flame, X } from 'lucide-react';
 import PageShell from '../components/common/PageShell';
 import Sparkles from '../components/common/Sparkles';
 import Toast from '../components/common/Toast';
@@ -89,11 +89,6 @@ export default function MyLevel() {
           <Link to="/events" className="level-next-card">
             <Flame size={22} aria-hidden="true" />
             <span><b>หาตี้ซ้อมเลเวล{summary ? ` ${summary.level.label}` : 'เดียวกัน'}</b><small>ซ้อมกับคนจังหวะใกล้กัน ไม่กดดัน</small></span>
-            <ArrowRight size={18} aria-hidden="true" />
-          </Link>
-          <Link to="/buddies" className="level-next-card">
-            <Handshake size={22} aria-hidden="true" />
-            <span><b>หาบัดดี้ลงแข่ง</b><small>จับคู่จากเลเวล เป้าหมาย และเวลาว่าง</small></span>
             <ArrowRight size={18} aria-hidden="true" />
           </Link>
         </section>

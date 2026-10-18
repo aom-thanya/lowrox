@@ -4,7 +4,6 @@ import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { vi } from 'vitest';
 import MyLevel from '../src/pages/MyLevel';
 import PartyCreate from '../src/pages/PartyCreate';
-import Buddies from '../src/pages/Buddies';
 import { useAuth } from '../src/context/AuthContext';
 import { createInitialOnboardingData } from '../src/context/OnboardingContext';
 
@@ -76,30 +75,5 @@ describe('Party creation', () => {
     const [party] = JSON.parse(localStorage.getItem('lowrox:parties')!);
     expect(party).toMatchObject({ isParty: true, levelId: 'beginner', capacity: 4, location: 'สวนลุมพินี' });
     expect(party.participants[0]).toMatchObject({ id: 'u-test', name: 'มายด์' });
-  });
-
-  test('inviting a buddy adds them to the party', async () => {
-    renderAt('/parties/new?buddy=m1', <PartyCreate />, '/parties/new');
-    expect(screen.getByText('ชวน ต้น เข้าตี้แล้ว')).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: 'เปิดตี้' }));
-
-    await screen.findByTestId('location');
-    const [party] = JSON.parse(localStorage.getItem('lowrox:parties')!);
-    expect(party.participants.map((person: { id: string }) => person.id)).toEqual(['u-test', 'm1']);
-  });
-});
-
-describe('Buddies', () => {
-  test('ranks matches and turns an accepted request into a party invite', async () => {
-    renderAt('/buddies', <Buddies />, '/buddies');
-
-    const first = screen.getAllByRole('article')[0];
-    expect(within(first).getByRole('heading', { name: 'ต้น' })).toBeInTheDocument();
-    expect(within(first).getByText('เป้าหมายเดียวกัน')).toBeInTheDocument();
-
-    fireEvent.click(within(first).getByRole('button', { name: 'ขอเป็นบัดดี้' }));
-    expect(await within(first).findByText('เป็นบัดดี้แล้ว')).toBeInTheDocument();
-    expect(within(first).getByRole('link', { name: /ชวนเข้าตี้/ })).toHaveAttribute('href', '/parties/new?buddy=m1');
-    expect(screen.getByRole('button', { name: 'บัดดี้ของฉัน (1)' })).toBeInTheDocument();
   });
 });
