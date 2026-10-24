@@ -4,23 +4,28 @@ import { Link } from 'react-router-dom';
 import Image from '../common/Image';
 import { MapPin, Calendar, Activity } from 'lucide-react';
 import ContentCard from '../common/ContentCard';
+import PartyAvatar from '../party/PartyAvatar';
+import PartyShareButton from '../party/PartyShareButton';
 import { eventStatusLabel } from '../../utils/eventVisibility';
 import Badge from '../common/Badge';
 import { formatDateTimeShort } from '../../utils/formatDate';
 import { LEVELS } from '../../utils/leveling';
+import { coverFor } from '../../utils/partyCover';
 
 export default function EventCard({ event, navigationState, onNavigate }: { event: EventRecord; navigationState?: Record<string, unknown>; onNavigate?: () => void }) {
+  const cover = coverFor(event);
   return (
     <ContentCard className="event-list-card">
       <Link to={`/events/${event.id}`} state={navigationState} onClick={onNavigate} className="event-list-card-cover" aria-label={`ดูรายละเอียด ${event.title}`}>
         {/* Placeholder image for events */}
-        {event.coverUrl ? <Image className="event-list-cover-image" src={event.coverUrl} alt="" /> : <div className="event-list-card-placeholder">
+        {cover ? <Image className="event-list-cover-image" src={cover} alt="" /> : <div className="event-list-card-placeholder">
           <Activity size={48} />
         </div>}
         <div className="event-list-card-status"><Badge variant={event.status === 'cancelled' ? 'error' : 'neutral'}>{eventStatusLabel(event)}</Badge></div>
       </Link>
       
       <div className="event-list-card-body">
+        {event.isParty && <PartyAvatar style={event.style} className="-mt-[52px]" />}
         <div className="event-list-card-badge">
           <Badge variant="neutral">{event.type}</Badge>
           {event.isParty && <span className="level-chip" data-level={event.levelId ?? 'all'}>{event.levelId && event.levelId !== 'all' ? LEVELS.find(level => level.id === event.levelId)?.label : 'ทุกเลเวล'}</span>}
@@ -44,12 +49,15 @@ export default function EventCard({ event, navigationState, onNavigate }: { even
           {event.description}
         </p>
         
-        <Link 
-          to={`/events/${event.id}`} state={navigationState} onClick={onNavigate}
-          className="btn btn-secondary btn-md event-list-card-action"
-        >
-          ดูรายละเอียด
-        </Link>
+        <div className="mt-auto flex gap-2">
+          <Link
+            to={`/events/${event.id}`} state={navigationState} onClick={onNavigate}
+            className="btn btn-secondary btn-md event-list-card-action flex-1"
+          >
+            ดูรายละเอียด
+          </Link>
+          {event.isParty && event.status !== 'cancelled' && <PartyShareButton event={event} compact />}
+        </div>
       </div>
     </ContentCard>
   );

@@ -132,6 +132,13 @@ export type PartyLevel = 'beginner' | 'intermediate' | 'advanced' | 'elite' | 'a
 // What kind of session a party is; drives the persona filter on the party list.
 export type PartyStyle = 'easy' | 'long' | 'interval' | 'tempo' | 'hyrox' | 'trail';
 export interface PartyParticipant { id: UserId; name: string; levelId?: PartyLevel }
+// One meet-up inside a party; a party runs as a recurring series of these.
+export interface PartySession { id: string; title: string; kind: 'workout' | 'social'; date: string; location: string; rsvpCount: number }
+// A run a member posted to the party feed. route is a closed loop in a 0–100 box, drawn as a mock map.
+export interface PartyActivity {
+  id: string; member: PartyParticipant; date: string; device: string; place: string; title: string;
+  distanceKm: number; durationMin: number; achievements: number; kudos: number; comments: number; route: [number, number][];
+}
 export interface CommentImage { id: string; name: string; url: string; width: number; height: number }
 export interface CommentRecord {
   id: string;

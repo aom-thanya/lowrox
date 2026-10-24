@@ -86,6 +86,29 @@ describe('EventList Page', () => {
     expect(await screen.findByRole('button', { name: /อยากวิ่งเร็วขึ้น.*ตรงกับเป้าของคุณ/ })).toBeInTheDocument();
   });
 
+  it('applies a sport type straight away and removes it from the active chips', async () => {
+    window.history.replaceState(null, '', '/events?page=2');
+    vi.mocked(eventRepository.getEvents).mockResolvedValue({ events: [event('1', 'Party')], total: 30, page: 2, pageCount: 3 });
+    renderPage();
+    await screen.findByText('Party');
+
+    fireEvent.click(screen.getByRole('button', { name: 'วิ่งเทรล' }));
+    await waitFor(() => expect(eventRepository.getEvents).toHaveBeenLastCalledWith(expect.objectContaining({ type: 'Trail', page: 1 })));
+    expect(screen.getByRole('button', { name: 'ตัวกรอง (1)' })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'ลบตัวกรอง วิ่งเทรล' }));
+    await waitFor(() => expect(eventRepository.getEvents).toHaveBeenLastCalledWith(expect.objectContaining({ type: '' })));
+  });
+
+  it('searches by text on submit', async () => {
+    vi.mocked(eventRepository.getEvents).mockResolvedValue({ events: [], total: 0, page: 1, pageCount: 1 });
+    renderPage();
+    const input = await screen.findByRole('textbox', { name: 'ค้นหากิจกรรม' });
+    fireEvent.change(input, { target: { value: 'ลุมพินี' } });
+    fireEvent.submit(input.closest('form')!);
+    await waitFor(() => expect(eventRepository.getEvents).toHaveBeenLastCalledWith(expect.objectContaining({ query: 'ลุมพินี' })));
+  });
+
   it('pages through results', async () => {
     vi.mocked(eventRepository.getEvents).mockResolvedValue({ events: [event('1', 'Party')], total: 40, page: 1, pageCount: 4 });
     renderPage();

@@ -139,7 +139,7 @@ const SESSIONS: Session[] = [
 ];
 
 // Small seeded PRNG (mulberry32) so mock data is stable across reloads.
-function seededRandom(seed: string) {
+export function seededRandom(seed: string) {
   let h = 1779033703 ^ seed.length;
   for (let i = 0; i < seed.length; i++) h = Math.imul(h ^ seed.charCodeAt(i), 3432918353), h = (h << 13) | (h >>> 19);
   let a = h >>> 0;

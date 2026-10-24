@@ -4,10 +4,8 @@ import type { EventRecord } from '../../types/models';
 import { useAuth } from '../../context/AuthContext';
 import { useMyLevel } from '../../hooks/useMyLevel';
 import { cancelParty, joinParty, leaveParty, participantFrom } from '../../services/partyRepository';
-import { LEVELS } from '../../utils/leveling';
+import { partyLevelLabel as levelLabel } from '../../utils/leveling';
 import PartySlots from './PartySlots';
-
-const levelLabel = (id?: string) => (id === 'all' ? 'ทุกเลเวล' : LEVELS.find(level => level.id === id)?.label ?? 'ทุกเลเวล');
 
 // In-app join for a party: one tap to join or leave; the host can cancel.
 export default function PartyJoinPanel({ event, isActive, onChange, onRequireLogin }: {

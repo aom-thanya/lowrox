@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7A320C"/><stop offset=".55" stop-color="#FF8A24"/><stop offset="1" stop-color="#FFCC99"/></linearGradient>
+  </defs>
+  <rect width="800" height="400" fill="url(#sky)"/>
+  <circle cx="400" cy="210" r="56" fill="#FFF5EB" opacity=".9"/>
+  <rect y="210" width="800" height="190" fill="#3F3F46"/>
+  <path d="M0 210 H800 V230 Q600 222 400 224 T0 230Z" fill="#29292D"/>
+  <path d="M385 210 L415 210 L640 400 L160 400Z" fill="#5F5F68"/>
+  <path d="M400 214 V226 M400 240 V262 M400 282 V318 M400 344 V400" stroke="#FFCC99" stroke-width="6"/>
+  <g fill="#FFF5EB">
+    <rect x="572" y="300" width="34" height="44" rx="4"/><rect x="586" y="344" width="6" height="24"/>
+    <rect x="456" y="236" width="16" height="22" rx="2"/><rect x="462" y="258" width="4" height="12"/>
+  </g>
+  <text x="589" y="330" font-family="sans-serif" font-size="20" font-weight="700" fill="#BF4900" text-anchor="middle">21</text>
+  <text x="464" y="252" font-family="sans-serif" font-size="11" font-weight="700" fill="#BF4900" text-anchor="middle">10</text>
+</svg>

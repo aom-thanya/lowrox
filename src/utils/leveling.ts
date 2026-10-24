@@ -74,3 +74,6 @@ export function formatDuration(totalMinutes: number) {
 
 export const formatPace = (effort: WorkoutEffort) => formatDuration(effort.durationMin / effort.distanceKm);
 export const formatDistance = (km: number) => `${Number(km.toFixed(2))} กม.`;
+
+// A party's level, where 'all' (or none) means anyone can join.
+export const partyLevelLabel = (id?: string) => (!id || id === 'all' ? 'ทุกเลเวล' : LEVELS.find(level => level.id === id)?.label ?? 'ทุกเลเวล');

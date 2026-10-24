@@ -1,16 +1,18 @@
 import type { EventRecord, CommentRecord, CommentImage } from '../types/models';
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
-import { MapPin, Calendar, Activity, ArrowLeft, ExternalLink, Link2 } from 'lucide-react';
+import { MapPin, Calendar, Activity, ArrowLeft, ExternalLink } from 'lucide-react';
 import PageShell from '../components/common/PageShell';
 import { formatDateTimeFull } from '../utils/formatDate';
 import Badge from '../components/common/Badge';
 import Avatar from '../components/common/Avatar';
 import LoginModal from '../components/LoginModal';
-import PartyJoinPanel from '../components/party/PartyJoinPanel';
+import PartyDetail from '../components/party/PartyDetail';
+import PartyShareButton from '../components/party/PartyShareButton';
 import CommentList from '../components/events/CommentList';
 import CommentComposer from '../components/events/CommentComposer';
 import { useAuth } from '../context/AuthContext';
+import { coverFor } from '../utils/partyCover';
 import { getEventById, getJoinGroupUrl, isEventEnded } from '../services/eventRepository';
 import { getCommentsByEventId, postComment } from '../services/commentRepository';
 
@@ -65,16 +67,6 @@ export default function EventDetails() {
     
     return () => { isMounted = false; };
   }, [eventId]);
-
-  const [linkCopied, setLinkCopied] = useState(false);
-  const copyLink = async () => {
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-      setLinkCopied(true);
-    } catch {
-      setLinkCopied(false);
-    }
-  };
 
   const handleBack = () => {
     // Navigate back to preserve search params if we came from list
@@ -141,6 +133,33 @@ export default function EventDetails() {
   const isEnded = isEventEnded(event);
   const isCancelled = event.status === 'cancelled';
   const isActive = !isEnded && !isCancelled;
+  const cover = coverFor(event);
+  const discussion = (
+    <>
+      <h3 className="heading-4">ความคิดเห็น</h3>
+      <p className="event-detail-helper">ทุกคนสามารถอ่านคอมเมนต์ที่เผยแพร่ได้ แต่ต้องเข้าสู่ระบบก่อนส่ง</p>
+      
+      {user ? (
+        <CommentComposer 
+          user={user} 
+          onSubmit={handlePostComment} 
+          isSubmitting={isSubmittingComment} 
+        />
+      ) : (
+        <div className="event-comment-login">
+          <p className="text-brand-800 font-medium">เข้าสู่ระบบเพื่อแสดงความคิดเห็น</p>
+          <button 
+            onClick={() => setIsLoginModalOpen(true)} 
+            className="btn btn-primary btn-md"
+          >
+            เข้าสู่ระบบ
+          </button>
+        </div>
+      )}
+      
+      <CommentList comments={comments} isLoading={isLoadingComments} />
+    </>
+  );
 
   return (
     <PageShell
@@ -165,130 +184,112 @@ export default function EventDetails() {
           {location.state?.justCreated && (
             <div className="party-created" role="status">
               <p>🎉 เปิดตี้แล้ว! ชวนเพื่อนด้วยลิงก์นี้ได้เลย</p>
-              <button type="button" className="btn btn-secondary btn-md" onClick={copyLink}><Link2 size={18} /> {linkCopied ? 'คัดลอกแล้ว' : 'คัดลอกลิงก์ตี้'}</button>
+              <PartyShareButton event={event} />
             </div>
           )}
 
-          <div className="event-detail-card">
-            {/* Event Header Image */}
-            <div className="event-detail-cover">
-              <Activity size={64} aria-hidden="true" />
-              {isCancelled && (
-                <div className="event-detail-overlay event-overlay-bg">
-                  <div className="event-overlay-badge-error">กิจกรรมนี้ถูกยกเลิกแล้ว</div>
-                </div>
-              )}
-              {isEnded && !isCancelled && (
-                <div className="event-detail-overlay event-overlay-bg">
-                  <div className="event-overlay-badge-neutral">กิจกรรมจบลงแล้ว</div>
-                </div>
-              )}
-            </div>
-            
-            {/* Event Info */}
-            <div className="event-detail-body">
-              <div className="event-detail-badges">
-                <Badge variant="neutral">{event.type}</Badge>
-                {isCancelled && <Badge variant="error">ยกเลิก</Badge>}
-                {isEnded && !isCancelled && <Badge variant="neutral">จบแล้ว</Badge>}
-              </div>
-              
-              <h1 className="heading-2 event-detail-title">{event.title}</h1>
-              
-              <div className="event-details-grid">
-                <div className="event-detail-facts">
-                  <div className="event-detail-fact">
-                    <div className="event-detail-icon">
-                      <Calendar size={24} />
+          {event.isParty ? (
+            <PartyDetail event={event} isActive={isActive} isEnded={isEnded} isCancelled={isCancelled}
+              onChange={setEvent} onRequireLogin={() => setIsLoginModalOpen(true)} chat={<div id="comments">{discussion}</div>} />
+          ) : (
+            <>
+              <div className="event-detail-card">
+                {/* Event Header Image */}
+                <div className="event-detail-cover overflow-hidden">
+                  {cover ? <img className="absolute inset-0 size-full object-cover" src={cover} alt="" /> : <Activity size={64} aria-hidden="true" />}
+                  {isCancelled && (
+                    <div className="event-detail-overlay event-overlay-bg">
+                      <div className="event-overlay-badge-error">กิจกรรมนี้ถูกยกเลิกแล้ว</div>
                     </div>
-                    <div>
-                      <h3 className="event-detail-label">วันและเวลา</h3>
-                      <p className="text-neutral-600">{formatDateTimeFull(event.date)}</p>
-                      {event.endDate && (
-                        <p className="text-neutral-600 mt-1">ถึง {formatDateTimeFull(event.endDate)}</p>
-                      )}
+                  )}
+                  {isEnded && !isCancelled && (
+                    <div className="event-detail-overlay event-overlay-bg">
+                      <div className="event-overlay-badge-neutral">กิจกรรมจบลงแล้ว</div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Event Info */}
+                <div className="event-detail-body">
+                  <div className="event-detail-badges">
+                    <Badge variant="neutral">{event.type}</Badge>
+                    {isCancelled && <Badge variant="error">ยกเลิก</Badge>}
+                    {isEnded && !isCancelled && <Badge variant="neutral">จบแล้ว</Badge>}
+                  </div>
+
+                  <h1 className="heading-2 event-detail-title">{event.title}</h1>
+
+                  <div className="event-details-grid">
+                    <div className="event-detail-facts">
+                      <div className="event-detail-fact">
+                        <div className="event-detail-icon">
+                          <Calendar size={24} />
+                        </div>
+                        <div>
+                          <h3 className="event-detail-label">วันและเวลา</h3>
+                          <p className="text-neutral-600">{formatDateTimeFull(event.date)}</p>
+                          {event.endDate && (
+                            <p className="text-neutral-600 mt-1">ถึง {formatDateTimeFull(event.endDate)}</p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="event-detail-fact">
+                        <div className="event-detail-icon">
+                          <MapPin size={24} />
+                        </div>
+                        <div>
+                          <h3 className="event-detail-label">สถานที่</h3>
+                          <p className="text-neutral-600">{event.location}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="event-detail-organizer">
+                      <h3 className="event-detail-label">ผู้จัดกิจกรรม</h3>
+                      <Link to={`/users/${event.hostUserId ?? event.organizer?.id}`} className="event-detail-organizer-person public-member-link">
+                        <Avatar src={event.organizer?.avatarUrl} size="medium" />
+                        <span className="font-medium text-lg">{event.organizer?.name || 'ไม่ระบุชื่อ'}</span>
+                      </Link>
                     </div>
                   </div>
-                  
-                  <div className="event-detail-fact">
-                    <div className="event-detail-icon">
-                      <MapPin size={24} />
-                    </div>
-                    <div>
-                      <h3 className="event-detail-label">สถานที่</h3>
-                      <p className="text-neutral-600">{event.location}</p>
-                    </div>
+
+                  <div className="event-detail-description">
+                    <h3 className="heading-4">รายละเอียด</h3>
+                    <p className="body-lg event-detail-copy">
+                      {event.description}
+                    </p>
+                  </div>
+
+                  {/* Join Group Section */}
+                  <div className="event-detail-join">
+                    {!isActive ? (
+                      <p className="text-neutral-500 font-medium">ไม่สามารถเข้าร่วมได้ (กิจกรรมจบหรือถูกยกเลิกแล้ว)</p>
+                    ) : !event.joinUrl ? (
+                      <p className="text-neutral-500 font-medium bg-neutral-100 inline-block rounded-xl event-join-status">ยังไม่เปิดให้เข้าร่วมกลุ่ม</p>
+                    ) : (
+                      <>
+                        <button
+                          onClick={handleJoinGroup}
+                          disabled={isJoining}
+                          className="btn btn-primary btn-md event-join-btn"
+                        >
+                          {isJoining ? 'กำลังตรวจสอบ...' : (
+                            <>Join Group <ExternalLink size={20} /></>
+                          )}
+                        </button>
+                        {joinError && <p className="text-error mt-2 text-sm">{joinError}</p>}
+                        {!user && <p className="text-neutral-500 text-sm mt-3">เข้าสู่ระบบเพื่อเข้าร่วมกลุ่มกิจกรรมนี้</p>}
+                      </>
+                    )}
                   </div>
                 </div>
-                
-                <div className="event-detail-organizer">
-                  <h3 className="event-detail-label">ผู้จัดกิจกรรม</h3>
-                  <Link to={`/users/${event.hostUserId ?? event.organizer?.id}`} className="event-detail-organizer-person public-member-link">
-                    <Avatar src={event.organizer?.avatarUrl} size="medium" />
-                    <span className="font-medium text-lg">{event.organizer?.name || 'ไม่ระบุชื่อ'}</span>
-                  </Link>
-                </div>
               </div>
-              
-              <div className="event-detail-description">
-                <h3 className="heading-4">รายละเอียด</h3>
-                <p className="body-lg event-detail-copy">
-                  {event.description}
-                </p>
-              </div>
-              
-              {/* Join Group Section */}
-              <div className="event-detail-join">
-                {event.isParty ? (
-                  <PartyJoinPanel event={event} isActive={isActive} onChange={setEvent} onRequireLogin={() => setIsLoginModalOpen(true)} />
-                ) : !isActive ? (
-                  <p className="text-neutral-500 font-medium">ไม่สามารถเข้าร่วมได้ (กิจกรรมจบหรือถูกยกเลิกแล้ว)</p>
-                ) : !event.joinUrl ? (
-                  <p className="text-neutral-500 font-medium bg-neutral-100 inline-block rounded-xl event-join-status">ยังไม่เปิดให้เข้าร่วมกลุ่ม</p>
-                ) : (
-                  <>
-                    <button 
-                      onClick={handleJoinGroup}
-                      disabled={isJoining}
-                      className="btn btn-primary btn-md event-join-btn"
-                    >
-                      {isJoining ? 'กำลังตรวจสอบ...' : (
-                        <>Join Group <ExternalLink size={20} /></>
-                      )}
-                    </button>
-                    {joinError && <p className="text-error mt-2 text-sm">{joinError}</p>}
-                    {!user && <p className="text-neutral-500 text-sm mt-3">เข้าสู่ระบบเพื่อเข้าร่วมกลุ่มกิจกรรมนี้</p>}
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
-          
-          {/* Comments Section */}
-          <div className="event-detail-comments" id="comments">
-            <h3 className="heading-4">ความคิดเห็น</h3>
-            <p className="event-detail-helper">ทุกคนสามารถอ่านคอมเมนต์ที่เผยแพร่ได้ แต่ต้องเข้าสู่ระบบก่อนส่ง</p>
-            
-            {user ? (
-              <CommentComposer 
-                user={user} 
-                onSubmit={handlePostComment} 
-                isSubmitting={isSubmittingComment} 
-              />
-            ) : (
-              <div className="event-comment-login">
-                <p className="text-brand-800 font-medium">เข้าสู่ระบบเพื่อแสดงความคิดเห็น</p>
-                <button 
-                  onClick={() => setIsLoginModalOpen(true)} 
-                  className="btn btn-primary btn-md"
-                >
-                  เข้าสู่ระบบ
-                </button>
-              </div>
-            )}
-            
-            <CommentList comments={comments} isLoading={isLoadingComments} />
-          </div>
+
+              {/* Comments Section */}
+              <div className="event-detail-comments" id="comments">{discussion}</div>
+            </>
+          )}
         </div>
     </PageShell>
   );
