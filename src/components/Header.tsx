@@ -89,7 +89,7 @@ export default function Header() {
     <>
       <header className={`header ${user ? 'header-authenticated' : ''} ${isScrolled ? 'scrolled' : ''}`} id="site-header">
         <div className="page-container">
-          <Link to={isMember ? '/level' : '/'} className="logo" aria-label="Lowrox homepage">
+          <Link to="/" className="logo" aria-label="Lowrox homepage">
             <Image src={logoImg} alt="LOWROX" className="h-8" loading="eager" />
           </Link>
 

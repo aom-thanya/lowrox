@@ -13,6 +13,7 @@ const Profile = React.lazy(() => import('./pages/Profile'));
 const ProfileEditor = React.lazy(() => import('./pages/ProfileEditor'));
 const ProfileOnboardingEditor = React.lazy(() => import('./pages/ProfileOnboardingEditor'));
 const Settings = React.lazy(() => import('./pages/Settings'));
+const Devices = React.lazy(() => import('./pages/Devices'));
 const EventList = React.lazy(() => import('./pages/EventList'));
 const EventDetails = React.lazy(() => import('./pages/EventDetails'));
 const UserProfile = React.lazy(() => import('./pages/UserProfile'));
@@ -41,6 +42,7 @@ const router = createBrowserRouter(createRoutesFromElements(
               {profileNavigation.map((page) => {
                 if (page.to === '/profile') return <Route key={page.to} index element={<ProfileEditor />} />;
                 if (page.to === '/profile/onboarding') return <Route key={page.to} path="onboarding" element={<ProfileOnboardingEditor />} />;
+                if (page.to === '/profile/devices') return <Route key={page.to} path="devices" element={<Devices />} />;
                 if (page.to === '/profile/settings') return <Route key={page.to} path="settings" element={<Settings />} />;
                 return <Route key={page.to} path={page.to.slice('/profile/'.length)} element={<Profile page={page} />} />;
               })}

@@ -9,6 +9,7 @@ it('opens account links and closes on Escape, outside click, and navigation', ()
   expect(screen.queryByRole('link', { name: 'โปรไฟล์ของฉัน' })).not.toBeInTheDocument();
   fireEvent.click(trigger);
   expect(trigger).toHaveAttribute('aria-expanded', 'true');
+  expect(screen.getByRole('link', { name: 'เชื่อมต่ออุปกรณ์' })).toHaveAttribute('href', '/profile/devices');
   expect(screen.getByRole('link', { name: 'ตั้งค่าบัญชี' })).toHaveAttribute('href', '/profile/settings');
   expect(screen.getByRole('link', { name: 'อัปเกรดเป็น Member' })).toHaveAttribute('href', '/#plans');
   expect(screen.queryByRole('link', { name: 'Message' })).not.toBeInTheDocument();

@@ -1,10 +1,11 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import ProfileOnboardingEditor from '../src/pages/ProfileOnboardingEditor';
-import { useUnsavedChanges } from '../src/context/UnsavedChangesContext';
 import { useAuth } from '../src/context/AuthContext';
+import { createInitialOnboardingData } from '../src/context/OnboardingContext';
+import type { OnboardingData } from '../src/types/models';
 
 vi.mock('../src/context/UnsavedChangesContext', () => ({
   useUnsavedChanges: vi.fn(() => ({
@@ -17,83 +18,73 @@ vi.mock('../src/context/AuthContext', () => ({
   useAuth: vi.fn()
 }));
 
-// Mock OnboardingContext to force isDirty to be true
-vi.mock('../src/context/OnboardingContext', async (importOriginal) => {
-  const React = await import('react');
-  return {
-    OnboardingProvider: ({ children }: React.PropsWithChildren) => <>{children}</>,
-    useOnboarding: () => ({
-      formData: { mock_dirty: true },
-      updateFormData: vi.fn()
-    })
-  };
-});
-
-// Mock the step components to simulate validation triggers
-vi.mock('../src/components/onboarding/StepBasicInfo', () => ({
-  default: React.forwardRef((props, ref) => {
-    React.useImperativeHandle(ref, () => ({
-      validate: () => false // Simulate validation failure
-    }));
-    return <div data-testid="step-basic-info">Basic Info</div>;
-  })
-}));
-
-vi.mock('../src/components/onboarding/StepFitnessLevel', () => ({
-  default: React.forwardRef((props, ref) => {
-    React.useImperativeHandle(ref, () => ({ validate: () => true }));
-    return <div data-testid="step-fitness">Fitness</div>;
-  })
-}));
-
-vi.mock('../src/components/onboarding/StepGoals', () => ({
-  default: React.forwardRef((props, ref) => {
-    React.useImperativeHandle(ref, () => ({ validate: () => true }));
-    return <div data-testid="step-goals">Goals</div>;
-  })
-}));
-
-vi.mock('../src/components/onboarding/StepAvailability', () => ({
-  default: React.forwardRef((props, ref) => {
-    React.useImperativeHandle(ref, () => ({ validate: () => true }));
-    return <div data-testid="step-availability">Availability</div>;
-  })
-}));
-
-vi.mock('../src/components/onboarding/StepHealth', () => ({
-  default: React.forwardRef((props, ref) => {
-    React.useImperativeHandle(ref, () => ({ validate: () => true }));
-    return <div data-testid="step-health">Health</div>;
-  })
-}));
+function savedAnswers(): OnboardingData {
+  const data = createInitialOnboardingData();
+  data.fitnessLevel = { ...data.fitnessLevel, distanceSelection: '5', runningDistance: '5', runningDuration: '35', durationSelection: 'custom', customDurationHours: '0', customDurationMinutes: '35' };
+  data.goals = [{ ...data.goals[0], goalType: 'improve_time' }];
+  data.safetyCheck = { mainSelection: ['none'], concerns: [] };
+  return data;
+}
 
 describe('ProfileOnboardingEditor', () => {
-  const saveOnboardingData = vi.fn();
-  
-  const renderEditor = () => {
+  const saveOnboardingData = vi.fn().mockResolvedValue(undefined);
+
+  const renderEditor = (data: OnboardingData = savedAnswers()) => {
     vi.mocked(useAuth, { partial: true }).mockReturnValue({
-        user: { id: 'test' }, 
-        loadOnboardingData: vi.fn().mockResolvedValue({}),
-        saveOnboardingData
+      user: { id: 'test' } as never,
+      loadOnboardingData: vi.fn().mockResolvedValue(data),
+      saveOnboardingData
     });
-    return render(
-      <MemoryRouter>
-        <>
-          <ProfileOnboardingEditor />
-        </>
-      </MemoryRouter>
-    );
+    return render(<MemoryRouter><ProfileOnboardingEditor /></MemoryRouter>);
   };
 
-  test('validates all steps when saving and stops if invalid', async () => {
+  beforeEach(() => saveOnboardingData.mockClear());
+
+  test('shows the onboarding screens prefilled, one at a time', async () => {
     renderEditor();
-    
-    // Attempt to save (waiting for it to appear after loading)
-    const saveBtn = await screen.findByRole('button', { name: 'บันทึกการเปลี่ยนแปลง' });
-    fireEvent.click(saveBtn);
-    
-    // Basic Info mock returns false, so it should show error and not save
-    expect(await screen.findByText('กรุณาตรวจสอบข้อมูลที่กรอกให้ครบถ้วน')).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { name: 'ครั้งล่าสุดวิ่งได้เท่าไร?' })).toBeInTheDocument();
+    expect(screen.getByDisplayValue('35')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'บันทึกการเปลี่ยนแปลง' })).toBeDisabled();
+
+    fireEvent.click(screen.getByRole('tab', { name: /เป้าหมาย/ }));
+    expect(screen.getByRole('button', { name: /วิ่งให้เร็วขึ้น/ })).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  test('changing a goal stays on the step and saves in one go', async () => {
+    renderEditor();
+    fireEvent.click(await screen.findByRole('button', { name: 'ถัดไป →' }));
+    fireEvent.click(screen.getByRole('button', { name: /วิ่งให้ไกลขึ้น/ }));
+    expect(screen.getByRole('heading', { name: 'อยากไปให้ถึงอะไร?' })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'บันทึกการเปลี่ยนแปลง' }));
+    await waitFor(() => expect(saveOnboardingData).toHaveBeenCalledWith(expect.objectContaining({
+      goals: [expect.objectContaining({ goalType: 'increase_distance' })],
+    })));
+    expect(await screen.findByText('บันทึกข้อมูลสำเร็จ')).toBeInTheDocument();
+  });
+
+  test('will not save a run time nobody could run', async () => {
+    renderEditor();
+    fireEvent.change(await screen.findByDisplayValue('35'), { target: { value: '2' } });
+    fireEvent.click(screen.getByRole('button', { name: 'บันทึกการเปลี่ยนแปลง' }));
+    expect(await screen.findByText('เวลาวิ่งดูไม่สมจริง ลองเช็คนาทีอีกครั้ง')).toBeInTheDocument();
     expect(saveOnboardingData).not.toHaveBeenCalled();
+  });
+
+  test('adds a health concern and the time and area step', async () => {
+    renderEditor();
+    fireEvent.click(await screen.findByRole('tab', { name: /สุขภาพ/ }));
+    fireEvent.click(screen.getByRole('button', { name: /มี ขอบอกหน่อย/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'บาดเจ็บหรือปวด' }));
+
+    fireEvent.click(screen.getByRole('tab', { name: /เวลาและพื้นที่/ }));
+    fireEvent.change(screen.getByLabelText('พื้นที่ที่สะดวก'), { target: { value: 'สวนลุมพินี' } });
+    fireEvent.click(screen.getByRole('button', { name: /หลังเลิกงาน/ }));
+
+    fireEvent.click(screen.getByRole('button', { name: 'บันทึกการเปลี่ยนแปลง' }));
+    await waitFor(() => expect(saveOnboardingData).toHaveBeenCalled());
+    const saved = saveOnboardingData.mock.calls[0][0] as OnboardingData;
+    expect(saved.safetyCheck.concerns.map(concern => concern.concern_type)).toEqual(['injury']);
+    expect(saved.availabilityWindows[0]).toMatchObject({ areaLabel: 'สวนลุมพินี', timePresets: ['after_work'] });
   });
 });

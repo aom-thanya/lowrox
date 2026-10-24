@@ -1,6 +1,5 @@
-import type { StepHandle, OnboardingData } from '../types/models';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import type { OnboardingData } from '../types/models';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useUnsavedChanges } from '../context/UnsavedChangesContext';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
@@ -11,131 +10,100 @@ import Button from '../components/common/Button';
 import Toast from '../components/common/Toast';
 import Skeleton from '../components/common/Skeleton';
 
-import StepBasicInfo from '../components/onboarding/StepBasicInfo';
-import StepFitnessLevel from '../components/onboarding/StepFitnessLevel';
-import StepGoals from '../components/onboarding/StepGoals';
-import StepAvailability from '../components/onboarding/StepAvailability';
-import StepHealth from '../components/onboarding/StepHealth';
+import { QuickGoalStep, QuickRhythmStep, QuickRunStep, QuickSafetyStep } from '../components/onboarding/QuickSteps';
+import { isPlausibleEffort } from '../utils/leveling';
 
-// Inner component that has access to the OnboardingContext
-function ProfileOnboardingEditorForm({ onCancel, initialData }: { onCancel: () => void; initialData: OnboardingData | null }) {
-  const { formData, updateFormData } = useOnboarding();
+const STEPS = [
+  { label: 'วิ่ง', Step: QuickRunStep },
+  { label: 'เป้าหมาย', Step: QuickGoalStep },
+  { label: 'สุขภาพ', Step: QuickSafetyStep },
+  { label: 'เวลาและพื้นที่', Step: QuickRhythmStep },
+];
+
+// A tracked run must be one a person could actually run, or the level would be wrong.
+const runIsValid = (fitness: OnboardingData['fitnessLevel']) =>
+  !fitness.distanceSelection || fitness.distanceSelection === 'not_tracked'
+  || isPlausibleEffort({ distanceKm: Number(fitness.distanceSelection), durationMin: Number(fitness.runningDuration) });
+
+// The same screens as onboarding, one at a time, but free to jump between and saved in one go.
+function ProfileOnboardingEditorForm({ initialData, onReset, onSaved }: { initialData: OnboardingData | null; onReset: () => void; onSaved: (data: OnboardingData) => void }) {
+  const { formData } = useOnboarding();
   const { saveOnboardingData } = useAuth();
   const { setDirty } = useUnsavedChanges();
-  const navigate = useNavigate();
-
+  const [step, setStep] = useState(0);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState('');
   const [toast, setToast] = useState('');
-  const [showValidation, setShowValidation] = useState(false);
+  // Nothing saved yet means any answers are new.
+  const isDirty = initialData === null || JSON.stringify(initialData) !== JSON.stringify(formData);
+  const last = step === STEPS.length - 1;
+  const { Step } = STEPS[step];
 
-  // Use refs to call validate on each step
-  const step1Ref = useRef<StepHandle | null>(null);
-  const step2Ref = useRef<StepHandle | null>(null);
-  const step3Ref = useRef<StepHandle | null>(null);
-  const step4Ref = useRef<StepHandle | null>(null);
-  const step5Ref = useRef<StepHandle | null>(null);
-
-  // Check if dirty
-  const initialJson = useMemo(() => (initialData ? JSON.stringify(initialData) : null), [initialData]);
-  const isDirty = initialJson !== null && initialJson !== JSON.stringify(formData);
-
-  useEffect(() => {
-    setDirty(isDirty);
-  }, [isDirty, setDirty]);
-
-  useEffect(() => {
-    return () => setDirty(false);
-  }, [setDirty]);
-
+  useEffect(() => { setDirty(isDirty); }, [isDirty, setDirty]);
+  useEffect(() => () => setDirty(false), [setDirty]);
   const dismissToast = useCallback(() => setToast(''), []);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setShowValidation(true);
+  const save = async () => {
     setSaveError('');
-
-    // Validate all steps
-    const valid1 = step1Ref.current?.validate ? step1Ref.current.validate() : true;
-    const valid2 = step2Ref.current?.validate ? step2Ref.current.validate() : true;
-    const valid3 = step3Ref.current?.validate ? step3Ref.current.validate() : true;
-    const valid4 = step4Ref.current?.validate ? step4Ref.current.validate() : true;
-    const valid5 = step5Ref.current?.validate ? step5Ref.current.validate() : true;
-
-    if (!valid1 || !valid2 || !valid3 || !valid4 || !valid5) {
-      setSaveError('กรุณาตรวจสอบข้อมูลที่กรอกให้ครบถ้วน');
+    if (!runIsValid(formData.fitnessLevel)) {
+      setStep(0);
+      setSaveError('เวลาวิ่งดูไม่สมจริง ลองเช็คนาทีอีกครั้ง');
       return;
     }
-
     setSaving(true);
     try {
       await saveOnboardingData(formData);
-      setToast('บันทึกข้อมูลสำเร็จ');
+      onSaved(formData);
       setDirty(false);
-      // Optional: navigate back or stay on page
-    } catch (err) {
+      setToast('บันทึกข้อมูลสำเร็จ');
+    } catch {
       setSaveError('บันทึกข้อมูลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
     } finally {
       setSaving(false);
     }
   };
 
-  const handleCancel = () => {
-    setDirty(false);
-    onCancel();
-  };
-
   return (
-    <form className="profile-form onboarding-profile-form" onSubmit={handleSubmit} noValidate>
-      <fieldset disabled={saving}>
-        <ContentCard className="onboarding-profile-card">
-          <section>
-            <h2 className="heading-4">ข้อมูลพื้นฐาน</h2>
-            <p className="field-helper onboarding-profile-description">ข้อมูลนี้จะช่วยให้ Lowrox ปรับแต่งประสบการณ์และเป้าหมายให้เหมาะกับคุณที่สุด</p>
-            <StepBasicInfo ref={step1Ref} isEditor={true} externalShowValidation={showValidation} />
-          </section>
-        </ContentCard>
+    <ContentCard className="gap-0! overflow-hidden p-0!">
+      <div className="border-b border-neutral-200 px-5 pt-5 md:px-8">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex gap-1 overflow-x-auto" role="tablist" aria-label="ขั้นตอน">
+            {STEPS.map((item, index) => (
+              <button key={item.label} type="button" role="tab" aria-selected={index === step} onClick={() => setStep(index)}
+                className={`min-h-10 shrink-0 cursor-pointer rounded-full border-0 px-4 font-[inherit] text-sm whitespace-nowrap transition-colors ${index === step ? 'bg-brand-500 font-semibold text-white' : 'bg-transparent text-neutral-600 hover:bg-neutral-100'}`}>
+                {index + 1}. {item.label}
+              </button>
+            ))}
+          </div>
+          <span className="onboarding-step-text shrink-0 text-sm">{step + 1} / {STEPS.length}</span>
+        </div>
+        <div className="onboarding-progress-bar mt-4 mb-0">
+          <div className="onboarding-progress-fill" style={{ width: `${((step + 1) / STEPS.length) * 100}%` }}></div>
+        </div>
+      </div>
 
-        <ContentCard className="onboarding-profile-card">
-          <section>
-            <h2 className="heading-4">สถิติปัจจุบัน</h2>
-            <p className="field-helper onboarding-profile-description">ไม่ต้องเป็นสถิติที่ดีที่สุด เลือกครั้งที่ใกล้เคียงกับคุณที่สุดได้เลย</p>
-            <StepFitnessLevel ref={step2Ref} isEditor={true} externalShowValidation={showValidation} />
-          </section>
-        </ContentCard>
-
-        <ContentCard className="onboarding-profile-card">
-          <section>
-            <h2 className="heading-4">เป้าหมาย & Challenge</h2>
-            <p className="field-helper onboarding-profile-description">กำหนดเป้าหมายเพื่อเป็นแรงบันดาลใจในการออกกำลังกายของคุณ</p>
-            <StepGoals ref={step3Ref} isEditor={true} externalShowValidation={showValidation} />
-          </section>
-        </ContentCard>
-
-        <ContentCard className="onboarding-profile-card">
-          <section>
-            <h2 className="heading-4">ช่วงเวลาที่สะดวก</h2>
-            <p className="field-helper onboarding-profile-description">เลือกช่วงที่มักสะดวก เราจะช่วยหา Buddy และ Training Party ที่เข้ากับคุณ</p>
-            <StepAvailability ref={step4Ref} isEditor={true} externalShowValidation={showValidation} />
-          </section>
-        </ContentCard>
-
-        <ContentCard className="onboarding-profile-card">
-          <section>
-            <h2 className="heading-4">สุขภาพและข้อควรระวัง</h2>
-            <p className="field-helper onboarding-profile-description">บอกเฉพาะเรื่องที่เกี่ยวข้องกับการออกกำลังกาย เพื่อให้คำแนะนำเหมาะกับคุณมากขึ้น</p>
-            <StepHealth ref={step5Ref} isEditor={true} externalShowValidation={showValidation} />
-          </section>
-        </ContentCard>
-
-        {saveError && <p className="form-feedback field-error" role="alert">{saveError}</p>}
-        <div className="form-actions profile-actions onboarding-profile-actions">
-          <Button variant="secondary" onClick={handleCancel} disabled={saving || !isDirty}>ยกเลิก</Button>
-          <Button type="submit" disabled={!isDirty || saving} loading={saving}>{saving ? 'กำลังบันทึก…' : 'บันทึกการเปลี่ยนแปลง'}</Button>
+      <fieldset disabled={saving} className="m-0 min-w-0 border-0 p-5 md:p-8" role="tabpanel" aria-label={STEPS[step].label}>
+        <div className="mx-auto w-full max-w-xl">
+          <Step editor />
         </div>
       </fieldset>
+
+      {saveError && <p className="form-feedback field-error mx-5 mb-4 md:mx-8" role="alert">{saveError}</p>}
+      <div className="flex flex-wrap items-center gap-3 border-t border-neutral-200 px-5 py-4 md:px-8">
+        {step > 0 && <Button variant="secondary" onClick={() => setStep(step - 1)} disabled={saving}>← ย้อนกลับ</Button>}
+        {isDirty && (
+          <button type="button" onClick={onReset} disabled={saving}
+            className="min-h-11 cursor-pointer border-0 bg-transparent px-2 font-[inherit] text-sm font-semibold text-neutral-600 underline underline-offset-2 hover:text-neutral-900">
+            ยกเลิกการเปลี่ยนแปลง
+          </button>
+        )}
+        <div className="ml-auto flex gap-3">
+          {!last && <Button variant="secondary" onClick={() => setStep(step + 1)} disabled={saving}>ถัดไป →</Button>}
+          <Button onClick={save} disabled={!isDirty || saving} loading={saving}>{saving ? 'กำลังบันทึก…' : 'บันทึกการเปลี่ยนแปลง'}</Button>
+        </div>
+      </div>
       <Toast message={toast} onDismiss={dismissToast} />
-    </form>
+    </ContentCard>
   );
 }
 
@@ -143,7 +111,6 @@ export default function ProfileOnboardingEditor() {
   const { loadOnboardingData } = useAuth();
   const [status, setStatus] = useState('loading');
   const [initialData, setInitialData] = useState<OnboardingData | null>(null);
-  const navigate = useNavigate();
 
   useDocumentTitle('แก้ไขข้อมูลจาก Onboarding | Lowrox');
 
@@ -160,13 +127,12 @@ export default function ProfileOnboardingEditor() {
 
   useEffect(() => { load(); }, [load]);
 
-  const handleCancel = () => {
-    navigate('/profile');
-  };
+  // Throwing away edits remounts the form on the saved answers.
+  const [resetKey, setResetKey] = useState(0);
 
   return (
     <>
-      <PageHeader title="แก้ไขข้อมูลจาก Onboarding" description="อัปเดตเป้าหมายและความต้องการ เพื่อหา Buddy ที่เหมาะกับคุณ" />
+      <PageHeader title="แก้ไขข้อมูลจาก Onboarding" description="คำถามชุดเดียวกับตอนเริ่มใช้งาน แก้ข้อไหนก็ได้ แล้วกดบันทึกทีเดียว" />
       
       {status === 'loading' && (
         <ContentCard>
@@ -186,8 +152,8 @@ export default function ProfileOnboardingEditor() {
       )}
 
       {status === 'ready' && (
-        <OnboardingProvider initialData={initialData}>
-          <ProfileOnboardingEditorForm onCancel={handleCancel} initialData={initialData} />
+        <OnboardingProvider key={resetKey} initialData={initialData}>
+          <ProfileOnboardingEditorForm initialData={initialData} onReset={() => setResetKey(key => key + 1)} onSaved={setInitialData} />
         </OnboardingProvider>
       )}
     </>
