@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, CalendarDays, Dumbbell, Footprints, MapPin, Minus, Plus, Route as RouteIcon, Timer } from 'lucide-react';
 import type { PartyLevel, PartyStyle } from '../types/models';
@@ -61,11 +61,9 @@ export default function PartyCreate() {
   const [customWhen, setCustomWhen] = useState(toLocalInput(new Date(whens[0].value)));
   const [place, setPlace] = useState(places[0]);
   const [customPlace, setCustomPlace] = useState('');
-  const [levelId, setLevelId] = useState<string>(levelOptions[0].value);
   // The runner's level arrives after the workouts load; default to it unless they already picked one.
-  const levelTouched = useRef(false);
-  const myLevelId = summary?.level.id;
-  useEffect(() => { if (myLevelId && !levelTouched.current) setLevelId(myLevelId); }, [myLevelId]);
+  const [pickedLevelId, setPickedLevelId] = useState<string | null>(null);
+  const levelId = pickedLevelId ?? summary?.level.id ?? 'all';
   const [capacity, setCapacity] = useState(4);
   const [note, setNote] = useState('');
   const [saving, setSaving] = useState(false);
@@ -135,7 +133,7 @@ export default function PartyCreate() {
 
             <fieldset className="party-field">
               <legend>รับเลเวลไหน</legend>
-              <PillGroup options={levelOptions} value={levelId} onSelect={(value) => { levelTouched.current = true; setLevelId(value); }} className="party-pills" />
+              <PillGroup options={levelOptions} value={levelId} onSelect={setPickedLevelId} className="party-pills" />
             </fieldset>
 
             <fieldset className="party-field">
