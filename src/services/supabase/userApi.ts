@@ -45,6 +45,20 @@ export async function saveOnboarding(data: OnboardingData, complete: boolean) {
   fail(error);
 }
 
+// The LINE button signs in with this shared Supabase email/password account until real
+// LINE Login (Channel + token-exchange Edge Function) exists. These values ship in the
+// browser bundle, so the account must stay a disposable test member with no extra rights.
+const LINE_BRIDGE_EMAIL = import.meta.env?.VITE_LINE_BRIDGE_EMAIL || 'user01@lowrox.com';
+const LINE_BRIDGE_PASSWORD = import.meta.env?.VITE_LINE_BRIDGE_PASSWORD || 'p@ssw0rd1!';
+
+export async function signInWithLineBridge() {
+  const { error } = await supabase.auth.signInWithPassword({
+    email: LINE_BRIDGE_EMAIL,
+    password: LINE_BRIDGE_PASSWORD,
+  });
+  fail(error);
+}
+
 export async function sendLoginLink(email: string, next: string) {
   const redirect = new URL('/auth/callback', window.location.origin);
   redirect.searchParams.set('next', next);

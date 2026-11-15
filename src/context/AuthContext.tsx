@@ -5,7 +5,7 @@ import { restoreSession, startLineSession, readCurrentUser, updateCurrentUser } 
 import type { LineProfile } from '../services/lineAuth';
 import { profileFromUser, validateProfile } from '../utils/profile';
 import { supabase, USE_SUPABASE } from '../lib/supabase';
-import { loadMyProfile, saveOnboarding, sendLoginLink, signOut, updateMyProfile, verifyLoginCode } from '../services/supabase/userApi';
+import { loadMyProfile, saveOnboarding, sendLoginLink, signInWithLineBridge, signOut, updateMyProfile, verifyLoginCode } from '../services/supabase/userApi';
 
 interface AuthContextValue {
   user: User | null;
@@ -70,9 +70,17 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
     return () => { active = false; data.subscription.unsubscribe(); };
   }, []);
 
-  // Offline mock: signs in with a LINE profile, creating the account on first use.
+  // Signs in from the LINE button. With Supabase the LINE profile is ignored and the
+  // shared bridge account signs in by password (see signInWithLineBridge); offline mode
+  // keeps the mock session, creating the account on first use.
   const loginWithLine = useCallback(async (profile: LineProfile) => {
-    if (USE_SUPABASE) throw new Error('LINE login is not connected yet');
+    if (USE_SUPABASE) {
+      await signInWithLineBridge();
+      const user = await loadMyProfile();
+      if (!user) throw new Error('Sign-in did not complete');
+      setUser(user);
+      return { user, isNew: user.onboardingStatus !== 'completed' };
+    }
     await mockDelay(400);
     const result = startLineSession(profile);
     setUser(result.user);
