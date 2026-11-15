@@ -19,6 +19,7 @@ const EventDetails = React.lazy(() => import('./pages/EventDetails'));
 const UserProfile = React.lazy(() => import('./pages/UserProfile'));
 const MyLevel = React.lazy(() => import('./pages/MyLevel'));
 const PartyCreate = React.lazy(() => import('./pages/PartyCreate'));
+const ApiStatus = React.lazy(() => import('./pages/ApiStatus'));
 import './style.css';
 
 const router = createBrowserRouter(createRoutesFromElements(
@@ -27,6 +28,9 @@ const router = createBrowserRouter(createRoutesFromElements(
           <Route path="/events" element={<EventList />} />
           <Route path="/users/:userId" element={<UserProfile />} />
           <Route path="/events/:eventId" element={<EventDetails />} />
+          <Route path="/api-test" element={<ApiStatus />} />
+          <Route path="/handshake" element={<ApiStatus />} />
+          <Route path="/status" element={<ApiStatus />} />
 
           <Route element={<ProtectedRoute requireOnboardingComplete={false} />}>
             <Route path="/onboarding" element={<Onboarding />} />
