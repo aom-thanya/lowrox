@@ -1,4 +1,6 @@
 import type { UserId } from '../types/models';
+import { USE_SUPABASE } from '../lib/supabase';
+import { deleteConnection, fetchConnections, updateConnectionRow, upsertConnection } from './supabase/activityApi';
 
 // Mock persistence for watch/app connections, one map per user in localStorage.
 // Replace with the real OAuth flow per provider (Garmin Health API, COROS, Strava, ...).
@@ -40,6 +42,11 @@ export function listConnections(userId: UserId, storage: DeviceStorage = localSt
   return JSON.parse(storage.getItem(devicesKey(userId)) || '{}');
 }
 
+// What the Devices page loads: Supabase in the app, local storage in tests and offline mode.
+export async function loadConnections(userId: UserId): Promise<Partial<Record<ProviderId, Connection>>> {
+  return USE_SUPABASE ? fetchConnections(userId) : listConnections(userId);
+}
+
 function save(userId: UserId, connections: Partial<Record<ProviderId, Connection>>, storage: DeviceStorage) {
   storage.setItem(devicesKey(userId), JSON.stringify(connections));
   return connections;
@@ -47,6 +54,7 @@ function save(userId: UserId, connections: Partial<Record<ProviderId, Connection
 
 export async function connectProvider(userId: UserId, provider: ProviderId, storage: DeviceStorage = localStorage) {
   await delay(1200); // stands in for the provider's consent screen
+  if (USE_SUPABASE) return upsertConnection(userId, provider);
   const now = new Date().toISOString();
   const connection: Connection = { provider, connectedAt: now, lastSyncAt: now, importRuns: true, postToParty: false };
   return save(userId, { ...listConnections(userId, storage), [provider]: connection }, storage);
@@ -54,6 +62,7 @@ export async function connectProvider(userId: UserId, provider: ProviderId, stor
 
 export async function syncProvider(userId: UserId, provider: ProviderId, storage: DeviceStorage = localStorage) {
   await delay(800);
+  if (USE_SUPABASE) return updateConnectionRow(userId, provider, { lastSyncAt: new Date().toISOString() });
   const current = listConnections(userId, storage);
   if (!current[provider]) throw new Error('Not connected');
   return save(userId, { ...current, [provider]: { ...current[provider]!, lastSyncAt: new Date().toISOString() } }, storage);
@@ -61,6 +70,7 @@ export async function syncProvider(userId: UserId, provider: ProviderId, storage
 
 export async function updateConnection(userId: UserId, provider: ProviderId, changes: Partial<Pick<Connection, 'importRuns' | 'postToParty'>>, storage: DeviceStorage = localStorage) {
   await delay(200);
+  if (USE_SUPABASE) return updateConnectionRow(userId, provider, changes);
   const current = listConnections(userId, storage);
   if (!current[provider]) throw new Error('Not connected');
   return save(userId, { ...current, [provider]: { ...current[provider]!, ...changes } }, storage);
@@ -68,6 +78,7 @@ export async function updateConnection(userId: UserId, provider: ProviderId, cha
 
 export async function disconnectProvider(userId: UserId, provider: ProviderId, storage: DeviceStorage = localStorage) {
   await delay(300);
+  if (USE_SUPABASE) return deleteConnection(userId, provider);
   const { [provider]: _removed, ...rest } = listConnections(userId, storage);
   return save(userId, rest, storage);
 }

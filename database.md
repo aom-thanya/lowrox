@@ -1,5 +1,24 @@
 # Database Design
 
+> **Implemented schema (Nov 2026).** The live Supabase database uses the `ms_*` / `txn_*` tables
+> from [`lowrox_etl/sql/01_schema.sql`](https://github.com/daruntoey/lowrox_etl/blob/main/sql/01_schema.sql)
+> (the ETL reads the same tables), extended for this app by `supabase/04_frontend_integration.sql`.
+> The DBML in section 13 is the earlier logical design; where the two differ, the SQL files win.
+>
+> | Logical (this doc) | Implemented |
+> | --- | --- |
+> | `users` | `ms_users` + profile columns (`display_name`, `bio`, `province_id`, `district_id`, `avatar_url`, `onboarding_status`, `onboarding_data`, visibility flags, `interests`), linked to `auth.users` by `auth_user_id`; no `password_hash` (Supabase Auth owns sign-in) |
+> | `user_demographics` | `ms_user_demographics` (`birth_date` instead of `age`, which is derived) |
+> | `user_goals`, `user_constraints`, `user_medical_concerns`, `user_history_level` | `txn_user_*`, written by `save_onboarding()`; level history is append-only |
+> | `events` | `txn_events` + `title`, `description`, `location_label`, `ends_at`, `join_url`, `cover_url`, `visibility`, `is_party`, `party_style`, `registration_closed`; `area_id` now nullable; status adds `draft` |
+> | `event_participants` | `txn_event_participants` — **many-to-many** (`UNIQUE (user_id, event_id)`), which resolves the limitation in section 15 |
+> | `group_comments` | `txn_group_comments` + `images` (Storage URLs) |
+> | `user_verifications`, `training_plans` | `ms_user_verifications`, `txn_training_plans` (not used by the app yet) |
+> | — | `txn_workout_summaries` (logged runs), `ms_device_connections` (+ `import_runs`, `post_to_party`), `txn_plan_checkoffs` (weekly plan ticks) |
+>
+> Status values: the UI's `published` is stored as `scheduled` (or `full` when every seat is taken).
+> Workout types are stored as lower-case codes (`running`, `hyrox_prep`, …) and shown as `Running`, `HYROX`, …
+
 ## 1. Purpose
 
 This document defines the current database structure and relationships for the application.

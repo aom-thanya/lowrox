@@ -877,3 +877,12 @@ body.has-tabbar { padding-bottom: calc(var(--tabbar-height) + env(safe-area-inse
   border-radius: var(--radius-md);
 }
 .event-list-card-badge { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+
+/* Email (Supabase Auth) sign-in */
+.email-login { display: grid; gap: var(--space-2); }
+.email-login .btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); }
+.email-login-actions { display: flex; justify-content: space-between; gap: var(--space-2); }
+.link-button { background: none; border: none; padding: 0; color: var(--color-neutral-600); font-size: 14px; text-decoration: underline; cursor: pointer; }
+.link-button:disabled { opacity: .5; cursor: default; }
+.auth-callback { min-height: 60vh; display: grid; place-items: center; text-align: center; gap: var(--space-3); padding: var(--space-6); }
+.email-login .field-label { font-size: 14px; font-weight: 600; }

@@ -1,5 +1,7 @@
 import type { OnboardingData, UserId } from '../types/models';
 import { effortFromOnboarding, fiveKEquivalent, type WorkoutEffort } from '../utils/leveling';
+import { USE_SUPABASE } from '../lib/supabase';
+import { fetchPlanDone, fetchWorkouts, insertWorkout, removeWorkoutRow, setPlanDoneRow } from './supabase/activityApi';
 
 // Mock persistence for logged runs, one list per user in localStorage.
 export interface Workout extends WorkoutEffort {
@@ -71,4 +73,47 @@ export function togglePlanDone(userId: UserId, sessionId: string, now = new Date
   const ids = current.includes(sessionId) ? current.filter(id => id !== sessionId) : [...current, sessionId];
   storage.setItem(planKey(userId), JSON.stringify({ week: weekKey(now), ids }));
   return ids;
+}
+
+// ---------------------------------------------------------------------------
+// Async API used by the app. Supabase when signed in to the real backend,
+// the local functions above in unit tests and offline mode.
+// ---------------------------------------------------------------------------
+
+export async function loadWorkouts(userId: UserId, onboardingData?: OnboardingData): Promise<Workout[]> {
+  if (!USE_SUPABASE) return listWorkouts(userId, onboardingData);
+  const workouts = await fetchWorkouts(userId);
+  if (workouts.length) return workouts;
+  // First visit: seed the run reported in onboarding, so a new member starts with a level.
+  const baseline = effortFromOnboarding(onboardingData?.fitnessLevel);
+  if (!baseline) return [];
+  await insertWorkout({ ...baseline, date: toDateKey(new Date()) }, 'onboarding');
+  return fetchWorkouts(userId);
+}
+
+export async function saveWorkout(userId: UserId, input: WorkoutEffort & { date: string }) {
+  if (!USE_SUPABASE) return addWorkout(userId, input);
+  await insertWorkout(input, 'log');
+  const workouts = await fetchWorkouts(userId);
+  // The new run is the newest row on its day.
+  const workout = workouts.filter(item => item.date === input.date && item.source === 'log').sort((a, b) => b.createdAt.localeCompare(a.createdAt))[0];
+  return { workout, workouts };
+}
+
+export async function removeWorkout(userId: UserId, workoutId: string) {
+  if (!USE_SUPABASE) return deleteWorkout(userId, workoutId);
+  await removeWorkoutRow(workoutId);
+  return fetchWorkouts(userId);
+}
+
+export async function loadPlanDone(userId: UserId, now = new Date()) {
+  return USE_SUPABASE ? fetchPlanDone(userId, weekKey(now)) : readPlanDone(userId, now);
+}
+
+export async function setPlanDone(userId: UserId, sessionId: string, now = new Date()) {
+  if (!USE_SUPABASE) return togglePlanDone(userId, sessionId, now);
+  const current = await fetchPlanDone(userId, weekKey(now));
+  const done = !current.includes(sessionId);
+  await setPlanDoneRow(userId, weekKey(now), sessionId, done);
+  return done ? [...current, sessionId] : current.filter(id => id !== sessionId);
 }

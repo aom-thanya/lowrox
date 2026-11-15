@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Check, Lock, RefreshCw, Smartphone, Watch } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
@@ -9,7 +9,7 @@ import Dialog from '../components/common/Dialog';
 import Switch from '../components/common/Switch';
 import Toast from '../components/common/Toast';
 import {
-  PROVIDERS, connectProvider, disconnectProvider, listConnections, syncProvider, updateConnection,
+  PROVIDERS, connectProvider, disconnectProvider, loadConnections, syncProvider, updateConnection,
   type Connection, type Provider, type ProviderId,
 } from '../services/deviceRepository';
 
@@ -51,7 +51,14 @@ function ToggleRow({ id, label, helper, checked, disabled, onChange }: { id: str
 export default function Devices() {
   const { user } = useAuth();
   useDocumentTitle('เชื่อมต่ออุปกรณ์ | Lowrox');
-  const [connections, setConnections] = useState(() => (user ? listConnections(user.id) : {}));
+  const [connections, setConnections] = useState<Awaited<ReturnType<typeof loadConnections>>>({});
+  const userId = user?.id;
+  useEffect(() => {
+    if (userId == null) return;
+    let active = true;
+    loadConnections(userId).then(value => { if (active) setConnections(value); }).catch(() => setError('โหลดการเชื่อมต่อไม่สำเร็จ'));
+    return () => { active = false; };
+  }, [userId]);
   const [pending, setPending] = useState<ProviderId | null>(null);
   const [connecting, setConnecting] = useState<Provider | null>(null);
   const [disconnecting, setDisconnecting] = useState<Provider | null>(null);

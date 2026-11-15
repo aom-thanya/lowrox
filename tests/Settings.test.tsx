@@ -4,7 +4,6 @@ import { vi } from 'vitest';
 import Settings from '../src/pages/Settings';
 import { useAuth } from '../src/context/AuthContext';
 import { useUnsavedChanges } from '../src/context/UnsavedChangesContext';
-import * as userRepository from '../src/services/userRepository';
 
 vi.mock('../src/context/AuthContext', () => ({
   useAuth: vi.fn()
@@ -14,9 +13,6 @@ vi.mock('../src/context/UnsavedChangesContext', () => ({
   useUnsavedChanges: vi.fn()
 }));
 
-vi.mock('../src/services/userRepository', () => ({
-  updateCurrentUser: vi.fn()
-}));
 
 // Polyfill HTMLDialogElement for jsdom
 if (typeof HTMLDialogElement !== 'undefined') {
@@ -30,6 +26,7 @@ if (typeof HTMLDialogElement !== 'undefined') {
 
 describe('Settings Page', () => {
   const mockLogout = vi.fn();
+  const mockUpdateUser = vi.fn();
   const mockSetDirty = vi.fn();
   const mockRequestAction = vi.fn((action) => action());
   
@@ -43,7 +40,8 @@ describe('Settings Page', () => {
         email: 'test@example.com',
         showProfile: true
       },
-      logout: mockLogout
+      logout: mockLogout,
+      updateUser: mockUpdateUser
     });
 
     vi.mocked(useUnsavedChanges, { partial: true }).mockReturnValue({
@@ -51,8 +49,8 @@ describe('Settings Page', () => {
       requestAction: mockRequestAction
     });
 
-    vi.mocked(userRepository.updateCurrentUser).mockImplementation((id, draft) => ({
-      id,
+    mockUpdateUser.mockImplementation(async (draft) => ({
+      id: 1,
       username: 'testuser',
       email: 'test@example.com',
       ...draft
@@ -103,7 +101,7 @@ describe('Settings Page', () => {
     expect(mockSetDirty).toHaveBeenCalledWith(true);
   });
 
-  test('saving changes calls updateCurrentUser and shows success toast', async () => {
+  test('saving changes calls updateUser and shows success toast', async () => {
     renderSettings();
     
     const toggle = await screen.findByRole('switch', { name: 'แสดงโปรไฟล์ในการหา Buddy' });
@@ -113,7 +111,7 @@ describe('Settings Page', () => {
     fireEvent.click(saveBtn);
     
     await waitFor(() => {
-      expect(userRepository.updateCurrentUser).toHaveBeenCalledWith(1, { showProfile: false });
+      expect(mockUpdateUser).toHaveBeenCalledWith({ showProfile: false });
     });
     
     expect(await screen.findByText('บันทึกการตั้งค่าแล้ว')).toBeInTheDocument();

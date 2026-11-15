@@ -1,4 +1,6 @@
 import type { EventRecord, PartyLevel, PartyParticipant, PartyStyle, User } from '../types/models';
+import { USE_SUPABASE } from '../lib/supabase';
+import { cancelEventRow, createPartyRow, joinEventRow, leaveEventRow } from './supabase/eventApi';
 
 // Mock persistence for parties (ตี้ซ้อม) in localStorage:
 //   lowrox:parties              — parties created by users
@@ -47,6 +49,7 @@ export interface NewPartyInput {
 }
 
 export async function createParty(host: User, hostLevel: PartyLevel | undefined, input: NewPartyInput, storage: PartyStorage = localStorage) {
+  if (USE_SUPABASE) return createPartyRow(input);
   await delay(400);
   const party: EventRecord = {
     id: `p-${Date.now().toString(36)}`,
@@ -64,6 +67,7 @@ export async function createParty(host: User, hostLevel: PartyLevel | undefined,
 }
 
 export async function joinParty(event: EventRecord, participant: PartyParticipant, storage: PartyStorage = localStorage) {
+  if (USE_SUPABASE) return joinEventRow(event.id);
   await delay(300);
   const current = applyPartyState(event, storage);
   const participants = current.participants ?? [];
@@ -73,13 +77,15 @@ export async function joinParty(event: EventRecord, participant: PartyParticipan
 }
 
 export async function leaveParty(event: EventRecord, userId: User['id'], storage: PartyStorage = localStorage) {
+  if (USE_SUPABASE) return leaveEventRow(event.id);
   await delay(300);
   const participants = (applyPartyState(event, storage).participants ?? []).filter(item => String(item.id) !== String(userId));
   return saveState(event, { participants }, storage);
 }
 
 export async function cancelParty(event: EventRecord, userId: User['id'], storage: PartyStorage = localStorage) {
-  await delay(300);
   if (String(event.hostUserId) !== String(userId)) throw new Error('Only the host can cancel');
+  if (USE_SUPABASE) return cancelEventRow(event.id, userId);
+  await delay(300);
   return saveState(event, { status: 'cancelled' }, storage);
 }

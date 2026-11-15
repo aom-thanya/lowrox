@@ -3,6 +3,8 @@ import { isPublicEvent, eventHasEnded, selectHostedEvents } from '../utils/event
 import { applyPartyState, readStoredParties } from './partyRepository';
 import { buildMockParties } from '../data/mockParties';
 import { findPersona } from '../utils/partyPersonas';
+import { USE_SUPABASE } from '../lib/supabase';
+import { fetchEvent, fetchHostedEvents, fetchPublicEvents } from './supabase/eventApi';
 // Mock Event Repository
 
 const initialEvents: EventRecord[] = ([
@@ -101,6 +103,10 @@ const initialEvents: EventRecord[] = ([
 
 // Seeded events, generated mock parties and parties members created, with joins applied.
 const allEvents = (): EventRecord[] => [...initialEvents, ...buildMockParties(), ...readStoredParties()].map(event => applyPartyState(event));
+// Supabase in the app, the mock list in unit tests and offline mode.
+const loadEvents = async (): Promise<EventRecord[]> => (USE_SUPABASE ? fetchPublicEvents() : allEvents());
+const loadEvent = async (id: string): Promise<EventRecord | undefined> =>
+  (USE_SUPABASE ? (await fetchEvent(id)) ?? undefined : allEvents().find(e => e.id === id));
 
 export const EVENTS_PAGE_SIZE = 12;
 
@@ -118,9 +124,9 @@ export function isEventEnded(event: Pick<EventRecord, 'date' | 'endDate' | 'stat
  */
 export async function getEvents({ query = '', type = '', area = '', level = '', persona = '', page = 1, pageSize = EVENTS_PAGE_SIZE }: EventQuery = {}): Promise<EventPage> {
   // Simulate network delay
-  await new Promise(resolve => setTimeout(resolve, 300));
-  
-  let results = allEvents().filter(isPublicEvent);
+  if (!USE_SUPABASE) await new Promise(resolve => setTimeout(resolve, 300));
+
+  let results = (await loadEvents()).filter(isPublicEvent);
 
   if (query) {
     const q = query.toLowerCase();
@@ -180,8 +186,8 @@ export async function getEvents({ query = '', type = '', area = '', level = '', 
  * Get a specific event by ID
  */
 export async function getEventById(id: string) {
-  await new Promise(resolve => setTimeout(resolve, 200));
-  const event = allEvents().find(e => e.id === id);
+  if (!USE_SUPABASE) await new Promise(resolve => setTimeout(resolve, 200));
+  const event = await loadEvent(id);
   if (!event || !isPublicEvent(event)) {
     throw new Error('Event not found or not public');
   }
@@ -194,13 +200,13 @@ export async function getEventById(id: string) {
  * @param {object} user - Must be provided to simulate session check
  */
 export async function getJoinGroupUrl(eventId: string, user: User | null) {
-  await new Promise(resolve => setTimeout(resolve, 400));
-  
+  if (!USE_SUPABASE) await new Promise(resolve => setTimeout(resolve, 400));
+
   if (!user) {
     throw new Error('Unauthorized');
   }
-  
-  const event = allEvents().find(e => e.id === eventId);
+
+  const event = await loadEvent(eventId);
   if (!event || !isPublicEvent(event)) {
     throw new Error('Event not found');
   }
@@ -213,8 +219,8 @@ export async function getJoinGroupUrl(eventId: string, user: User | null) {
 }
 
 export async function getHostedEvents(userId: UserId, { tab = 'upcoming', limit = 6 } = {}) {
-  await new Promise(resolve => setTimeout(resolve, 200));
-  const groups = selectHostedEvents(allEvents(), userId);
+  if (!USE_SUPABASE) await new Promise(resolve => setTimeout(resolve, 200));
+  const groups = selectHostedEvents(USE_SUPABASE ? await fetchHostedEvents(userId) : allEvents(), userId);
   const selected = groups[tab as keyof typeof groups] || groups.upcoming;
   const counts = Object.fromEntries(Object.entries(groups).map(([key, items]) => [key, items.length]));
   const size = Math.max(6, Math.floor(Number(limit) || 6));

@@ -12,6 +12,15 @@ const supabasePublishableKey =
 
 export const supabase = createClient(supabaseUrl, supabasePublishableKey);
 
+// Real data lives in Supabase. Unit tests (MODE=test) and `VITE_DATA_SOURCE=local`
+// keep the in-browser mock repositories, so the UI can still run offline.
+export const USE_SUPABASE =
+  import.meta.env?.MODE !== 'test' && import.meta.env?.VITE_DATA_SOURCE !== 'local';
+
+// A table anon is allowed to read (see lowrox_etl/sql/03_auth_and_rls.sql), so the
+// handshake proves the database answered rather than that RLS hid every row.
+export const HANDSHAKE_TABLE = 'ms_subscription_plans';
+
 export interface HandshakeResult {
   ok: boolean;
   latencyMs: number;
@@ -45,7 +54,7 @@ export async function checkSupabaseHandshake(): Promise<HandshakeResult> {
     jwks = jwksRes.ok;
 
     // 3. Database PostgREST Check
-    const { error } = await supabase.from('users').select('id', { head: true, count: 'exact' });
+    const { error } = await supabase.from(HANDSHAKE_TABLE).select('id', { head: true, count: 'exact' });
     database = !error;
     if (error) {
       errorMsg = error.message;
