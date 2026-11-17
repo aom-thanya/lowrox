@@ -45,15 +45,26 @@ export async function saveOnboarding(data: OnboardingData, complete: boolean) {
   fail(error);
 }
 
+// In dev, LINE Login runs through the Vite dev server unless VITE_LINE_AUTH=edge.
+const USE_LOCAL_LINE_AUTH = !!import.meta.env?.DEV && import.meta.env?.VITE_LINE_AUTH !== 'edge';
+
 // Finishes LINE Login: the Edge Function trades LINE's code for a one-time token,
 // which becomes a normal Supabase session here.
 export async function signInWithLineCode(code: string, redirectUri: string, nonce: string) {
-  const { data, error } = await supabase.functions.invoke<{ tokenHash?: string; isNew?: boolean; error?: string }>('line-auth', {
-    body: { code, redirectUri, nonce },
-  });
-  if (error) {
-    const detail = await (error as { context?: Response }).context?.json?.().catch(() => null);
-    throw new Error(detail?.error || error.message);
+  const body = { code, redirectUri, nonce };
+  let data: { tokenHash?: string; isNew?: boolean; error?: string } | null;
+  if (USE_LOCAL_LINE_AUTH) {
+    // `npm run dev`: the Vite dev server does the exchange (scripts/line-auth-dev.ts).
+    const res = await fetch('/__dev/line-auth', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    data = await res.json().catch(() => null);
+    if (!res.ok) throw new Error(data?.error || `line-auth-dev ${res.status}`);
+  } else {
+    const result = await supabase.functions.invoke<{ tokenHash?: string; isNew?: boolean; error?: string }>('line-auth', { body });
+    if (result.error) {
+      const detail = await (result.error as { context?: Response }).context?.json?.().catch(() => null);
+      throw new Error(detail?.error || result.error.message);
+    }
+    data = result.data;
   }
   if (!data?.tokenHash) throw new Error(data?.error || 'LINE sign-in returned no token');
   const { error: otpError } = await supabase.auth.verifyOtp({ token_hash: data.tokenHash, type: 'magiclink' });
