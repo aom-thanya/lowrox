@@ -22,6 +22,8 @@ const PartyCreate = React.lazy(() => import('./pages/PartyCreate'));
 const ApiStatus = React.lazy(() => import('./pages/ApiStatus'));
 const AuthCallback = React.lazy(() => import('./pages/AuthCallback'));
 const LineCallback = React.lazy(() => import('./pages/LineCallback'));
+const Privacy = React.lazy(() => import('./pages/Privacy'));
+const Terms = React.lazy(() => import('./pages/Terms'));
 import './style.css';
 
 const router = createBrowserRouter(createRoutesFromElements(
@@ -35,6 +37,8 @@ const router = createBrowserRouter(createRoutesFromElements(
           <Route path="/status" element={<ApiStatus />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/auth/line/callback" element={<LineCallback />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
 
           <Route element={<ProtectedRoute requireOnboardingComplete={false} />}>
             <Route path="/onboarding" element={<Onboarding />} />
