@@ -45,18 +45,20 @@ export async function saveOnboarding(data: OnboardingData, complete: boolean) {
   fail(error);
 }
 
-// The LINE button signs in with this shared Supabase email/password account until real
-// LINE Login (Channel + token-exchange Edge Function) exists. These values ship in the
-// browser bundle, so the account must stay a disposable test member with no extra rights.
-const LINE_BRIDGE_EMAIL = import.meta.env?.VITE_LINE_BRIDGE_EMAIL || 'user01@lowrox.com';
-const LINE_BRIDGE_PASSWORD = import.meta.env?.VITE_LINE_BRIDGE_PASSWORD || 'p@ssw0rd1!';
-
-export async function signInWithLineBridge() {
-  const { error } = await supabase.auth.signInWithPassword({
-    email: LINE_BRIDGE_EMAIL,
-    password: LINE_BRIDGE_PASSWORD,
+// Finishes LINE Login: the Edge Function trades LINE's code for a one-time token,
+// which becomes a normal Supabase session here.
+export async function signInWithLineCode(code: string, redirectUri: string, nonce: string) {
+  const { data, error } = await supabase.functions.invoke<{ tokenHash?: string; isNew?: boolean; error?: string }>('line-auth', {
+    body: { code, redirectUri, nonce },
   });
-  fail(error);
+  if (error) {
+    const detail = await (error as { context?: Response }).context?.json?.().catch(() => null);
+    throw new Error(detail?.error || error.message);
+  }
+  if (!data?.tokenHash) throw new Error(data?.error || 'LINE sign-in returned no token');
+  const { error: otpError } = await supabase.auth.verifyOtp({ token_hash: data.tokenHash, type: 'magiclink' });
+  fail(otpError);
+  return { isNew: !!data.isNew };
 }
 
 export async function sendLoginLink(email: string, next: string) {

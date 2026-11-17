@@ -2,10 +2,10 @@ import type { User, Profile, OnboardingData } from '../types/models';
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo, useRef } from 'react';
 
 import { restoreSession, startLineSession, readCurrentUser, updateCurrentUser } from '../services/userRepository';
-import type { LineProfile } from '../services/lineAuth';
+import { takePendingLineLogin, type LineProfile } from '../services/lineAuth';
 import { profileFromUser, validateProfile } from '../utils/profile';
 import { supabase, USE_SUPABASE } from '../lib/supabase';
-import { loadMyProfile, saveOnboarding, sendLoginLink, signInWithLineBridge, signOut, updateMyProfile, verifyLoginCode } from '../services/supabase/userApi';
+import { loadMyProfile, saveOnboarding, sendLoginLink, signInWithLineCode, signOut, updateMyProfile, verifyLoginCode } from '../services/supabase/userApi';
 
 interface AuthContextValue {
   user: User | null;
@@ -13,6 +13,8 @@ interface AuthContextValue {
   /** True when sign-in goes through Supabase Auth (email), false for the offline LINE mock. */
   usesEmailLogin: boolean;
   loginWithLine: (profile: LineProfile) => Promise<{ user: User; isNew: boolean }>;
+  /** Finishes a real LINE Login on /auth/line/callback. Returns where the member was headed. */
+  completeLineLogin: (code: string, state: string | null) => Promise<{ user: User; next: string }>;
   sendEmailLink: (email: string, next: string) => Promise<void>;
   verifyEmailCode: (email: string, code: string) => Promise<User>;
   logout: () => void;
@@ -70,21 +72,24 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
     return () => { active = false; data.subscription.unsubscribe(); };
   }, []);
 
-  // Signs in from the LINE button. With Supabase the LINE profile is ignored and the
-  // shared bridge account signs in by password (see signInWithLineBridge); offline mode
-  // keeps the mock session, creating the account on first use.
+  // Offline mode: the simulated LINE consent creates or reuses a mock account.
+  // With Supabase the button redirects to LINE instead (startLineLogin) and comes back
+  // through completeLineLogin.
   const loginWithLine = useCallback(async (profile: LineProfile) => {
-    if (USE_SUPABASE) {
-      await signInWithLineBridge();
-      const user = await loadMyProfile();
-      if (!user) throw new Error('Sign-in did not complete');
-      setUser(user);
-      return { user, isNew: user.onboardingStatus !== 'completed' };
-    }
     await mockDelay(400);
     const result = startLineSession(profile);
     setUser(result.user);
     return result;
+  }, []);
+
+  const completeLineLogin = useCallback(async (code: string, state: string | null) => {
+    const pending = takePendingLineLogin(state);
+    if (!pending) throw new Error('LINE login state mismatch');
+    await signInWithLineCode(code, pending.redirectUri, pending.nonce);
+    const user = await loadMyProfile();
+    if (!user) throw new Error('Sign-in did not complete');
+    setUser(user);
+    return { user, next: pending.next };
   }, []);
 
   const sendEmailLink = useCallback(async (email: string, next: string) => {
@@ -175,8 +180,8 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
 
   // Stable value so consumers don't re-render unless auth state or a callback actually changes.
   const value = useMemo(
-    () => ({ user, loading, usesEmailLogin: USE_SUPABASE, loginWithLine, sendEmailLink, verifyEmailCode, logout, updateOnboardingStatus, updateUser, loadProfile, saveProfile, loadOnboardingData, saveOnboardingData }),
-    [user, loading, loginWithLine, sendEmailLink, verifyEmailCode, logout, updateOnboardingStatus, updateUser, loadProfile, saveProfile, loadOnboardingData, saveOnboardingData]
+    () => ({ user, loading, usesEmailLogin: USE_SUPABASE, loginWithLine, completeLineLogin, sendEmailLink, verifyEmailCode, logout, updateOnboardingStatus, updateUser, loadProfile, saveProfile, loadOnboardingData, saveOnboardingData }),
+    [user, loading, loginWithLine, completeLineLogin, sendEmailLink, verifyEmailCode, logout, updateOnboardingStatus, updateUser, loadProfile, saveProfile, loadOnboardingData, saveOnboardingData]
   );
 
   return (

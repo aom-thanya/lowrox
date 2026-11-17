@@ -63,7 +63,13 @@ npm run build
 4. Authentication → Email Templates → **Magic Link**: เพิ่ม `{{ .Token }}` ในเนื้อหา เพื่อให้อีเมลมีรหัส 6 หลักด้วย (ลิงก์ใช้ได้อยู่แล้ว)
 5. Vercel → Settings → Environment Variables: `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` แล้ว Redeploy
 
-**การเข้าสู่ระบบ** ใช้อีเมล (ลิงก์หรือรหัส 6 หลัก) ผ่าน Supabase Auth ผู้ใช้ใหม่ได้บัญชีอัตโนมัติ ส่วน LINE Login ยังเป็น mock และจะแสดงเฉพาะโหมด offline
+**การเข้าสู่ระบบ** ใช้ LINE Login จริง (channel `2012661380`) ปุ่ม LINE พาไปหน้ายินยอมของ LINE แล้วกลับมาที่ `/auth/line/callback` จากนั้น Edge Function `line-auth` แลก code เป็น session ของ Supabase ผู้ใช้ใหม่ได้บัญชีอัตโนมัติ ตั้งค่าครั้งแรก:
+1. LINE Developers Console → channel → LINE Login → Callback URL: `https://lowrox.vercel.app/auth/line/callback` (และ `http://localhost:5173/auth/line/callback` สำหรับ dev)
+2. รัน `supabase/06_line_login.sql` ใน SQL Editor
+3. ตั้ง secret `LINE_CHANNEL_SECRET` ใน Supabase → Edge Functions → Secrets
+4. `npx supabase functions deploy line-auth --no-verify-jwt --project-ref avvxdvvcqexmfpsgtzqm`
+
+`npm run test:api` ทดสอบทุก endpoint ที่แอปใช้ด้วยบัญชีทดสอบ (ต้องมี `SUPABASE_SECRET_KEY` ใน `.env`)
 
 **โหมด offline / unit test** `npm test` และ `VITE_DATA_SOURCE=local npm run dev` ใช้ข้อมูลจำลองใน localStorage แบบเดิม ไม่แตะฐานข้อมูล
 

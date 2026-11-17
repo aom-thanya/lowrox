@@ -10,7 +10,7 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "handshake": "node scripts/test-handshake.mjs",
-    "line-bridge-user": "node scripts/create-line-bridge-user.mjs"
+    "test:api": "node scripts/test-api.mjs"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",
