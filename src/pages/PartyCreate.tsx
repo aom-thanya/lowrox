@@ -61,7 +61,9 @@ export default function PartyCreate() {
   const [customWhen, setCustomWhen] = useState(toLocalInput(new Date(whens[0].value)));
   const [place, setPlace] = useState(places[0]);
   const [customPlace, setCustomPlace] = useState('');
-  const [levelId, setLevelId] = useState<string>(levelOptions[0].value);
+  // The runner's level arrives after the workouts load; default to it unless they already picked one.
+  const [pickedLevelId, setPickedLevelId] = useState<string | null>(null);
+  const levelId = pickedLevelId ?? summary?.level.id ?? 'all';
   const [capacity, setCapacity] = useState(4);
   const [note, setNote] = useState('');
   const [saving, setSaving] = useState(false);
@@ -131,7 +133,7 @@ export default function PartyCreate() {
 
             <fieldset className="party-field">
               <legend>รับเลเวลไหน</legend>
-              <PillGroup options={levelOptions} value={levelId} onSelect={setLevelId} className="party-pills" />
+              <PillGroup options={levelOptions} value={levelId} onSelect={setPickedLevelId} className="party-pills" />
             </fieldset>
 
             <fieldset className="party-field">

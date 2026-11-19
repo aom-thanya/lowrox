@@ -88,11 +88,11 @@ async function runHandshake() {
     const t0 = Date.now();
     const supabasePub = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
     const { data, error, count } = await supabasePub
-      .from('users')
+      .from('ms_subscription_plans')
       .select('*', { count: 'exact', head: true });
     const latency = Date.now() - t0;
     if (!error) {
-      console.log(`✅ [Supabase Client - Publishable Key]: OK (${latency}ms) - Connected to 'users' table (record count: ${count ?? 0})`);
+      console.log(`✅ [Supabase Client - Publishable Key]: OK (${latency}ms) - Connected to 'ms_subscription_plans' table (record count: ${count ?? 0})`);
       results.restClientPublishable = true;
     } else {
       console.error(`❌ [Supabase Client - Publishable Key] Query error:`, error);
@@ -109,11 +109,11 @@ async function runHandshake() {
         auth: { persistSession: false, autoRefreshToken: false }
       });
       const { data, error } = await supabaseAdmin
-        .from('users')
+        .from('ms_subscription_plans')
         .select('*', { count: 'exact', head: true });
       const latency = Date.now() - t0;
       if (!error) {
-        console.log(`✅ [Supabase Client - Secret Key]: OK (${latency}ms) - Admin access verified to 'users' table`);
+        console.log(`✅ [Supabase Client - Secret Key]: OK (${latency}ms) - Admin access verified to 'ms_subscription_plans' table`);
         results.restClientSecret = true;
       } else {
         console.error(`❌ [Supabase Client - Secret Key] Query error:`, error);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { supabase } from '../lib/supabase';
+import { supabase, HANDSHAKE_TABLE } from '../lib/supabase';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 interface ApiResponseData {
@@ -39,7 +39,7 @@ export default function ApiStatus() {
       try {
         // Query an intentional non-existent column to test 400 Bad Request
         const { error, status, statusText } = await supabase
-          .from('users')
+          .from(HANDSHAKE_TABLE)
           .select('non_existent_column');
 
         const latency = Math.round(performance.now() - start);
@@ -50,7 +50,7 @@ export default function ApiStatus() {
           latencyMs: latency,
           timestamp: new Date().toISOString(),
           supabaseUrl,
-          error: error || { message: 'column users.non_existent_column does not exist' }
+          error: error || { message: `column ${HANDSHAKE_TABLE}.non_existent_column does not exist` }
         });
       } catch (err: any) {
         setResponse({
@@ -80,33 +80,34 @@ export default function ApiStatus() {
       const jwksData = await jwksRes.json().catch(() => null);
 
       // 3. Database query
-      const { data, count, error, status } = await supabase
-        .from('users')
+      const { count, error, status } = await supabase
+        .from(HANDSHAKE_TABLE)
         .select('id', { count: 'exact', head: true });
 
       const latency = Math.round(performance.now() - start);
 
       setResponse({
-        status: status || 200,
-        statusText: 'OK',
+        status: error ? (status || 500) : (status || 200),
+        statusText: error ? 'Database error' : 'OK',
         latencyMs: latency,
         timestamp: new Date().toISOString(),
         supabaseUrl,
         authHealth: {
           status: authRes.status,
           service: 'GoTrue',
-          version: authData?.version || 'v2.197.0'
+          version: authData?.version ?? null
         },
         jwks: {
           status: jwksRes.status,
-          keyCount: jwksData?.keys?.length || 1,
-          algorithm: jwksData?.keys?.[0]?.alg || 'ES256'
+          keyCount: jwksData?.keys?.length ?? 0,
+          algorithm: jwksData?.keys?.[0]?.alg ?? null
         },
         database: {
-          status: error ? 500 : 200,
-          table: 'users',
+          status: error ? (status || 500) : 200,
+          table: HANDSHAKE_TABLE,
           count: count ?? 0,
-          connected: !error
+          connected: !error,
+          error: error ? error.message : undefined
         }
       });
     } catch (err: any) {

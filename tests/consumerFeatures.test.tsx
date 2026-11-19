@@ -43,7 +43,7 @@ describe('My level', () => {
   test('shows the level from onboarding, and logging a faster run levels up', async () => {
     renderAt('/level', <MyLevel />, '/level');
 
-    expect(screen.getByRole('heading', { level: 1, name: /Beginner/ })).toBeInTheDocument();
+    expect(await screen.findByRole('heading', { level: 1, name: /Beginner/ })).toBeInTheDocument();
     expect(screen.getByText('52:00')).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: /บันทึกการซ้อม/ }));
@@ -56,12 +56,13 @@ describe('My level', () => {
     expect(screen.getByRole('heading', { level: 1, name: /Intermediate/ })).toBeInTheDocument();
   });
 
-  test('free members can tick the first plan session; the rest are locked', () => {
+  test('free members can tick the first plan session; the rest are locked', async () => {
     renderAt('/level', <MyLevel />, '/level');
+    await screen.findByRole('heading', { level: 1, name: /Beginner/ });
     const checks = screen.getAllByRole('button', { name: /ทำเครื่องหมายว่าเสร็จ/ });
 
     fireEvent.click(checks[0]);
-    expect(screen.getByText('1/3 เสร็จแล้ว')).toBeInTheDocument();
+    expect(await screen.findByText('1/3 เสร็จแล้ว')).toBeInTheDocument();
     expect(checks[1]).toBeDisabled();
   });
 });
@@ -69,6 +70,7 @@ describe('My level', () => {
 describe('Party creation', () => {
   test('one tap opens a party with sensible defaults and lands on it', async () => {
     renderAt('/parties/new', <PartyCreate />, '/parties/new');
+    await screen.findByText(/เลเวลเดียวกับฉัน \(Beginner\)/);
     fireEvent.click(screen.getByRole('button', { name: 'เปิดตี้' }));
 
     expect((await screen.findByTestId('location')).textContent).toMatch(/^\/events\/p-/);

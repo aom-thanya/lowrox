@@ -12,13 +12,17 @@ import PartyEvents from './PartyEvents';
 import PartyJoinPanel from './PartyJoinPanel';
 import { usePartyShare } from './PartyShareButton';
 import PartyStats from './PartyStats';
+import { USE_SUPABASE } from '../../lib/supabase';
 
-const TABS: { value: string; label: string; icon: LucideIcon }[] = [
+const ALL_TABS: { value: string; label: string; icon: LucideIcon }[] = [
   { value: 'overview', label: 'ภาพรวม', icon: Info },
   { value: 'events', label: 'อีเวนต์', icon: CalendarDays },
   { value: 'feed', label: 'ฟีด', icon: Rss },
   { value: 'stats', label: 'สถิติ', icon: BarChart3 },
 ];
+// The session list, run feed and stats are generated demo data. With the real database they would
+// show runs nobody made, so only the tabs backed by real rows (details and chat) are shown.
+const TABS = USE_SUPABASE ? ALL_TABS.filter(item => item.value === 'overview' || item.value === 'feed') : ALL_TABS;
 
 const circle = 'grid size-14 place-items-center rounded-full transition-colors md:size-16';
 const navItem = 'flex min-w-0 cursor-pointer flex-col border-0 bg-transparent p-0 font-[inherit] disabled:cursor-not-allowed items-center gap-2 rounded-lg py-1 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600';
@@ -127,17 +131,19 @@ export default function PartyDetail({ event, isActive, isEnded, isCancelled, onC
             </div>
           </div>
         )}
-        {tab === 'events' && <PartyEvents party={event} />}
+        {tab === 'events' && !USE_SUPABASE && <PartyEvents party={event} />}
         {tab === 'feed' && (
           <div className="grid gap-8">
             {chat}
-            <div>
-              <h2 className="heading-4 mb-2">กิจกรรมล่าสุด</h2>
-              <PartyActivityFeed party={event} />
-            </div>
+            {!USE_SUPABASE && (
+              <div>
+                <h2 className="heading-4 mb-2">กิจกรรมล่าสุด</h2>
+                <PartyActivityFeed party={event} />
+              </div>
+            )}
           </div>
         )}
-        {tab === 'stats' && <PartyStats party={event} />}
+        {tab === 'stats' && !USE_SUPABASE && <PartyStats party={event} />}
       </section>
     </>
   );

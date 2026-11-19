@@ -1,4 +1,6 @@
 import type { CommentRecord, CommentImage, User } from '../types/models';
+import { USE_SUPABASE } from '../lib/supabase';
+import { fetchComments, insertComment } from './supabase/eventApi';
 // Mock Comment Repository
 
 let comments: CommentRecord[] = [
@@ -29,6 +31,7 @@ let nextId = 3;
  * Get comments for a specific event
  */
 export async function getCommentsByEventId(eventId: string, { limit = 20, offset = 0 } = {}) {
+  if (USE_SUPABASE) return fetchComments(eventId, { limit, offset });
   // Simulate network delay
   await new Promise(resolve => setTimeout(resolve, 300));
   
@@ -44,8 +47,8 @@ export async function getCommentsByEventId(eventId: string, { limit = 20, offset
  */
 export async function postComment(eventId: string, user: User | null, message: string, images: CommentImage[] = []): Promise<CommentRecord> {
   // Simulate network delay
-  await new Promise(resolve => setTimeout(resolve, 500));
-  
+  if (!USE_SUPABASE) await new Promise(resolve => setTimeout(resolve, 500));
+
   if (!user) {
     throw new Error('Unauthorized');
   }
@@ -56,6 +59,8 @@ export async function postComment(eventId: string, user: User | null, message: s
   }
   
   if (!Array.isArray(images) || images.length > 8 || images.some(image => !/^data:image\/jpeg;base64,/.test(image.url) || image.url.length > 8 * 1024 * 1024)) throw new Error('Invalid images');
+
+  if (USE_SUPABASE) return insertComment(eventId, user, trimmedMessage, images);
 
   const newComment = {
     id: `c${nextId++}`,

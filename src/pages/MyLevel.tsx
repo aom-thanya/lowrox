@@ -11,7 +11,7 @@ import WorkoutHistory from '../components/level/WorkoutHistory';
 import { useAuth } from '../context/AuthContext';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import { useMyLevel } from '../hooks/useMyLevel';
-import { readPlanDone, togglePlanDone } from '../services/workoutRepository';
+import { loadPlanDone, setPlanDone } from '../services/workoutRepository';
 import { formatDuration, type Level } from '../utils/leveling';
 import { buildWeeklyPlan } from '../utils/trainingPlan';
 import '../styles/level.css';
@@ -32,8 +32,22 @@ export default function MyLevel() {
   const [logOpen, setLogOpen] = useState(searchParams.get('log') === '1');
   const [levelUp, setLevelUp] = useState<{ from: Level | null; to: Level } | null>(null);
   const [toast, setToast] = useState('');
-  const [doneIds, setDoneIds] = useState(() => (user ? readPlanDone(user.id) : []));
+  const [doneIds, setDoneIds] = useState<string[]>([]);
   const dismissToast = useCallback(() => setToast(''), []);
+  const userId = user?.id;
+
+  useEffect(() => {
+    if (userId == null) return;
+    let active = true;
+    loadPlanDone(userId).then(ids => { if (active) setDoneIds(ids); }).catch(error => console.error('Could not load the weekly plan', error));
+    return () => { active = false; };
+  }, [userId]);
+
+  const togglePlan = async (sessionId: string) => {
+    if (userId == null) return;
+    try { setDoneIds(await setPlanDone(userId, sessionId)); }
+    catch { setToast('บันทึกแผนไม่สำเร็จ กรุณาลองอีกครั้ง'); }
+  };
 
   // The header's "บันทึกการวิ่ง" links here with ?log=1; open the sheet and drop the flag from the URL.
   useEffect(() => {
@@ -48,8 +62,11 @@ export default function MyLevel() {
   const name = user?.displayName || user?.username || 'นักวิ่ง';
   const lastDistance = workouts[0] ? String(workouts[0].distanceKm) : '5';
 
-  const handleSave = (input: Parameters<typeof logWorkout>[0]) => {
-    const { before, after } = logWorkout(input);
+  const handleSave = async (input: Parameters<typeof logWorkout>[0]) => {
+    let result: Awaited<ReturnType<typeof logWorkout>>;
+    try { result = await logWorkout(input); }
+    catch { setToast('บันทึกการวิ่งไม่สำเร็จ กรุณาลองอีกครั้ง'); return; }
+    const { before, after } = result;
     setLogOpen(false);
     if (after && (!before || after.index > before.index)) {
       setLevelUp({ from: before?.level ?? null, to: after.level });
@@ -80,9 +97,9 @@ export default function MyLevel() {
             doneIds={doneIds}
             isMember={user?.tier === 'premium'}
             hasHealthConcerns={hasHealthConcerns}
-            onToggle={(sessionId) => user && setDoneIds(togglePlanDone(user.id, sessionId))}
+            onToggle={togglePlan}
           />
-          <WorkoutHistory workouts={workouts} onDelete={removeWorkout} />
+          <WorkoutHistory workouts={workouts} onDelete={(id) => { removeWorkout(id).catch(() => setToast('ลบไม่สำเร็จ กรุณาลองอีกครั้ง')); }} />
         </div>
 
         <section className="level-next-steps" aria-label="ไปต่อ">

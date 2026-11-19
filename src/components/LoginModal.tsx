@@ -18,7 +18,7 @@ export default function LoginModal({ isOpen, onClose, redirectOnComplete, from }
       <button className="modal-close-btn" onClick={onClose} aria-label="Close modal">
         &times;
       </button>
-      <LoginForm onSuccess={handleSuccess} />
+      <LoginForm onSuccess={handleSuccess} next={redirectOnComplete || (from?.pathname ? `${from.pathname}${from.search || ''}${from.hash || ''}` : '')} />
     </Modal>
   );
 }

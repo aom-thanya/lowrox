@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "handshake": "node scripts/test-handshake.mjs"
+    "handshake": "node scripts/test-handshake.mjs",
+    "test:api": "node scripts/test-api.mjs"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",

@@ -1,6 +1,6 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { addWorkout, bestRecentWorkout, deleteWorkout, listWorkouts, type Workout } from '../services/workoutRepository';
+import { bestRecentWorkout, loadWorkouts, removeWorkout as removeStoredWorkout, saveWorkout, type Workout } from '../services/workoutRepository';
 import { fiveKEquivalent, summarizeLevel, type LevelSummary, type WorkoutEffort } from '../utils/leveling';
 
 const summarize = (workouts: Workout[]): LevelSummary | null => {
@@ -12,30 +12,39 @@ const summarize = (workouts: Workout[]): LevelSummary | null => {
 export function useMyLevel() {
   const { user } = useAuth();
   const userId = user?.id;
-  const [state, setState] = useState(() => ({
-    userId,
-    workouts: userId != null ? listWorkouts(userId, user?.onboardingData) : []
-  }));
-  // Reload when the signed-in account changes.
-  const workouts = state.userId === userId ? state.workouts : (userId != null ? listWorkouts(userId, user?.onboardingData) : []);
-  if (state.userId !== userId) setState({ userId, workouts });
+  const onboardingData = user?.onboardingData;
+  const [state, setState] = useState<{ userId: typeof userId; workouts: Workout[]; loading: boolean }>({ userId: undefined, workouts: [], loading: true });
 
+  // Reload when the signed-in account changes.
+  useEffect(() => {
+    let active = true;
+    if (userId == null) { setState({ userId, workouts: [], loading: false }); return; }
+    setState(current => ({ userId, workouts: current.userId === userId ? current.workouts : [], loading: true }));
+    loadWorkouts(userId, onboardingData)
+      .then(workouts => { if (active) setState({ userId, workouts, loading: false }); })
+      .catch(error => { console.error('Could not load workouts', error); if (active) setState({ userId, workouts: [], loading: false }); });
+    return () => { active = false; };
+    // onboardingData only seeds the first workout; reloading on every edit would refetch for nothing.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId]);
+
+  const workouts = state.userId === userId ? state.workouts : [];
   const summary = useMemo(() => summarize(workouts), [workouts]);
-  const hasHealthConcerns = Boolean(user?.onboardingData?.safetyCheck?.concerns?.length);
+  const hasHealthConcerns = Boolean(onboardingData?.safetyCheck?.concerns?.length);
 
   // Returns the level before and after, so callers can celebrate a level-up.
-  const logWorkout = useCallback((input: WorkoutEffort & { date: string }) => {
+  const logWorkout = useCallback(async (input: WorkoutEffort & { date: string }) => {
     if (userId == null) throw new Error('Not authenticated');
     const before = summarize(workouts);
-    const result = addWorkout(userId, input);
-    setState({ userId, workouts: result.workouts });
+    const result = await saveWorkout(userId, input);
+    setState({ userId, workouts: result.workouts, loading: false });
     return { workout: result.workout, before, after: summarize(result.workouts) };
   }, [userId, workouts]);
 
-  const removeWorkout = useCallback((workoutId: string) => {
+  const removeWorkout = useCallback(async (workoutId: string) => {
     if (userId == null) return;
-    setState({ userId, workouts: deleteWorkout(userId, workoutId) });
+    setState({ userId, workouts: await removeStoredWorkout(userId, workoutId), loading: false });
   }, [userId]);
 
-  return { workouts, summary, hasHealthConcerns, logWorkout, removeWorkout };
+  return { workouts, summary, hasHealthConcerns, loading: state.loading, logWorkout, removeWorkout };
 }

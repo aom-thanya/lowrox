@@ -10,10 +10,9 @@ import Toast from '../components/common/Toast';
 import Skeleton from '../components/common/Skeleton';
 import Dialog from '../components/common/Dialog';
 import { hasSettingsChanges, settingsFromUser } from '../utils/profile';
-import { updateCurrentUser } from '../services/userRepository';
 
 export default function Settings() {
-  const { user, logout } = useAuth();
+  const { user, logout, updateUser } = useAuth();
   const { setDirty, requestAction } = useUnsavedChanges();
   const [saved, setSaved] = useState<{ showProfile: boolean } | null>(null);
   const [draft, setDraft] = useState<{ showProfile: boolean } | null>(null);
@@ -74,9 +73,7 @@ export default function Settings() {
     setToast('');
 
     try {
-      // Mock network delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      const updatedUser = updateCurrentUser(user.id, draft);
+      const updatedUser = await updateUser(draft);
       const newSettings = settingsFromUser(updatedUser);
       setSaved(newSettings);
       setDraft(newSettings);

@@ -1,0 +1,5 @@
+project_id = "avvxdvvcqexmfpsgtzqm"
+
+# Called before the browser has a session, and the publishable key is not a JWT.
+[functions.line-auth]
+verify_jwt = false

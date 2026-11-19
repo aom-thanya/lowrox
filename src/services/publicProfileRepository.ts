@@ -4,6 +4,9 @@ import { readUser } from './userRepository';
 import { getKnownEventMember } from './eventRepository';
 import { findMockMember } from '../data/mockMembers';
 import { LEVELS } from '../utils/leveling';
+import { USE_SUPABASE } from '../lib/supabase';
+import { loadPeople } from './supabase/eventApi';
+import { levelFromDb } from './supabase/mappers';
 
 const text = (value: unknown) => typeof value === 'string' ? value : '';
 // Explicit public projection: never return a raw account or onboarding object.
@@ -24,6 +27,24 @@ export function toPublicProfile(record: User) {
   };
 }
 export async function getPublicProfile(userId: UserId, storage = localStorage) {
+  if (USE_SUPABASE) {
+    const id = Number(userId);
+    if (!Number.isInteger(id)) throw new Error('Profile unavailable');
+    const row = (await loadPeople([id])).get(id);
+    if (!row) throw new Error('Profile unavailable');
+    const levelId = levelFromDb(row.fitness_level ?? null);
+    return toPublicProfile({
+      id: row.id,
+      displayName: row.display_name ?? '',
+      avatarUrl: row.avatar_url ?? '',
+      bio: row.bio ?? '',
+      provinceId: row.province_id ?? '',
+      districtId: row.district_id ?? '',
+      interests: row.interests ?? [],
+      publicProfileVisible: row.profile_visible !== false,
+      publicOnboarding: { level: LEVELS.find(item => item.id === levelId)?.label, goals: [] },
+    });
+  }
   await new Promise(resolve => setTimeout(resolve, 150));
   const raw = storage.getItem(`lowrox:user:${userId}`);
   if (raw) {

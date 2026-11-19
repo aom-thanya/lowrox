@@ -2,13 +2,15 @@ import type { User } from '../types/models';
 import React, { useState } from 'react';
 import { Check, MessageCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { approveMockLineConsent, LINE_SCOPES, MOCK_LINE_PROFILE } from '../services/lineAuth';
+import { approveMockLineConsent, LINE_SCOPES, MOCK_LINE_PROFILE, startLineLogin } from '../services/lineAuth';
+import { USE_SUPABASE } from '../lib/supabase';
 import Dialog from './common/Dialog';
 import Button from './common/Button';
 
-// Sign in with LINE. A LINE account with no Lowrox user yet is registered automatically (isNew = true).
-// The consent step is simulated until real LINE Login is wired up (see services/lineAuth.ts).
-export default function LineLoginButton({ onSuccess, className = '' }: { onSuccess: (user: User, isNew: boolean) => void; className?: string }) {
+// Sign in with LINE. A LINE account with no Lowrox user yet is registered automatically.
+// With Supabase this redirects to real LINE Login and returns via /auth/line/callback,
+// continuing to `next`. Offline mode shows a simulated consent screen and calls onSuccess.
+export default function LineLoginButton({ onSuccess, next = '', className = '' }: { onSuccess: (user: User, isNew: boolean) => void; next?: string; className?: string }) {
   const { loginWithLine } = useAuth();
   const [consentOpen, setConsentOpen] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -37,7 +39,11 @@ export default function LineLoginButton({ onSuccess, className = '' }: { onSucce
 
   return (
     <div className={`line-login ${className}`}>
-      <button type="button" className="btn btn-md btn-line w-full" onClick={() => { setError(''); setConsentOpen(true); }}>
+      <button type="button" className="btn btn-md btn-line w-full" onClick={() => {
+        setError('');
+        if (USE_SUPABASE) startLineLogin(next);
+        else setConsentOpen(true);
+      }}>
         <MessageCircle size={20} fill="currentColor" aria-hidden="true" />
         เข้าสู่ระบบด้วย LINE
       </button>
