@@ -20,6 +20,7 @@ const UserProfile = React.lazy(() => import('./pages/UserProfile'));
 const MyLevel = React.lazy(() => import('./pages/MyLevel'));
 const PartyCreate = React.lazy(() => import('./pages/PartyCreate'));
 const ApiStatus = React.lazy(() => import('./pages/ApiStatus'));
+const ApiHealth = React.lazy(() => import('./pages/ApiHealth'));
 const AuthCallback = React.lazy(() => import('./pages/AuthCallback'));
 const LineCallback = React.lazy(() => import('./pages/LineCallback'));
 const Privacy = React.lazy(() => import('./pages/Privacy'));
@@ -34,7 +35,8 @@ const router = createBrowserRouter(createRoutesFromElements(
           <Route path="/events/:eventId" element={<EventDetails />} />
           <Route path="/api-test" element={<ApiStatus />} />
           <Route path="/handshake" element={<ApiStatus />} />
-          <Route path="/status" element={<ApiStatus />} />
+          <Route path="/status" element={<ApiHealth />} />
+          <Route path="/api-health" element={<ApiHealth />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/auth/line/callback" element={<LineCallback />} />
           <Route path="/privacy" element={<Privacy />} />
