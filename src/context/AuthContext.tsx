@@ -6,6 +6,7 @@ import { takePendingLineLogin, type LineProfile } from '../services/lineAuth';
 import { profileFromUser, validateProfile } from '../utils/profile';
 import { supabase, USE_SUPABASE } from '../lib/supabase';
 import { loadMyProfile, saveOnboarding, sendLoginLink, signInWithLineCode, signOut, updateMyProfile, verifyLoginCode } from '../services/supabase/userApi';
+import { enforceSessionLifetime } from '../services/supabase/sessionLifetime';
 
 interface AuthContextValue {
   user: User | null;
@@ -54,6 +55,8 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
     let active = true;
     const refresh = async () => {
       try {
+        // A session older than a year ends here, and the member signs in again.
+        if (await enforceSessionLifetime(supabase)) { if (active) setUser(null); return; }
         const profile = await loadMyProfile();
         if (active) setUser(profile);
       } catch (error) {
@@ -68,6 +71,8 @@ export function AuthProvider({ children }: React.PropsWithChildren) {
     const { data } = supabase.auth.onAuthStateChange((event) => {
       if (event === 'SIGNED_OUT') { setUser(null); return; }
       if (event === 'SIGNED_IN' || event === 'USER_UPDATED') setTimeout(refresh, 0);
+      // Hourly while a tab stays open, so a session can't outlive its year that way.
+      if (event === 'TOKEN_REFRESHED') setTimeout(() => { void enforceSessionLifetime(supabase); }, 0);
     });
     return () => { active = false; data.subscription.unsubscribe(); };
   }, []);

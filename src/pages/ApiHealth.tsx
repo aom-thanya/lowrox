@@ -16,6 +16,8 @@ const STATUS_TEXT: Record<Status | 'pending' | 'running', string> = {
   pass: 'ผ่าน', fail: 'ไม่ผ่าน', skip: 'ข้าม', pending: 'รอ', running: 'กำลังทดสอบ',
 };
 
+const CELL_MARK: Record<Status | 'pending', string> = { pass: '✓', fail: '✕', skip: '–', pending: '…' };
+
 function worst(statuses: (Status | undefined)[]): Status | 'pending' | null {
   if (!statuses.length) return null;
   if (statuses.includes('fail')) return 'fail';
@@ -133,8 +135,10 @@ export default function ApiHealth() {
                       const checks = cells[key];
                       const state = worst(checks.map(c => results[c.id]?.status));
                       return (
-                        <td key={key} title={checks.length ? `${label}: ${checks.map(c => `${c.label} — ${STATUS_TEXT[statusOf(c)]}`).join('\n')}` : `${label}: แอปไม่ได้ใช้`}>
-                          {state ? <span className={`ah-dot ah-${state}`} aria-label={`${label} ${STATUS_TEXT[state]}`} /> : <span className="ah-none">—</span>}
+                        <td key={key} className={`ah-cell ${state ? `ah-${state}` : 'ah-empty'}`}
+                          aria-label={`${label} ${state ? STATUS_TEXT[state] : 'แอปไม่ได้ใช้'}`}
+                          title={checks.length ? `${label}: ${checks.map(c => `${c.label} — ${STATUS_TEXT[statusOf(c)]}`).join('\n')}` : `${label}: แอปไม่ได้ใช้`}>
+                          {state ? CELL_MARK[state] : '—'}
                         </td>
                       );
                     })}
@@ -145,7 +149,7 @@ export default function ApiHealth() {
           </div>
           <p className="ah-legend">
             <span><i className="ah-dot ah-pass" /> ผ่าน</span><span><i className="ah-dot ah-fail" /> ไม่ผ่าน</span>
-            <span><i className="ah-dot ah-skip" /> ข้าม</span><span><span className="ah-none">—</span> แอปไม่ได้ใช้</span>
+            <span><i className="ah-dot ah-skip" /> ข้าม (รอบนี้ไม่ได้ทดสอบ ดูเหตุผลใต้แต่ละเส้น)</span><span><span className="ah-none">—</span> แอปไม่ได้ใช้</span>
           </p>
         </section>
 
@@ -194,7 +198,7 @@ function Tile({ label, value, sub, tone }: { label: string; value: string; sub?:
 }
 
 const CSS = `
-.ah{--bg:#0d1117;--panel:#161b22;--line:#30363d;--text:#e6edf3;--muted:#8b949e;--pass:#3fb950;--fail:#f85149;--skip:#6e7681;--pend:#d29922;--accent:#58a6ff;
+.ah{--bg:#ffffff;--panel:#f6f8fa;--line:#d0d7de;--text:#1f2328;--muted:#59636e;--pass:#16a34a;--fail:#dc2626;--skip:#94a3b8;--pend:#f59e0b;--accent:#0969da;
   min-height:100vh;background:var(--bg);color:var(--text);font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;padding:24px 16px}
 .ah code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px}
 .ah-wrap{max-width:960px;margin:0 auto}
@@ -210,13 +214,15 @@ const CSS = `
 .ah-tile-label{font-size:12px;color:var(--muted)}
 .ah-tile-value{font-size:20px}
 .ah-t-pass{color:var(--pass)}.ah-t-fail{color:var(--fail)}.ah-t-pending{color:var(--pend)}
-.ah-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:8px}
-.ah-matrix{width:100%;border-collapse:collapse;background:var(--panel)}
-.ah-matrix th,.ah-matrix td{padding:7px 12px;border-bottom:1px solid var(--line);text-align:center}
+.ah-scroll{overflow-x:auto}
+.ah-matrix{width:100%;border-collapse:separate;border-spacing:4px;background:var(--bg)}
+.ah-matrix th,.ah-matrix td{padding:8px 12px;text-align:center}
 .ah-matrix th:first-child,.ah-matrix td:first-child{text-align:left}
-.ah-matrix tr:last-child td{border-bottom:0}
 .ah-matrix th{font-size:12px;color:var(--muted);font-weight:600}
-.ah-dot{display:inline-block;width:11px;height:11px;border-radius:50%;vertical-align:middle}
+.ah-matrix th:not(:first-child){width:72px}
+.ah-cell{background:var(--c);color:#fff;font-weight:700;font-size:15px;border-radius:6px;transition:background .2s}
+.ah-cell.ah-empty{background:var(--panel);color:var(--line);font-weight:400}
+.ah-dot{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:middle}
 .ah-pass{--c:var(--pass)}.ah-fail{--c:var(--fail)}.ah-skip{--c:var(--skip)}.ah-pending,.ah-running{--c:var(--pend)}
 .ah-dot{background:var(--c)}
 .ah-none{color:var(--line)}
@@ -225,11 +231,11 @@ const CSS = `
 .ah-group ul{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
 .ah-route{display:grid;grid-template-columns:72px minmax(0,190px) 1fr auto 60px;gap:4px 10px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--line)}
 .ah-route:last-child{border-bottom:0}
-.ah-method{font:600 11px ui-monospace,Menlo,monospace;text-align:center;border-radius:4px;padding:2px 0;background:#21262d;color:var(--accent)}
-.ah-m-post,.ah-m-upsert,.ah-m-upload{color:var(--pass)}.ah-m-patch{color:var(--pend)}.ah-m-delete,.ah-m-remove{color:var(--fail)}.ah-m-rpc{color:#d2a8ff}
+.ah-method{font:600 11px ui-monospace,Menlo,monospace;text-align:center;border-radius:4px;padding:2px 0;background:#eaeef2;color:var(--accent)}
+.ah-m-post,.ah-m-upsert,.ah-m-upload{color:var(--pass)}.ah-m-patch{color:var(--pend)}.ah-m-delete,.ah-m-remove{color:var(--fail)}.ah-m-rpc{color:#8250df}
 .ah-target{overflow-wrap:anywhere}
 .ah-label em{color:var(--muted)}
-.ah-pill{font-size:12px;border-radius:999px;padding:1px 9px;border:1px solid var(--c);color:var(--c);white-space:nowrap}
+.ah-pill{font-size:12px;font-weight:600;border-radius:999px;padding:2px 10px;background:var(--c);color:#fff;white-space:nowrap}
 .ah-ms{font-size:12px;color:var(--muted);text-align:right}
 .ah-error,.ah-reason{grid-column:2/-1;font-size:12px;overflow-wrap:anywhere}
 .ah-error{color:var(--fail);font-family:ui-monospace,Menlo,monospace}
