@@ -1,5 +1,5 @@
 import type { EventRecord, CommentRecord, CommentImage } from '../types/models';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useLocation, Link } from 'react-router-dom';
 import { MapPin, Calendar, Activity, ArrowLeft, ExternalLink } from 'lucide-react';
 import PageShell from '../components/common/PageShell';
@@ -15,6 +15,17 @@ import { useAuth } from '../context/AuthContext';
 import { coverFor } from '../utils/partyCover';
 import { getEventById, getJoinGroupUrl, isEventEnded } from '../services/eventRepository';
 import { getCommentsByEventId, postComment } from '../services/commentRepository';
+import { useVisiblePolling } from '../hooks/useVisiblePolling';
+
+// One light request per open, visible event page every 90 seconds.
+const COMMENT_POLL_MS = 90_000;
+// Adds comments not already shown, oldest first.
+const mergeComments = (current: CommentRecord[], incoming: CommentRecord[]) => {
+  const known = new Set(current.map(comment => String(comment.id)));
+  const added = incoming.filter(comment => !known.has(String(comment.id)));
+  if (!added.length) return current;
+  return [...current, ...added].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+};
 
 export default function EventDetails() {
   const { eventId } = useParams();
@@ -38,35 +49,35 @@ export default function EventDetails() {
   useEffect(() => {
     let isMounted = true;
     
-    const fetchData = async () => {
-      setIsLoading(true);
-      setIsLoadingComments(true);
-      setError('');
-      
-      try {
-        const eventData = await getEventById(eventId!);
-        if (isMounted) setEvent(eventData);
-        
-        try {
-          const commentsData = await getCommentsByEventId(eventId!);
-          if (isMounted) setComments(commentsData);
-        } catch (commentErr) {
-          console.error('Failed to fetch comments', commentErr);
-        }
-      } catch (err) {
-        if (isMounted) setError('ไม่สามารถเปิดดูกิจกรรมนี้ได้ หรือกิจกรรมนี้ไม่เผยแพร่แล้ว');
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-          setIsLoadingComments(false);
-        }
-      }
-    };
-    
-    fetchData();
-    
+    // Event and comments load side by side: the page shows as soon as the event
+    // arrives, and the comment list keeps its own skeleton until its data lands.
+    setIsLoading(true);
+    setIsLoadingComments(true);
+    setError('');
+    setComments([]);
+
+    getEventById(eventId!)
+      .then(eventData => { if (isMounted) setEvent(eventData); })
+      .catch(() => { if (isMounted) setError('ไม่สามารถเปิดดูกิจกรรมนี้ได้ หรือกิจกรรมนี้ไม่เผยแพร่แล้ว'); })
+      .finally(() => { if (isMounted) setIsLoading(false); });
+
+    getCommentsByEventId(eventId!)
+      .then(commentsData => { if (isMounted) setComments(commentsData); })
+      .catch(commentErr => console.error('Failed to fetch comments', commentErr))
+      .finally(() => { if (isMounted) setIsLoadingComments(false); });
+
     return () => { isMounted = false; };
   }, [eventId]);
+
+  // Pick up other people's comments without a reload: each poll asks only for
+  // comments newer than the latest one on screen, so it's one small query.
+  const commentsRef = useRef(comments);
+  commentsRef.current = comments;
+  useVisiblePolling(async () => {
+    const latest = commentsRef.current.at(-1)?.createdAt;
+    const incoming = await getCommentsByEventId(eventId!, { after: latest });
+    setComments(current => mergeComments(current, incoming));
+  }, COMMENT_POLL_MS, Boolean(event));
 
   const handleBack = () => {
     // Navigate back to preserve search params if we came from list
@@ -102,7 +113,7 @@ export default function EventDetails() {
     setIsSubmittingComment(true);
     try {
       const newComment = await postComment(event.id, user, message, images);
-      setComments(current => [...current, newComment]);
+      setComments(current => mergeComments(current, [newComment]));
     } finally {
       setIsSubmittingComment(false);
     }

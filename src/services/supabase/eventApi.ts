@@ -109,10 +109,13 @@ export async function cancelEventRow(eventId: string, userId: UserId) {
   return reload(eventId);
 }
 
-export async function fetchComments(eventId: string, { limit = 20, offset = 0 } = {}): Promise<CommentRecord[]> {
-  const { data, error } = await supabase.from('txn_group_comments')
+// `after` (an ISO time) returns only comments newer than it, for cheap polling.
+export async function fetchComments(eventId: string, { limit = 20, offset = 0, after }: { limit?: number; offset?: number; after?: string } = {}): Promise<CommentRecord[]> {
+  let query = supabase.from('txn_group_comments')
     .select('id, event_id, user_id, comment_text, images, created_at')
-    .eq('event_id', Number(eventId))
+    .eq('event_id', Number(eventId));
+  if (after) query = query.gt('created_at', after);
+  const { data, error } = await query
     .order('created_at', { ascending: true })
     .range(offset, offset + limit - 1);
   fail(error);

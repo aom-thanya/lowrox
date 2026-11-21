@@ -30,13 +30,13 @@ let nextId = 3;
 /**
  * Get comments for a specific event
  */
-export async function getCommentsByEventId(eventId: string, { limit = 20, offset = 0 } = {}) {
-  if (USE_SUPABASE) return fetchComments(eventId, { limit, offset });
+export async function getCommentsByEventId(eventId: string, { limit = 20, offset = 0, after }: { limit?: number; offset?: number; after?: string } = {}) {
+  if (USE_SUPABASE) return fetchComments(eventId, { limit, offset, after });
   // Simulate network delay
   await new Promise(resolve => setTimeout(resolve, 300));
   
   const eventComments = comments
-    .filter(c => c.eventId === eventId)
+    .filter(c => c.eventId === eventId && (!after || new Date(c.createdAt).getTime() > new Date(after).getTime()))
     .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()); // Oldest first
     
   return eventComments.slice(offset, offset + limit);

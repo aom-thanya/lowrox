@@ -498,8 +498,24 @@ textarea.form-control { display: block; padding: var(--space-3) var(--space-4); 
 .event-comment-list { display: grid; gap: var(--space-6); margin-top: var(--space-8); }
 .event-comment-item { display: flex; gap: var(--space-4); border-top: var(--border-subtle); padding-top: var(--space-6); }
 .event-comment-item > .avatar { flex-shrink: 0; }
+
+/* Comment loading: skeleton shaped like a comment, then a soft fade in */
+.comment-skeleton-avatar, .comment-skeleton-line { display: block; background: linear-gradient(90deg, var(--color-neutral-100) 25%, var(--color-neutral-200) 50%, var(--color-neutral-100) 75%); background-size: 200% 100%; animation: comment-shimmer 1.4s ease-in-out infinite; }
+.comment-skeleton-avatar { flex-shrink: 0; width: 36px; height: 36px; border-radius: var(--radius-pill); }
+.event-comment-skeleton .event-comment-content { display: grid; flex: 1; gap: var(--space-2); }
+.comment-skeleton-line { height: 14px; border-radius: var(--radius-sm); }
+.comment-skeleton-line.is-name { width: 30%; max-width: 140px; margin-bottom: var(--space-1); }
+.event-comment-item.is-entering { animation: comment-enter 280ms ease-out both; animation-delay: var(--enter-delay, 0ms); }
+.event-comment-item.is-new { animation: comment-enter 280ms ease-out both, comment-highlight 2.4s ease-out; border-radius: var(--radius-sm); }
+@keyframes comment-shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+@keyframes comment-enter { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes comment-highlight { from { background: var(--color-brand-50); } to { background: transparent; } }
+@media (prefers-reduced-motion: reduce) {
+  .comment-skeleton-avatar, .comment-skeleton-line, .event-comment-item.is-entering, .event-comment-item.is-new { animation: none; }
+}
 .event-comment-content { flex: 1; min-width: 0; }
 .event-comment-meta { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-2); margin-bottom: var(--space-2); overflow-wrap: anywhere; }
+.event-comment-time { cursor: help; }
 @media (min-width: 768px) {
   .event-detail-container { gap: var(--space-8); }
   .event-detail-cover { height: 240px; }
