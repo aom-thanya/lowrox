@@ -20,7 +20,7 @@ describe('partyRepository', () => {
   test('the host is the first participant, joins fill seats until full', async () => {
     const storage = memoryStorage();
     const party = await createParty(host, 'beginner', input, storage);
-    expect(party.participants).toEqual([{ id: 'host-1', name: 'หัวตี้', levelId: 'beginner' }]);
+    expect(party.participants).toEqual([{ id: 'host-1', name: 'หัวตี้', levelId: 'beginner', avatarUrl: null }]);
 
     const joined = await joinParty(party, { id: 'u2', name: 'เพื่อน' }, storage);
     expect(joined.participantCount).toBe(2);

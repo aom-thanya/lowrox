@@ -44,7 +44,7 @@ export default function PartyJoinPanel({ event, isActive, onChange, onRequireLog
         <span className="party-panel-host">หัวตี้: {event.organizer.name}</span>
       </div>
 
-      <PartySlots participants={participants} capacity={capacity} showNames />
+      <PartySlots participants={participants} capacity={capacity} showNames linkProfiles />
 
       {!isActive ? (
         <p className="party-panel-note">ตี้นี้จบหรือถูกยกเลิกแล้ว</p>

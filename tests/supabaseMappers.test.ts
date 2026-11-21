@@ -32,8 +32,8 @@ describe('Supabase row mapping', () => {
       organizer: { id: 13, name: 'Host', avatarUrl: null },
     });
     expect(event.participants).toEqual([
-      { id: 13, name: 'Host', levelId: 'advanced' },
-      { id: 20, name: 'Guest', levelId: undefined },
+      { id: 13, name: 'Host', levelId: 'advanced', avatarUrl: null },
+      { id: 20, name: 'Guest', levelId: undefined, avatarUrl: 'a.png' },
     ]);
     expect(isPublicEvent(event)).toBe(true);
     expect(eventStatusLabel(event, new Date('2026-01-01').getTime())).toBe('เต็มแล้ว');

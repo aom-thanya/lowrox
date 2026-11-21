@@ -35,6 +35,7 @@ export const participantFrom = (user: User, levelId?: PartyLevel): PartyParticip
   id: user.id,
   name: user.displayName || user.username || 'สมาชิก',
   levelId,
+  avatarUrl: user.avatarUrl || null,
 });
 
 export interface NewPartyInput {

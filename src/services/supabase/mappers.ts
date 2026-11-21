@@ -144,7 +144,7 @@ export function eventFromRow(row: EventRow, people: Map<number, PublicUserRow>, 
     .filter(item => item.event_id === row.id && (item.status ?? 'joined') === 'joined')
     .map(item => {
       const person = people.get(item.user_id);
-      return { id: item.user_id, name: person?.display_name || 'สมาชิก', levelId: levelFromDb(person?.fitness_level ?? null) };
+      return { id: item.user_id, name: person?.display_name || 'สมาชิก', levelId: levelFromDb(person?.fitness_level ?? null), avatarUrl: person?.avatar_url || null };
     });
   return {
     id: String(row.id),
